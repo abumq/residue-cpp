@@ -364,7 +364,7 @@ public:
     }
 
     ///
-    /// \brief setBulkSize number of log messages to be bulked together
+    /// \brief Sets number of log messages to be bulked together
     /// \note This depends on what server accepts. The configuration value on the server is <code>max_items_in_bulk</code>.
     /// Please contact your log server hosting to get this number. Failing to select correct number can fail.
     /// \throws ResidueException if connected and specified bulk size exceeds maximum allowed

@@ -52,10 +52,11 @@ message ("-- Boost binary: " ${Boost_LIBRARIES})
 
 thread_packages_check()
 
-
 ############# RESIDUE CLIENT LIB ###############
 
 set(LIB_RESIDUE_SOURCE_FILES
+    include/Residue.h
+    include/log.h
     src/Residue.cc
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )

@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Changes
+- Minor speed improvement with bulk loader when connecting
+
 ## [1.0.0-beta.14] - 03-08-2017
 ### Fixes
 - Fixed issue with logging DEBUG when built with Release build (use Easylogging++ v9.95.0+)

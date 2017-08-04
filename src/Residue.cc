@@ -586,19 +586,18 @@ void Residue::reset()
                                                     throw e;
                                                 }
 
-                                                if (m_autoBulkParams) {
-                                                    if (hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
-                                                        m_bulkDispatch = true;
-                                                        m_bulkSize = std::min(m_maxBulkSize, 40U);
-                                                    }
+                                                if (m_autoBulkParams && hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
+                                                    m_bulkDispatch = true;
+                                                    m_bulkSize = std::min(m_maxBulkSize, 40U);
                                                 }
 
                                                 if (hasFlag(Flag::ALLOW_BULK_LOG_REQUEST) && m_bulkDispatch && m_bulkSize > m_maxBulkSize) {
-                                                    addError(std::string("Invalid bulk dispatch size. Maximum allowed: " + std::to_string(m_maxBulkSize)));
-                                                    throw ResidueException(m_errors.at(m_errors.size() - 1));
+                                                    // bulk dispatch is manually on
+                                                    RLOG(WARNING) << "Resetting bulk size to " << m_maxBulkSize;
+                                                    m_bulkSize = m_maxBulkSize;
                                                 } else if (!hasFlag(Flag::ALLOW_BULK_LOG_REQUEST) && m_bulkDispatch) {
-                                                    addError("Bulk log requests not allowed by this server");
-                                                    throw ResidueException(m_errors.at(m_errors.size() - 1));
+                                                    RLOG(WARNING) << "Bulk log requests not allowed by this server";
+                                                    m_bulkDispatch = false;
                                                 }
                                                 m_connected = true;
 
