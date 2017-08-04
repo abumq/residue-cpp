@@ -126,6 +126,9 @@ install:
  - cd "${TRAVIS_BUILD_DIR}"
  - mkdir build
  - cd build
+ - cmake -Dtest=OFF -Dtravis=ON ..
+ - sudo make VERBOSE=1
+ - sudo make install
  - cmake -Dtest=ON -Dtravis=ON ..
 
 script: "sudo make VERBOSE=1 && ./residue-cpp-unit-tests"
