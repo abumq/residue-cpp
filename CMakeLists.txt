@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8.12)
 
 project (Residue-C++)
 
+option (test "Builds all tests" ON)
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
@@ -115,4 +116,32 @@ configure_file (
 include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
+
+################# Test #####################
+if (test)
+
+    find_package (gtest REQUIRED)
+
+    include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+    enable_testing()
+
+    add_executable (residue-cpp-unit-tests
+        test/main.cc
+        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    )
+
+    target_compile_definitions (residue-cpp-unit-tests PUBLIC
+        ELPP_FEATURE_ALL
+        ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_cpp_unit_tests.log"
+        ELPP_DEFAULT_LOGGING_FLAGS=4096
+    )
+
+    # Standard linking to gtest stuff.
+    target_link_libraries (residue-cpp-unit-tests gtest gtest_main)
+
+    target_link_libraries (residue-cpp-unit-tests residue-lib)
+
+    add_test (NAME residueCppUnitTests COMMAND residue-cpp-unit-tests)
+endif() ## test
 
