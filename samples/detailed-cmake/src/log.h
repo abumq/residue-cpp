@@ -6,7 +6,7 @@
 #define ELPP_DEFAULT_LOGGER "sample-app"
 #define ELPP_DEFAULT_PERFORMANCE_LOGGER "sample-app"
 
-#ifdef NON_ROOT_SAMPLE_BUILD // In your application you would do #include <Residue.h>
+#ifndef ROOT_SAMPLE_BUILD // In your application you would do #include <Residue.h>
 #      include <Residue.h>
 #   else
 #      include "include/Residue.h"
