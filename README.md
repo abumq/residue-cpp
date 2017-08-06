@@ -9,7 +9,7 @@ It is developed separately because of different license
 
 [![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) (`develop`)
 
-[![Version](https://img.shields.io/github/release/muflihun/residue.svg)](https://github.com/muflihun/residue/releases/latest)
+[![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest)
 
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue)
 
