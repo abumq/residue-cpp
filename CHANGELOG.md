@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- Updated to match same configuration name
+
 ## [1.0.0-beta.15] - 07-08-2017
 ### Changes
 - Minor speed improvement with bulk loader when connecting

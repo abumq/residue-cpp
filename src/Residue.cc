@@ -784,7 +784,7 @@ std::string Residue::requestToJson(RequestTuple&& request)
         j["app"] = m_applicationId;
     }
 
-    if (hasFlag(Flag::CHECK_TOKENS)) {
+    if (hasFlag(Flag::REQUIRES_TOKEN)) {
         std::string token = getToken(loggerId);
         if (token.empty()) {
             obtainToken(loggerId);
