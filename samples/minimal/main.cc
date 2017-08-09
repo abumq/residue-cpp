@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 
     while (true) {
         std::wstring input;
-        std::cout << "Type > ";
+        std::cout << "Logger > ";
         std::getline(std::wcin, input);
         if (!input.empty()) {
             LOG(INFO) << input;
