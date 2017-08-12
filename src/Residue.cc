@@ -562,6 +562,7 @@ void Residue::reset()
                                                 m_tokenPort = j["token_port"].get<int>();
                                                 m_maxBulkSize = j["max_bulk_size"].get<unsigned int>();
                                                 m_serverFlags = j["flags"].get<unsigned int>();
+                                                m_licensee = j["licensee"].get<std::string>();
 
                                                 // Token server
                                                 s_tokenClient = std::unique_ptr<ResidueClient>(new ResidueClient(m_host, std::to_string(m_tokenPort)));

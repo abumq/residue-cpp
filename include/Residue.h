@@ -597,6 +597,11 @@ public:
         return seconds;
     }
 
+    inline std::string licensee() const noexcept
+    {
+        return m_licensee;
+    }
+
 private:
 
     // defs and structs
@@ -675,6 +680,7 @@ private:
     std::size_t m_keySize;
     std::string m_clientId;
     std::string m_key;
+    std::string m_licensee;
     std::string m_serverPublicKey;
     unsigned int m_age;
     unsigned long m_dateCreated;
