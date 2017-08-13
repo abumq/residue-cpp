@@ -25,7 +25,7 @@ void displayErrors()
 
 int main(int argc, char* argv[]) {
 
-#if 1 // minimal sample with unknown logger
+#if 0 // minimal sample with unknown logger
     try {
         Residue::connect("localhost", Residue::DEFAULT_PORT);
     } catch (const ResidueException& e) {
@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
+    // Residue::enablePlainRequest();
     // THIS IS OPTIONAL IF YOU WANT TO READ VERBOSE LOG LEVEL (i.e, -v)
     // SEE https://github.com/muflihun/easyloggingpp#verbose-logging
     Residue::setApplicationArgs(argc, argv);
@@ -55,8 +56,11 @@ int main(int argc, char* argv[]) {
     Residue::loadConfiguration(clientConfigFile);
 #else
 
+    // review the privateKeyFile location (try running this sample from root)
+    std::string keyBase = "/Users/majid.khan/Projects/residue/tools/netcat-client/";
+
     // Manually set configurations via API
-#   if 0 // enable known client - review the privateKeyFile location (try running this sample from root)
+#   if 1 // enable known client
     // OPTIONAL:
     // If you are provided some details about client ID from server and you have uploaded
     // RSA public key to the server then you can let server known about this and you may get
@@ -65,7 +69,7 @@ int main(int argc, char* argv[]) {
     //   - https://github.com/muflihun/residue/blob/master/docs/CONFIGURATION.md#allow_unknown_clients
     //   - https://github.com/muflihun/residue/blob/master/docs/CONFIGURATION.md#known_clients
     //
-    std::string privateKeyFile = "samples/clients/netcat/client-256-private.pem";
+    std::string privateKeyFile = keyBase + "client-256-private.pem";
     std::fstream fs(privateKeyFile, std::ios::in);
     if (!fs.is_open()) {
         std::cerr << "File not readable: " << privateKeyFile << std::endl;
@@ -81,7 +85,7 @@ int main(int argc, char* argv[]) {
 
 #   if 0 // Enable server key
     // Notice, the bigger the server key, the slower server will respond (but it's more secure)
-    std::string serverPublicKeyFile = "samples/clients/netcat/server-1024-public.pem";
+    std::string serverPublicKeyFile = keyBase + "server-1024-public.pem";
     std::fstream fs2(serverPublicKeyFile, std::ios::in);
     if (!fs2.is_open()) {
         std::cerr << "File not readable: " << serverPublicKeyFile << std::endl;
@@ -138,7 +142,7 @@ int main(int argc, char* argv[]) {
     // in (you just need to make sure that accessCodes in still in scope when you
     // call Residue::connect()
 
-#if 1
+#if 0
     //
     // Optional: Providing "--bulk" option enables bulk dispatch for residue which means each log request
     // will be sent to the server in batch of bulk size. See following links for details
@@ -238,17 +242,20 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
-    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::info);
+    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::debug);
 
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
     // log dispatcher and installs it's own dispatcher. If you want to know more about this technique
     // see https://github.com/muflihun/easyloggingpp#log-dispatch-callback
-    LOG(INFO) << "Test";
+    LOG(INFO) << "Test info";
+    LOG(DEBUG) << "Test debug";
+    LOG(ERROR) << "Test error";
     VLOG(1) << "Verbose log level-1";
 
     // using default logger - note we did not provide any access code for it
     CLOG(INFO, "default") << "Test using default logger";
+    CLOG(INFO, "sample-app-unknown-logger") << "Test using unknown logger";
 
 #if 1 // more logging
     // You can reconnect whenever you like

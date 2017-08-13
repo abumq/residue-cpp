@@ -1,13 +1,16 @@
 //
-//  Residue.cc
+//  Residue.h
 //
 //  Official C++ client library for Residue logging server
 //
-//  Copyright © 2017 Muflihun Labs. All rights reserved.
+//  Copyright (C) 2017 Muflihun Labs
 //
 //  https://muflihun.com
 //  https://muflihun.github.io/residue
-//  https://github.com/muflihun
+//  https://github.com/muflihun/residue-cpp
+//
+//  See https://github.com/muflihun/residue-cpp/blob/master/LICENSE
+//  for licensing information
 //
 
 #include <ctime>
@@ -559,6 +562,7 @@ void Residue::reset()
                                                 m_tokenPort = j["token_port"].get<int>();
                                                 m_maxBulkSize = j["max_bulk_size"].get<unsigned int>();
                                                 m_serverFlags = j["flags"].get<unsigned int>();
+                                                m_licensee = j["licensee"].get<std::string>();
 
                                                 // Token server
                                                 s_tokenClient = std::unique_ptr<ResidueClient>(new ResidueClient(m_host, std::to_string(m_tokenPort)));
@@ -784,7 +788,7 @@ std::string Residue::requestToJson(RequestTuple&& request)
         j["app"] = m_applicationId;
     }
 
-    if (hasFlag(Flag::CHECK_TOKENS)) {
+    if (hasFlag(Flag::REQUIRES_TOKEN)) {
         std::string token = getToken(loggerId);
         if (token.empty()) {
             obtainToken(loggerId);

@@ -3,11 +3,14 @@
 //
 //  Official C++ client library for Residue logging server
 //
-//  Copyright © 2017 Muflihun Labs. All rights reserved.
+//  Copyright (C) 2017 Muflihun Labs
 //
 //  https://muflihun.com
 //  https://muflihun.github.io/residue
-//  https://github.com/muflihun
+//  https://github.com/muflihun/residue-cpp
+//
+//  See https://github.com/muflihun/residue-cpp/blob/master/LICENSE
+//  for licensing information
 //
 
 #ifndef Residue_h
@@ -55,7 +58,7 @@ public:
     enum Flag : unsigned int {
         NONE = 0,
         ALLOW_UNKNOWN_LOGGERS = 1,
-        CHECK_TOKENS = 2,
+        REQUIRES_TOKEN = 2,
         ALLOW_DEFAULT_ACCESS_CODE = 4,
         ALLOW_PLAIN_LOG_REQUEST = 8,
         ALLOW_BULK_LOG_REQUEST = 16,
@@ -594,6 +597,11 @@ public:
         return seconds;
     }
 
+    inline std::string licensee() const noexcept
+    {
+        return m_licensee;
+    }
+
 private:
 
     // defs and structs
@@ -672,6 +680,7 @@ private:
     std::size_t m_keySize;
     std::string m_clientId;
     std::string m_key;
+    std::string m_licensee;
     std::string m_serverPublicKey;
     unsigned int m_age;
     unsigned long m_dateCreated;
