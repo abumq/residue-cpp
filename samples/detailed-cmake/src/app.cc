@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
+    // Residue::enablePlainRequest();
     // THIS IS OPTIONAL IF YOU WANT TO READ VERBOSE LOG LEVEL (i.e, -v)
     // SEE https://github.com/muflihun/easyloggingpp#verbose-logging
     Residue::setApplicationArgs(argc, argv);
@@ -241,20 +242,22 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
-    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::info);
+    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::debug);
 
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
     // log dispatcher and installs it's own dispatcher. If you want to know more about this technique
     // see https://github.com/muflihun/easyloggingpp#log-dispatch-callback
-    LOG(INFO) << "Test";
+    LOG(INFO) << "Test info";
+    LOG(DEBUG) << "Test debug";
+    LOG(ERROR) << "Test error";
     VLOG(1) << "Verbose log level-1";
 
     // using default logger - note we did not provide any access code for it
     CLOG(INFO, "default") << "Test using default logger";
     CLOG(INFO, "sample-app-unknown-logger") << "Test using unknown logger";
 
-#if 0 // more logging
+#if 1 // more logging
     // You can reconnect whenever you like
     // Residue::reconnect();
 
