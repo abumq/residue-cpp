@@ -1,4 +1,4 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 # Residue C++ Client
 Official C++ client library with feature-rich API to interact with residue seamlessly. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) to interact and take input from the user. Easylogging++ is highly efficient, well-tested library.
