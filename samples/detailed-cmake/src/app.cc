@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 #else
 
     // review the privateKeyFile location (try running this sample from root)
-    std::string keyBase = "/Users/majid.khan/Projects/residue/tools/netcat-client/";
+    std::string keyBase = "/Users/mkhan/Projects/residue/tools/netcat-client/";
 
     // Manually set configurations via API
 #   if 1 // enable known client

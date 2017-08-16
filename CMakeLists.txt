@@ -45,7 +45,7 @@ include_directories (${RIPE_INCLUDE_DIR})
 
 message ("-- Check for Boost System (static)")
 ## We always use static linking for boost stuffs
-set (Boost_USE_STATIC_LIBS OFF) ## TODO: Fix this and turn it ON
+set (Boost_USE_STATIC_LIBS ON) ## TODO: Fix this and turn it ON
 find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})
