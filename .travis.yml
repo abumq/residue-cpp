@@ -103,24 +103,41 @@ install:
  - sudo make install
 
 ## Crypto++ (We dont need this for residue, we need it for ripe)
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
- - tar xf cryptocpp.tar.gz
- - cd cryptopp-CRYPTOPP_5_6_5
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
- - unzip pem_pack.zip
- - cmake .
- - make
- - sudo make install
+# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+# - tar xf cryptocpp.tar.gz
+# - cd cryptopp-CRYPTOPP_5_6_5
+# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+# - unzip pem_pack.zip
+# - cmake .
+# - make
+# - sudo make install
 
 ## Ripe
- - RIPE_VERSION=3.3.0
- - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/v$RIPE_VERSION.zip
- - unzip ripe-code.zip
- - cd ripe-$RIPE_VERSION
- - cmake .
- - make
+# - RIPE_VERSION=3.3.0
+# - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/v$RIPE_VERSION.zip
+# - unzip ripe-code.zip
+# - cd ripe-$RIPE_VERSION
+# - cmake .
+# - make
+# - ls -l
+# - sudo make install
+
+## Ripe Binaries
+ - wget -O ripe-bin.zip https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.zip
+ - unzip ripe-bin.zip
+# - tar xfz ripe-bin.tar.gz
+# - cd ripe-4.0.0-x86_64-linux
  - ls -l
- - sudo make install
+ - sudo cp libripe* /usr/lib/
+ - sudo cp ripe* /usr/bin/
+ - wget https://github.com/muflihun/ripe/releases/download/v4.0.0/Ripe.h
+ - sudo cp Ripe.h /usr/include/
+
+## Set env variable for ripe
+ - echo $LD_LIBRARY_PATH
+ - export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
+ - export RIPE="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH ripe"
+ - $RIPE --version
 
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
@@ -129,7 +146,7 @@ install:
  - cmake -Dtest=OFF -Dtravis=ON ..
  - sudo make VERBOSE=1
  - sudo make install
- - cmake -Dtest=ON -Dtravis=ON ..
+ - cmake -Dtest=ON -Dtravis=ON  -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
 
 script: "sudo make VERBOSE=1 && ./residue-cpp-unit-tests"
 branches:
