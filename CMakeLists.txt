@@ -6,7 +6,6 @@ option (test "Builds all tests" ON)
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
-option (static_ripe "Prefer static ripe library" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
@@ -40,7 +39,7 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-set (Ripe_USE_STATIC_LIBS ${static_ripe})
+set (Ripe_USE_STATIC_LIBS OFF)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
 
