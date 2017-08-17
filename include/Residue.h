@@ -622,7 +622,7 @@ private:
     struct Token
     {
         std::string token;
-        int life;
+        unsigned int life;
         unsigned long dateCreated;
     };
 
