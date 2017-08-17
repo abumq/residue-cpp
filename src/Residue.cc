@@ -929,7 +929,7 @@ bool Residue::hasToken(const std::string& loggerId) const noexcept
     if (available) {
         // Check validity
         Token t = m_tokens.at(loggerId);
-        if (t.life != 0) {
+        if (t.life != 0U) {
             unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
             if (now - t.dateCreated > t.life) {
                 available = false;
@@ -998,7 +998,7 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
                             addError(j["error_text"].get<std::string>());
                         } else {
                             unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-                            Token t { j["token"].get<std::string>(), j["life"].get<int>(), now };
+                            Token t { j["token"].get<std::string>(), j["life"].get<unsigned int>(), now };
                             RESIDUE_LOCK_LOG("obtainToken");
                             std::lock_guard<std::recursive_mutex> lock(m_mutex);
                             if (m_tokens.find(loggerId) != m_tokens.end()) {
