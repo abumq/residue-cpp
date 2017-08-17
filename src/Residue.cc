@@ -300,7 +300,7 @@ void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
             reslog(reslog::error) << "Unable to create time. Using second method to send local time instead.";
             now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
         }
-        m_residue->addToQueue(std::make_tuple(now,
+        m_residue->addToQueue(std::move(std::make_tuple(now,
                                               el::Helpers::getThreadName(),
                                               m_data->logMessage()->logger()->id(),
                                               m_data->logMessage()->message(),
@@ -309,7 +309,7 @@ void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
                                               m_data->logMessage()->func(),
                                               static_cast<unsigned int>(m_data->logMessage()->level()),
                                               m_data->logMessage()->verboseLevel()
-                                              )
+                                              ))
                               );
     }
 }
