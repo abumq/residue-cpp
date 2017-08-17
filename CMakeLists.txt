@@ -45,8 +45,6 @@ find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
 set (Ripe_USE_STATIC_LIBS ${static_ripe})
-unset(RIPE_INCLUDE_DIR CACHE)
-unset(RIPE_LIBRARY CACHE)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
 
