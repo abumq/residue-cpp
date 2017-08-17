@@ -30,8 +30,7 @@ include (FindPackageHandleStandardArgs)
 require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -g ")
-
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror ")
 
 if (travis)
     message ("-- Building on travis")
