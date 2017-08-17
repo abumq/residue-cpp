@@ -38,6 +38,7 @@ if (travis)
 else()
     set (static_boost ON)
 endif()
+set (static_boost OFF)
 
 message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
