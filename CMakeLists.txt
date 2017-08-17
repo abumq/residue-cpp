@@ -6,6 +6,7 @@ option (test "Builds all tests" ON)
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
+option (static_ripe "Prefer static ripe library" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
@@ -39,13 +40,18 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-set (Ripe_USE_STATIC_LIBS OFF)
+set (Ripe_USE_STATIC_LIBS ${static_ripe})
+unset(RIPE_INCLUDE_DIR CACHE)
+unset(RIPE_LIBRARY CACHE)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
 
 message ("-- Check for Boost System (static)")
 ## We always use static linking for boost stuffs
-set (Boost_USE_STATIC_LIBS OFF) ## TODO: Fix this and turn it ON
+## Note this does not work when residue library is being build statically
+set (Boost_USE_STATIC_LIBS ON)
+unset(Boost_INCLUDE_DIR CACHE)
+unset(Boost_LIBRARY_DIRS CACHE)
 find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})
