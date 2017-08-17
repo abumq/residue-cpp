@@ -7,7 +7,7 @@ option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
 option (static_ripe "Prefer static ripe library" OFF)
-option (BUILD_SHARED_LIBS "build shared libraries" ON)
+option (BUILD_SHARED_LIBS "build shared libraries" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")

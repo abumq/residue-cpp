@@ -25,6 +25,8 @@ void displayErrors()
 
 int main(int argc, char* argv[]) {
 
+    std::cout << Residue::info() << std::endl;
+
 #if 0 // minimal sample with unknown logger
     try {
         Residue::connect("localhost", Residue::DEFAULT_PORT);
