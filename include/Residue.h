@@ -130,7 +130,7 @@ public:
 
     Residue(Residue&&) = delete;
     Residue(const Residue&) = delete;
-    void operator=(const Residue&) = delete;
+    Residue& operator=(const Residue&) = delete;
 
     ///
     /// \brief Version of Residue library

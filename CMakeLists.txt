@@ -32,8 +32,12 @@ check_apple()
 
 list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -g ")
 
+
 if (travis)
     message ("-- Building on travis")
+    set (static_boost OFF)
+else()
+    set (static_boost ON)
 endif()
 
 message ("-- Check for Easylogging++")
@@ -49,7 +53,7 @@ include_directories (${RIPE_INCLUDE_DIR})
 message ("-- Check for Boost System (static)")
 ## We always use static linking for boost stuffs
 ## Note this does not work when residue library is being build statically
-set (Boost_USE_STATIC_LIBS ON)
+set (Boost_USE_STATIC_LIBS ${static_boost})
 unset(Boost_INCLUDE_DIR CACHE)
 unset(Boost_LIBRARY_DIRS CACHE)
 find_package (Boost REQUIRED COMPONENTS system)
