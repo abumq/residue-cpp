@@ -1,10 +1,5 @@
 # Change Log
 
-## [Unreleased]
-### Updates
-- Enable static boost linking by default
-- Report all compiler warnings as errors
-
 ## [1.0.0-beta.16] - 13-08-2017
 ### Updates
 - Updated to match same configuration name
