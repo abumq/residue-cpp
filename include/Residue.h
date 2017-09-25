@@ -39,6 +39,7 @@ public:
     /// \brief Main constructor
     ///
     ResidueException(const std::string& msg) : runtime_error(msg) {}
+    virtual ~ResidueException() = default;
 };
 
 ///
@@ -130,7 +131,7 @@ public:
 
     Residue(Residue&&) = delete;
     Residue(const Residue&) = delete;
-    void operator=(const Residue&) = delete;
+    Residue& operator=(const Residue&) = delete;
 
     ///
     /// \brief Version of Residue library
@@ -621,7 +622,7 @@ private:
     struct Token
     {
         std::string token;
-        int life;
+        unsigned int life;
         unsigned long dateCreated;
     };
 

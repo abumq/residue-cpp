@@ -5,32 +5,7 @@ Official C++ client library with feature-rich API to interact with residue seaml
 
 It is developed separately because of different license
 
-[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/master.svg)](https://travis-ci.org/muflihun/residue-cpp) (`master`)
-
-[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) (`develop`)
-
-[![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest)
-
-[![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue)
-
-[![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue-cpp/blob/master/LICENCE)
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
-
-## Build Matrix
-
-| Branch | Platform | Build Status |
-| -------- |:------------:|:------------:|
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/1)](https://travis-ci.org/muflihun/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/2)](https://travis-ci.org/muflihun/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/3)](https://travis-ci.org/muflihun/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com`/repos/muflihun/residue-cpp/`branches/develop/4)](https://travis-ci.org/muflihun/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/5)](https://travis-ci.org/muflihun/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/1)](https://travis-ci.org/muflihun/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/2)](https://travis-ci.org/muflihun/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/3)](https://travis-ci.org/muflihun/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/4)](https://travis-ci.org/muflihun/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/5)](https://travis-ci.org/muflihun/residue-cpp) |
+[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/master.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue-cpp/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 ## Getting Started
 This library is based on single source file. It automatically includes `<easylogging++.h>` header and expect it to be available on developer's system. Please refer to [documentation page](https://muflihun.github.io/residue/docs/class_residue.html) to check the API.
@@ -42,7 +17,7 @@ This section shows you steps to install residue C++ client on your machine.
 
 ## Dependencies
   * C++11 (or higher)
-  * [Ripe](https://github.com/muflihun/ripe) v3.3.0
+  * [Ripe](https://github.com/muflihun/ripe) v4.4.0
   * Boost v1.59 or higher [Components: system]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
   * [CMake Toolchains](https://cmake.org/) v2.8.12
@@ -143,6 +118,21 @@ ar -qc libresidue_full.a *.o
 This will essentially join all the object files from both the libraries (no name overlaps).
 
 You then link with this library and ripe (dynamic) library using options `-lresidue_full -lripe`
+
+## Build Matrix
+
+| Branch | Platform | Build Status |
+| -------- |:------------:|:------------:|
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/1)](https://travis-ci.org/muflihun/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/2)](https://travis-ci.org/muflihun/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/3)](https://travis-ci.org/muflihun/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com`/repos/muflihun/residue-cpp/`branches/develop/4)](https://travis-ci.org/muflihun/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/develop/5)](https://travis-ci.org/muflihun/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/1)](https://travis-ci.org/muflihun/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/2)](https://travis-ci.org/muflihun/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/3)](https://travis-ci.org/muflihun/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/4)](https://travis-ci.org/muflihun/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue-cpp/branches/master/5)](https://travis-ci.org/muflihun/residue-cpp) |
 
 ## License
 

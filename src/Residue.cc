@@ -275,7 +275,6 @@ private:
     Residue* m_residue;
     const el::LogDispatchData* m_data;
     std::string m_host;
-    int m_port;
 };
 
 void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
@@ -302,16 +301,15 @@ void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
             now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
         }
         m_residue->addToQueue(std::move(std::make_tuple(now,
-                                                        el::Helpers::getThreadName(),
-                                                        m_data->logMessage()->logger()->id(),
-                                                        m_data->logMessage()->message(),
-                                                        m_data->logMessage()->file(),
-                                                        m_data->logMessage()->line(),
-                                                        m_data->logMessage()->func(),
-                                                        static_cast<unsigned int>(m_data->logMessage()->level()),
-                                                        m_data->logMessage()->verboseLevel()
-                                                        )
-                                        )
+                                              el::Helpers::getThreadName(),
+                                              m_data->logMessage()->logger()->id(),
+                                              m_data->logMessage()->message(),
+                                              m_data->logMessage()->file(),
+                                              m_data->logMessage()->line(),
+                                              m_data->logMessage()->func(),
+                                              static_cast<unsigned int>(m_data->logMessage()->level()),
+                                              m_data->logMessage()->verboseLevel()
+                                              ))
                               );
     }
 }
@@ -328,6 +326,9 @@ void residueCrashHandler(int sig) noexcept
 }
 
 Residue::Residue() noexcept :
+#ifdef RESIDUE_PROFILING
+    queue_ms(0), dispatch_ms(0), c_total(0),
+#endif
     m_host(""),
     m_port(0),
     m_accessCodeMap(nullptr),
@@ -338,22 +339,19 @@ Residue::Residue() noexcept :
     m_bulkSize(1),
     m_maxBulkSize(1),
     m_plainRequest(false),
+    m_keySize(DEFAULT_KEY_SIZE),
     m_age(0),
     m_dateCreated(0),
     m_loggingPort(0),
     m_tokenPort(0),
     m_serverFlags(0x0),
-    m_running(false),
-    m_knownClient(false),
-    m_keySize(DEFAULT_KEY_SIZE),
-#ifdef RESIDUE_PROFILING
-    queue_ms(0), dispatch_ms(0), c_total(0),
-#endif
     m_utc(false),
     m_timeOffset(0),
     m_dispatchDelay(1),
+    m_dispatcher(nullptr),
+    m_running(false),
     m_autoBulkParams(true),
-    m_dispatcher(nullptr)
+    m_knownClient(false)
 {
     reslog(reslog::debug) << "Initialized residue!";
 }
@@ -655,7 +653,7 @@ void Residue::addToQueue(RequestTuple&& request) noexcept
 
 #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_queue, queue_dura);
-    ResidueLogger(ResidueLogger::debug) << queue_dura << "ms taken to add to queue";
+    reslog(reslog::debug) << queue_dura << "ms taken to add to queue";
     queue_ms += queue_dura;
 #endif
 }
@@ -759,13 +757,13 @@ void Residue::dispatch()
         RESIDUE_PROFILE_END(t_while, while_loop);
         c_in_while++;
         RESIDUE_PROFILE_CHECKPOINT(t_dispatch, total_duration_dispatch, 4);
-        ResidueLogger(ResidueLogger::debug) << "While: " << while_loop << " ms For: " << for_loop << " ms Prepare: " << prepare_data << " ms send_recv " << send_recv << "ms \n";
+        reslog(reslog::debug) << "While: " << while_loop << " ms For: " << for_loop << " ms Prepare: " << prepare_data << " ms send_recv " << send_recv << "ms \n";
 #endif
     }
 
 #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_dispatch, total_duration_dispatch);
-    ResidueLogger(ResidueLogger::debug) << total_duration_dispatch << " ms taken for dispatching " << c << " items with " << c_in_while << " each loop\n";
+    reslog(reslog::debug) << total_duration_dispatch << " ms taken for dispatching " << c << " items with " << c_in_while << " each loop\n";
 
     dispatch_ms += total_duration_dispatch;
 #endif
@@ -931,7 +929,7 @@ bool Residue::hasToken(const std::string& loggerId) const noexcept
     if (available) {
         // Check validity
         Token t = m_tokens.at(loggerId);
-        if (t.life != 0) {
+        if (t.life != 0U) {
             unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
             if (now - t.dateCreated > t.life) {
                 available = false;
@@ -1000,7 +998,7 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
                             addError(j["error_text"].get<std::string>());
                         } else {
                             unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-                            Token t { j["token"].get<std::string>(), j["life"].get<int>(), now };
+                            Token t { j["token"].get<std::string>(), j["life"].get<unsigned int>(), now };
                             RESIDUE_LOCK_LOG("obtainToken");
                             std::lock_guard<std::recursive_mutex> lock(m_mutex);
                             if (m_tokens.find(loggerId) != m_tokens.end()) {

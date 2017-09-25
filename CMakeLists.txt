@@ -11,7 +11,7 @@ option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.16")
+set (RESIDUE_PATCH "0-beta.17")
 
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue-C++")
@@ -30,10 +30,15 @@ include (FindPackageHandleStandardArgs)
 require_cpp11()
 check_apple()
 
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
+
 if (travis)
+    message ("-- Building on travis")
+    set (static_boost OFF)
 else()
-    list (APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
+    set (static_boost ON)
 endif()
+set (static_boost OFF)
 
 message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
@@ -45,7 +50,10 @@ include_directories (${RIPE_INCLUDE_DIR})
 
 message ("-- Check for Boost System (static)")
 ## We always use static linking for boost stuffs
-set (Boost_USE_STATIC_LIBS OFF) ## TODO: Fix this and turn it ON
+## Note this does not work when residue library is being build statically
+set (Boost_USE_STATIC_LIBS ${static_boost})
+unset(Boost_INCLUDE_DIR CACHE)
+unset(Boost_LIBRARY_DIRS CACHE)
 find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})

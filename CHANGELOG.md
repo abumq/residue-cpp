@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.0-beta.17] - 25-09-2017
+### Updates
+- A lot of minor internal updates with data types and regression testing
+
 ## [1.0.0-beta.16] - 13-08-2017
 ### Updates
 - Updated to match same configuration name
