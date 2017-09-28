@@ -6,7 +6,6 @@ option (test "Builds all tests" ON)
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
-option (static_ripe "Prefer static ripe library" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
@@ -17,6 +16,7 @@ set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue-C++")
 
 add_definitions (-DRESIDUE_SOVERSION="${RESIDUE_SOVERSION}")
+add_definitions (-DRIPE_VERSION="4.0.1-static")
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(residue-dev)
@@ -27,10 +27,10 @@ endif()
 
 include (FindPackageHandleStandardArgs)
 
-require_cpp11()
+#require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (travis)
     message ("-- Building on travis")
@@ -44,9 +44,13 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-set (Ripe_USE_STATIC_LIBS ${static_ripe})
-find_package (Ripe REQUIRED)
-include_directories (${RIPE_INCLUDE_DIR})
+find_package(ZLIB REQUIRED)
+if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+    message ("-- libz: " ${ZLIB_LIBRARIES} " version: " ${ZLIB_VERSION_STRING})
+else()
+    message ("--==> libz not found")
+endif(ZLIB_FOUND)
 
 message ("-- Check for Boost System (static)")
 ## We always use static linking for boost stuffs
@@ -58,13 +62,18 @@ find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})
 
+# Check for cryptopp (static)
+set(CryptoPP_USE_STATIC_LIBS ON)
+find_package(CryptoPP REQUIRED)
+message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
+include_directories (${CRYPTOPP_INCLUDE_DIRS})
+
 thread_packages_check()
 
 ############# RESIDUE CLIENT LIB ###############
 
 set(LIB_RESIDUE_SOURCE_FILES
-    include/Residue.h
-    include/log.h
+    include/Ripe.cc
     src/Residue.cc
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
@@ -76,7 +85,8 @@ set_target_properties (residue-lib PROPERTIES
 )
 target_link_libraries (residue-lib
     ${Boost_LIBRARIES}
-    ${RIPE_LIBRARY}
+    ${ZLIB_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
 )
 
 target_compile_definitions (residue-lib PRIVATE
