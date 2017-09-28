@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.0] - 28-09-2017
 ### Fixes
 - Static linking of crypto libs
 
