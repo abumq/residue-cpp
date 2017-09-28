@@ -17,16 +17,17 @@ This section shows you steps to install residue C++ client on your machine.
 
 ## Dependencies
   * C++11 (or higher)
-  * [Ripe](https://github.com/muflihun/ripe) v4.4.0
-  * Boost v1.59 or higher [Components: system]
+  * Boost v1.59 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
+  * [zlib-devel](https://zlib.net/)
  
 # Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue-cpp/archive/master.zip) or clone it using `git`:
 
 ```
-git clone git@github.com:muflihun/residue.git
+git clone git@github.com:muflihun/residue-cpp.git
 ```
 
 # Build
@@ -36,6 +37,9 @@ Steps to build Residue:
 ```
 mkdir build
 cd build
+cmake -Dtest=OFF ..
+make
+sudo make install
 cmake -Dtest=ON ..
 make
 ```
@@ -46,7 +50,6 @@ You can define following options in CMake (using `-D<option>=ON`)
 | ------------ | ------------------------------- |
 | `test`       | Compile unit tests              |
 | `build_sample_app`      | Builds detailed-cmake sample           |
-| `static_ripe`      | Link `ripe` statically (default is OFF)           |
 
 Please consider running unit test before you move on
 
@@ -70,6 +73,16 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 16.04 64-bit)
 
 ```
+### Essentials
+sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
+    # sudo yum install -y cmake curl-devel zlib-devel for rpm
+    # sudo yum groupinstall 'Development Tools'
+
+## Boost System
+sudo apt-get install -y libboost-system-dev cmake
+    # or boost-devel and/or boost-static-devel for rpm
+
+### Google Testing Library
 sudo apt-get install -y libboost-system-dev cmake
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
 tar xf gtest.tar.gz
@@ -78,24 +91,25 @@ cmake -DBUILD_SHARED_LIBS=ON .
 make
 sudo cp -a include/gtest /usr/include
 sudo cp -a libgtest_main.so libgtest.so /usr/lib/
-cd ..
+
+### Easylogging++
 wget -O elpp-master.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
 unzip elpp-master.zip
 cd easyloggingpp-master
 cmake .
 make
 sudo make install
-wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
-tar xfz ripe-bin.tar.gz
-cd ripe-3.3.0-x86_64-linux
-sudo cp libripe.* /usr/lib/
-sudo cp Ripe.h /usr/include/
-sudo cp ripe /usr/bin/
+
+## Crypto++
+wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+tar xf cryptocpp.tar.gz
+cd cryptopp-CRYPTOPP_5_6_5
+wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+unzip pem_pack.zip
+cmake .
+make
+sudo make install
 ```
-
-#### RESIDUE_LIBRARY_LOCAL-NOTFOUND Error
-
-If you get error at `cmake -Dbuild_sample_app=ON ..` step complaining about `RESIDUE_LIBRARY` not found, this is because sample-client application uses this, you can turn this option off, install the library and then rebuild with this option.
 
 ### Static Library
 By default, residue builds shared library that you can link in order to connect to residue server seamlessly. You can choose to build static library instead using `build_static_lib` option in cmake
