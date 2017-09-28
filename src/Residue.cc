@@ -20,7 +20,7 @@
 #include <functional>
 #include <tuple>
 #include <boost/asio.hpp>
-#include <Ripe.h>
+#include "include/Ripe.h"
 #include "include/Residue.h"
 #include "include/json.h"
 #include "include/log.h"

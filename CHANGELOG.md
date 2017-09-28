@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.0] - 28-09-2017
+### Fixes
+- Static linking of crypto libs
+
 ## [1.0.0-beta.17] - 25-09-2017
 ### Updates
 - A lot of minor internal updates with data types and regression testing

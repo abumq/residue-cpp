@@ -12,7 +12,7 @@ include_directories (${CMAKE_SOURCE_DIR})
 include(FindPackageHandleStandardArgs)
 include(residue-dev)
 
-require_cpp11()
+#require_cpp11()
 check_apple()
 
 find_package(Residue REQUIRED)
