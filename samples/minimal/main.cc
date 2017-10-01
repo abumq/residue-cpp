@@ -7,7 +7,14 @@ int main(int argc, char** argv) {
         Residue::loadConfiguration(el::Helpers::commandLineArgs()->getParamValue("--conf"));
     }
 
-    Residue::connect();
+    try {
+        Residue::reconnect();
+    } catch (ResidueException& e) {
+        std::cout << "exception: " << e.what() << std::endl;
+        return 1;
+    }
+    
+    std::cout << "Connected to client: " << Residue::instance().clientId() << std::endl;
 
     while (true) {
         std::wstring input;
