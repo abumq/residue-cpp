@@ -12,4 +12,6 @@
     "time_offset": 0,
     "dispatch_delay": 1,
     "main_thread_id": "Main Thread",
+    "client_id": "muflihun00102030",
+    "client_private_key": "keys/muflihun00102030.pem"
 }

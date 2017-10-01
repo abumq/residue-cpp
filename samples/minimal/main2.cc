@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
         Residue::loadConfiguration(el::Helpers::commandLineArgs()->getParamValue("--conf"));
     }
 
-    Residue::connect();
+    Residue::reconnect();
 
     system("date");
     int count = 1000000;
