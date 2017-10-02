@@ -5,7 +5,7 @@ Official C++ client library with feature-rich API to interact with residue seaml
 
 It is developed separately because of different license
 
-[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/master.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue-cpp/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/master.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue/docs/annotated.html) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue-cpp/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 ## Getting Started
 This library is based on single source file. It automatically includes `<easylogging++.h>` header and expect it to be available on developer's system. Please refer to [documentation page](https://muflihun.github.io/residue/docs/class_residue.html) to check the API.
@@ -74,8 +74,8 @@ Make sure you have all the dependencies installed. You can use following script 
 
 ```
 ### Essentials
-sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
-    # sudo yum install -y cmake curl-devel zlib-devel for rpm
+sudo apt-get install -y cmake build-essential libz-dev
+    # sudo yum install -y cmake zlib-devel # for rpm
     # sudo yum groupinstall 'Development Tools'
 
 ## Boost System
@@ -130,8 +130,6 @@ ar -qc libresidue_full.a *.o
 ```
 
 This will essentially join all the object files from both the libraries (no name overlaps).
-
-You then link with this library and ripe (dynamic) library using options `-lresidue_full -lripe`
 
 ## Build Matrix
 
