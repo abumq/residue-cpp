@@ -37,6 +37,8 @@ int main(int argc, char* argv[]) {
 
     if (Residue::connected()) {
         std::cout << "Connected!" << std::endl;
+        std::cout << "Server version: " << Residue::instance().serverVersion() << std::endl;
+        std::cout << "Server licensee: " << Residue::instance().licensee() << std::endl;
     } else {
         std::cout << "Failed!" << std::endl;
         displayErrors();

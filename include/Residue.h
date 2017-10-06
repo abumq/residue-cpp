@@ -603,6 +603,11 @@ public:
         return m_licensee;
     }
 
+    inline std::string serverVersion() const noexcept
+    {
+        return m_serverVersion;
+    }
+
 private:
 
     // defs and structs
@@ -682,6 +687,7 @@ private:
     std::string m_clientId;
     std::string m_key;
     std::string m_licensee;
+    std::string m_serverVersion;
     std::string m_serverPublicKey;
     unsigned int m_age;
     unsigned long m_dateCreated;
