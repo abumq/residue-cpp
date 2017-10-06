@@ -15,6 +15,8 @@ int main(int argc, char** argv) {
     }
     
     std::cout << "Connected to client: " << Residue::instance().clientId() << std::endl;
+    std::cout << "Server version: " << Residue::instance().serverVersion() << std::endl;
+    std::cout << "Server licensee: " << Residue::instance().licensee() << std::endl;
 
     while (true) {
         std::wstring input;

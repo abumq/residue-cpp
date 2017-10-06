@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.1] - 06-10-2017
+### Changes
+- Compatibility with residue v1.2.0
+- Added `serverVersion` under `Residue::instance()`
+
 ## [1.0.0] - 28-09-2017
 ### Fixes
 - Static linking of crypto libs
