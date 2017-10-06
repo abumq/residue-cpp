@@ -1130,8 +1130,5 @@ std::string Residue::info() noexcept
 {
     std::stringstream ss;
     ss << "Residue Client Library v" << version() << " based on Easylogging++ v" << el::VersionInfo::version();
-    if (connected()) {
-
-    }
     return ss.str();
 }
