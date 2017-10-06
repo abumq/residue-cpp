@@ -64,7 +64,9 @@ SOFTWARE.
     #endif
 #elif defined(__GNUC__)
     #if (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) < 40900
+#ifndef RESIDUE_SPECIAL_EDITION
         #error "unsupported GCC version - see https://github.com/nlohmann/json#supported-compilers"
+#endif
     #endif
 #endif
 
@@ -12695,3 +12697,4 @@ inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std
 #undef JSON_DEPRECATED
 
 #endif
+

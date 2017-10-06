@@ -7,6 +7,7 @@ option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
+option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
@@ -25,12 +26,16 @@ if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
 endif()
 
+if (special_edition)
+    add_definitions (-DRESIDUE_SPECIAL_EDITION)
+endif()
+
 include (FindPackageHandleStandardArgs)
 
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (travis)
     message ("-- Building on travis")
@@ -52,7 +57,7 @@ else()
     message ("--==> libz not found")
 endif(ZLIB_FOUND)
 
-message ("-- Check for Boost System (static)")
+message ("-- Check for Boost System (dynamic)")
 ## We always use static linking for boost stuffs
 ## Note this does not work when residue library is being build statically
 set (Boost_USE_STATIC_LIBS ${static_boost})

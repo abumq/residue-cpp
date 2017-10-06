@@ -7,13 +7,23 @@ if [ "$CURR_DIR" != "build" ];then
 	exit;
 fi
 
+STRIP=strip
 TYPE=$1
 VERSION=$2
+
+if [ "$SHASUM" = "" ];then
+    export SHASUM="shasum"
+fi
 
 if [ "$TYPE" = "" ] || [ "$VERSION" = "" ];then
 	echo "Usage: $0 <type> version>"
 	echo "  example: $0 darwin 1.0.0"
 	exit;
+fi
+
+if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
+    echo "Error: Optimization not reset"
+    exit;
 fi
 
 PACK=libresidue-$VERSION-x86_64-$TYPE
@@ -31,10 +41,12 @@ echo "Creating $PACK.tar.gz ..."
 mkdir $PACK
 cp libresidue.so $PACK/libresidue.so
 cp libresidue.dylib $PACK/libresidue.dylib
+#$STRIP $PACK/libresidue.dylib
+#$STRIP $PACK/libresidue.so
 
 ls -lh $PACK
 
 tar cfz $PACK.tar.gz $PACK
 rm -rf $PACK
-shasum $PACK.tar.gz
+$SHASUM $PACK.tar.gz
 echo `pwd`/$PACK.tar.gz
