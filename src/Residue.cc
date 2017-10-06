@@ -1129,6 +1129,6 @@ std::string Residue::version() noexcept
 std::string Residue::info() noexcept
 {
     std::stringstream ss;
-    ss << "Residue Client Library v" << version() << " based on Easylogging++ v" << el::VersionInfo::version();
+    ss << "Residue C++ client library v" << version() << " (based on Easylogging++ v" << el::VersionInfo::version() << ")";
     return ss.str();
 }
