@@ -1,5 +1,5 @@
 {
-    "url": "residue-demo.muflihun.com:8777",
+    "url": "localhost:8777",
     "access_codes": [
         {
             "logger_id": "sample-app",

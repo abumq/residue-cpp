@@ -3,7 +3,9 @@
 //
 //  Official C++ client library for Residue logging server
 //
-//  Copyright (C) 2017 Muflihun Labs
+//  Copyright (C) 2017-present Muflihun Labs
+//
+//  Author: @abumusamq
 //
 //  https://muflihun.com
 //  https://muflihun.github.io/residue
