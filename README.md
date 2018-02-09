@@ -17,7 +17,7 @@ This section shows you steps to install residue C++ client on your machine.
 
 ## Dependencies
   * C++11 (or higher)
-  * Boost v1.59 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
+  * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
@@ -149,7 +149,7 @@ This will essentially join all the object files from both the libraries (no name
 ## License
 
 ```
-Copyright 2017 Muflihun Labs
+Copyright 2017-present Muflihun Labs
 
 https://github.com/muflihun/
 https://muflihun.github.io
