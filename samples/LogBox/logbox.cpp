@@ -48,7 +48,13 @@ void LogBox::on_pushButton_3_clicked()
         ui->pushButton_3->setEnabled(false);
         ui->pushButton_4->setEnabled(false);
         qApp->processEvents();
-        Residue::loadConfiguration(ui->lineEdit->text().toStdString());
+        try {
+
+            Residue::loadConfiguration(ui->lineEdit->text().toStdString());
+        } catch (const std::exception& e) {
+            ui->label->setText("Status: Config error: " + QString::fromStdString(e.what()));
+        }
+
         Residue::reconnect();
     } catch (const ResidueException& e) {
         QMessageBox m(QMessageBox::Critical, "Error", QString::fromStdString(std::string(e.what())));

@@ -34,13 +34,13 @@ find_path(RESIDUE_INCLUDE_DIR_LOCAL
 if (Residue_USE_STATIC_LIBS)
     message ("-- Residue: Static linking is preferred")
     find_library(RESIDUE_LIBRARY_LOCAL
-        NAMES libresidue.a libresidue.a libresidue residue
+        NAMES libresidue-static.a libresidue.a libresidue residue
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 else()
     message ("-- Residue: Dynamic linking is preferred")
     find_library(RESIDUE_LIBRARY_LOCAL
-        NAMES libresidue.dylib libresidue residue libresidue.a libresidue.a
+        NAMES libresidue.dylib libresidue residue libresidue-static.a libresidue.a
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 endif()
