@@ -598,11 +598,6 @@ public:
         return seconds;
     }
 
-    inline std::string licensee() const noexcept
-    {
-        return m_licensee;
-    }
-
     inline std::string serverVersion() const noexcept
     {
         return m_serverVersion;
@@ -686,7 +681,6 @@ private:
     std::size_t m_keySize;
     std::string m_clientId;
     std::string m_key;
-    std::string m_licensee;
     std::string m_serverVersion;
     std::string m_serverPublicKey;
     unsigned int m_age;

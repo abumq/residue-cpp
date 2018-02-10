@@ -1,8 +1,12 @@
 # Change Log
 
 ## [1.0.2]
+### Updates
 - License information update
-- Ripe updated to 4.1.1
+- Ripe upgraded to 4.1.1
+
+### Fixes
+- Fix licensee crash issue
 
 ## [1.0.1] - 06-10-2017
 ### Changes
