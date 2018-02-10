@@ -7,6 +7,6 @@
 #define ELPP_DEFAULT_LOGGER "sample-app"
 #define ELPP_DEFAULT_PERFORMANCE_LOGGER "sample-app"
 
-#include "../../include/Residue.h"
+#include <Residue.h>
 
 #endif // LOG_H
