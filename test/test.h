@@ -1,8 +1,18 @@
 //
-//  test.h
-//  Residue
+//  Residue.h
 //
-//  Copyright © 2017 Muflihun Labs
+//  Official C++ client library for Residue logging server
+//
+//  Copyright (C) 2017-present Muflihun Labs
+//
+//  Author: @abumusamq
+//
+//  https://muflihun.com
+//  https://muflihun.github.io/residue
+//  https://github.com/muflihun/residue-cpp
+//
+//  See https://github.com/muflihun/residue-cpp/blob/master/LICENSE
+//  for licensing information
 //
 
 #ifndef TEST_HELPERS_H_
@@ -14,13 +24,7 @@
 #include <easylogging++.h>
 #include <gtest/gtest.h>
 
-template <typename... T>
-using TestData = const std::vector<std::tuple<T...>>;
-
-template <typename... T>
-std::tuple<T...> TestCase(T... f) {
-    return std::make_tuple(f...);
-}
+#include "testx.h"
 
 #define PARAM(v) std::get<v>(item)
 

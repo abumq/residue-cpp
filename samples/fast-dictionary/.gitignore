@@ -1,5 +1,8 @@
 logs/*
+fast-dictionary.pro.user*
 fast-dictionary
 *.o
 moc_*
 ui_*
+build-*
+

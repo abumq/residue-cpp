@@ -1,7 +1,8 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.2]
 - License information update
+- Ripe updated to 4.1.1
 
 ## [1.0.1] - 06-10-2017
 ### Changes
