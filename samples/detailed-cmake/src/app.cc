@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 
 #if 1 // minimal sample with unknown logger
     try {
-        Residue::connect("localhost", Residue::DEFAULT_PORT);
+        Residue::connect("residue-server", Residue::DEFAULT_PORT);
     } catch (const ResidueException& e) {
         std::cout << "EXCEPTION: " << e.what() << std::endl;
         return 1;

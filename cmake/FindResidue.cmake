@@ -31,8 +31,8 @@ find_path(RESIDUE_INCLUDE_DIR_LOCAL
     PATHS ${RESIDUE_PATHS}
 )
 
-set (RESIDUE_ZLIB_LIBRARIES "")
-set (RESIDUE_ZLIB_INCLUDE_DIRS "")
+set (RESIDUE_EXTRA_LIBRARIES "")
+set (RESIDUE_EXTRA_INCLUDE_DIRS "")
 
 if (Residue_USE_STATIC_LIBS)
     message ("-- Residue: Static linking")
@@ -42,29 +42,40 @@ if (Residue_USE_STATIC_LIBS)
     )
     find_package(ZLIB REQUIRED)
     if (ZLIB_FOUND)
-        include_directories(${ZLIB_INCLUDE_DIRS})
         message ("-- Residue: libz: " ${ZLIB_LIBRARIES} " version: " ${ZLIB_VERSION_STRING})
-        set (RESIDUE_ZLIB_LIBRARIES ${ZLIB_LIBRARIES})
-        set (RESIDUE_ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+        set (RESIDUE_EXTRA_LIBRARIES ${ZLIB_LIBRARIES})
+        set (RESIDUE_EXTRA_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
     else()
         message ("Residue: zlib not found which is required with static linking")
     endif(ZLIB_FOUND)
+    ## pthreads required by boost static objects
+    find_package(Threads REQUIRED)
+    set (RESIDUE_EXTRA_LIBRARIES ${RESIDUE_EXTRA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 else()
     message ("-- Residue: Dynamic linking")
     find_library(RESIDUE_LIBRARY_LOCAL
         NAMES libresidue.dylib libresidue.so libresidue residue
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
+    set (Boost_USE_STATIC_LIBS ON)
+    find_package (Boost REQUIRED COMPONENTS system)
+    if (Boost_FOUND)
+        message ("-- Residue: libboost: " ${Boost_LIBRARIES})
+        set (RESIDUE_EXTRA_LIBRARIES ${Boost_LIBRARIES})
+        set (RESIDUE_EXTRA_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
+    else()
+        message ("Residue: boost-system not found which is required with dynamic linking")
+    endif(Boost_FOUND)
 endif()
 
 set (RESIDUE_INCLUDE_DIR
-    ${RESIDUE_ZLIB_INCLUDE_DIRS}
+    ${RESIDUE_EXTRA_INCLUDE_DIRS}
     ${EASYLOGGINGPP_INCLUDE_DIR}
     ${RESIDUE_INCLUDE_DIR_LOCAL}
 )
 set (RESIDUE_LIBRARY 
     ${RESIDUE_LIBRARY_LOCAL}
-    ${RESIDUE_ZLIB_LIBRARIES}
+    ${RESIDUE_EXTRA_LIBRARIES}
 )
 
 message ("-- Residue: Include: " ${RESIDUE_INCLUDE_DIR} ", Binary: " ${RESIDUE_LIBRARY})
