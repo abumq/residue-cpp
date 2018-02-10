@@ -10,7 +10,7 @@ LogBox::LogBox(QWidget *parent) :
     ui->setupUi(this);
 
     ui->lblVersion->setText(QString::fromStdString(Residue::info()));
-    ui->lineEdit->setText("~/Projects/residue-cpp/samples/client.conf.json");
+    ui->lineEdit->setText("~/Dev/residue-cpp/samples/client.conf.json");
 
     updateStatus();
 }

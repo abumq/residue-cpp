@@ -1,6 +1,6 @@
 build
 CMakeLists.txt.user*
 CMakeFiles
-fast-dictionary.pro.user*
 samples/build-*
-samples/fast-dictionary/fast-dictionary.pro.user
+samples/fast-dictionary/fast-dictionary.pro.user*
+samples/LogBox/LogBox.pro.user*

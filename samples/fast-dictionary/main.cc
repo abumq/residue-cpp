@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         }
     };
 
-    Residue::connect("residue-demo.muflihun.com", Residue::DEFAULT_PORT, &accessCodes);
+    Residue::connect("localhost", Residue::DEFAULT_PORT, &accessCodes);
 
     // Following 2 lines are optional for information. We will display them using
     // %app and %thread_name format specifiers
