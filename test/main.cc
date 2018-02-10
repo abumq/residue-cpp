@@ -1,12 +1,22 @@
 //
-//  main.cc
-//  Residue C++ Client Tests
+//  Residue.h
 //
-//  Copyright © 2017 Muflihun Labs
+//  Official C++ client library for Residue logging server
+//
+//  Copyright (C) 2017-present Muflihun Labs
+//
+//  Author: @abumusamq
+//
+//  https://muflihun.com
+//  https://muflihun.github.io/residue
+//  https://github.com/muflihun/residue-cpp
+//
+//  See https://github.com/muflihun/residue-cpp/blob/master/LICENSE
+//  for licensing information
 //
 
 #include "test.h"
-#include <Residue.h>
+#include "../include/Residue.h"
 
 INITIALIZE_EASYLOGGINGPP
 

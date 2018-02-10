@@ -11,13 +11,13 @@ option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "1")
+set (RESIDUE_PATCH "2")
 
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue-C++")
 
 add_definitions (-DRESIDUE_SOVERSION="${RESIDUE_SOVERSION}")
-add_definitions (-DRIPE_VERSION="4.0.1-static")
+add_definitions (-DRIPE_VERSION="4.1.1-static")
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(residue-dev)
