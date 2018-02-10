@@ -22,10 +22,10 @@
 #include <functional>
 #include <tuple>
 #include <boost/asio.hpp>
-#include "include/Residue.h"
-#include "include/Ripe.h"
-#include "include/json.h"
-#include "include/log.h"
+#include "include/residue/Residue.h"
+#include "include/residue/Ripe.h"
+#include "include/residue/json.h"
+#include "include/residue/log.h"
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -562,7 +562,6 @@ void Residue::reset()
                                                 m_tokenPort = j["token_port"].get<int>();
                                                 m_maxBulkSize = j["max_bulk_size"].get<unsigned int>();
                                                 m_serverFlags = j["flags"].get<unsigned int>();
-                                                m_licensee = j["server_info"]["licensee"].get<std::string>();
                                                 m_serverVersion = j["server_info"]["version"].get<std::string>();
 
                                                 // Token server
