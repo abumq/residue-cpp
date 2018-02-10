@@ -48,6 +48,9 @@ if (Residue_USE_STATIC_LIBS)
     else()
         message ("Residue: zlib not found which is required with static linking")
     endif(ZLIB_FOUND)
+    ## pthreads required by boost static objects
+    find_package(Threads REQUIRED)
+    set (RESIDUE_EXTRA_LIBRARIES ${RESIDUE_EXTRA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 else()
     message ("-- Residue: Dynamic linking")
     find_library(RESIDUE_LIBRARY_LOCAL
