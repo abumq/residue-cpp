@@ -4,19 +4,23 @@ int main(int argc, char** argv) {
     Residue::setApplicationArgs(argc, argv);
 
     if (el::Helpers::commandLineArgs()->hasParamWithValue("--conf")) {
-        Residue::loadConfiguration(el::Helpers::commandLineArgs()->getParamValue("--conf"));
+        try {
+            Residue::loadConfiguration(el::Helpers::commandLineArgs()->getParamValue("--conf"));
+        } catch (ResidueException& e) {
+            std::cout << "Exception (config): " << e.what() << std::endl;
+            return 1;
+        }
     }
 
     try {
         Residue::reconnect();
     } catch (ResidueException& e) {
-        std::cout << "exception: " << e.what() << std::endl;
+        std::cout << "Exception: " << e.what() << std::endl;
         return 1;
     }
     
     std::cout << "Connected to client: " << Residue::instance().clientId() << std::endl;
     std::cout << "Server version: " << Residue::instance().serverVersion() << std::endl;
-    std::cout << "Server licensee: " << Residue::instance().licensee() << std::endl;
 
     while (true) {
         std::wstring input;
