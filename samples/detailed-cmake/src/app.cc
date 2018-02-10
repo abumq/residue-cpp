@@ -27,9 +27,9 @@ int main(int argc, char* argv[]) {
 
     std::cout << Residue::info() << std::endl;
 
-#if 0 // minimal sample with unknown logger
+#if 1 // minimal sample with unknown logger
     try {
-        Residue::connect("residue-demo.muflihun.com", Residue::DEFAULT_PORT);
+        Residue::connect("localhost", Residue::DEFAULT_PORT);
     } catch (const ResidueException& e) {
         std::cout << "EXCEPTION: " << e.what() << std::endl;
         return 1;
@@ -38,7 +38,6 @@ int main(int argc, char* argv[]) {
     if (Residue::connected()) {
         std::cout << "Connected!" << std::endl;
         std::cout << "Server version: " << Residue::instance().serverVersion() << std::endl;
-        std::cout << "Server licensee: " << Residue::instance().licensee() << std::endl;
     } else {
         std::cout << "Failed!" << std::endl;
         displayErrors();
@@ -61,7 +60,7 @@ int main(int argc, char* argv[]) {
 #else
 
     // review the privateKeyFile location (try running this sample from root)
-    std::string keyBase = "/Users/mkhan/Projects/residue/tools/netcat-client/";
+    std::string keyBase = "/Users/abumusamq/Dev/residue/tools/netcat-client/";
 
     // Manually set configurations via API
 #   if 1 // enable known client

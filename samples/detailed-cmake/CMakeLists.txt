@@ -12,8 +12,10 @@ include_directories (${CMAKE_SOURCE_DIR})
 include(FindPackageHandleStandardArgs)
 include(residue-dev)
 
-#require_cpp11()
+require_cpp11()
 check_apple()
+
+set (Residue_USE_STATIC_LIBS ON)
 
 find_package(Residue REQUIRED)
 include_directories (${RESIDUE_INCLUDE_DIR})

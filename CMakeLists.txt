@@ -75,7 +75,13 @@ include_directories (${CRYPTOPP_INCLUDE_DIRS})
 
 thread_packages_check()
 
-############# RESIDUE CLIENT LIB ###############
+set (THIRD_PARTY_REQUIRED_LIBS
+    ${Boost_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
+)
+
+############# RESIDUE (STATIC) CLIENT LIB ###############
 
 set(LIB_RESIDUE_SOURCE_FILES
     include/Ripe.cc
@@ -83,18 +89,16 @@ set(LIB_RESIDUE_SOURCE_FILES
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
 
-add_library (residue-lib ${LIB_RESIDUE_SOURCE_FILES})
 
-set_target_properties (residue-lib PROPERTIES
+add_library (residue-static STATIC ${LIB_RESIDUE_SOURCE_FILES})
+
+set_target_properties (residue-static PROPERTIES
     VERSION ${RESIDUE_SOVERSION}
 )
-target_link_libraries (residue-lib
-    ${Boost_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-    ${CRYPTOPP_LIBRARIES}
-)
 
-target_compile_definitions (residue-lib PRIVATE
+target_link_libraries (residue-static ${THIRD_PARTY_REQUIRED_LIBS})
+
+target_compile_definitions (residue-static PUBLIC
     ELPP_FORCE_USE_STD_THREAD
     ELPP_THREAD_SAFE
     ELPP_NO_LOG_TO_FILE
@@ -107,8 +111,41 @@ target_compile_definitions (residue-lib PRIVATE
     ELPP_LOG_UNORDERED_SET
 )
 
-set_target_properties (residue-lib PROPERTIES OUTPUT_NAME "residue")
-install (TARGETS residue-lib DESTINATION lib)
+# Set RPATH to library install path.
+set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+install (TARGETS residue-static DESTINATION lib)
+
+############## RESIDUE (SHARED) CLIENT LIB #################
+
+if (BUILD_SHARED_LIBS)
+    add_library (residue-lib ${LIB_RESIDUE_SOURCE_FILES})
+
+    set_target_properties (residue-lib PROPERTIES
+        VERSION ${RESIDUE_SOVERSION}
+    )
+    target_link_libraries (residue-lib
+        residue-static
+    )
+
+    target_compile_definitions (residue-lib PRIVATE
+        ELPP_FORCE_USE_STD_THREAD
+        ELPP_THREAD_SAFE
+        ELPP_NO_LOG_TO_FILE
+        ELPP_NO_DEFAULT_LOG_FILE
+        ELPP_DEFAULT_LOGGING_FLAGS=4096
+        ELPP_FEATURE_ALL
+        ELPP_STL_LOGGING
+        ELPP_LOG_STD_ARRAY
+        ELPP_LOG_UNORDERED_MAP
+        ELPP_LOG_UNORDERED_SET
+    )
+
+    set_target_properties (residue-lib PROPERTIES OUTPUT_NAME "residue")
+    install (TARGETS residue-lib DESTINATION lib)
+endif()
+
+############# INCLUDES ###############
+
 install (FILES include/Residue.h DESTINATION "include")
 
 

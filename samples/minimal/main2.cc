@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
     Residue::reconnect();
 
     system("date");
-    int count = 1000000;
+    int count = 100;
     for (int i = 1; i <= count; ++i) {
         LOG(INFO) << "Message #" << i << " from residue sample";
     }

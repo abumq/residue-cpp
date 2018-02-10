@@ -5,7 +5,7 @@
 #
 # If ${Residue_USE_STATIC_LIBS} is ON then static libs are preferred over shared
 #
-# (c) 2017 Muflihun Labs
+# (c) 2017-present Muflihun Labs
 #
 # https://github.com/muflihun/residue
 # https://muflihun.com
@@ -31,22 +31,41 @@ find_path(RESIDUE_INCLUDE_DIR_LOCAL
     PATHS ${RESIDUE_PATHS}
 )
 
+set (RESIDUE_ZLIB_LIBRARIES "")
+set (RESIDUE_ZLIB_INCLUDE_DIRS "")
+
 if (Residue_USE_STATIC_LIBS)
-    message ("-- Residue: Static linking is preferred")
+    message ("-- Residue: Static linking")
     find_library(RESIDUE_LIBRARY_LOCAL
-        NAMES libresidue-full.a libresidue.a libresidue.dylib libresidue
+        NAMES libresidue-static-full.a libresidue-static.a libresidue.a
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
+    find_package(ZLIB REQUIRED)
+    if (ZLIB_FOUND)
+        include_directories(${ZLIB_INCLUDE_DIRS})
+        message ("-- Residue: libz: " ${ZLIB_LIBRARIES} " version: " ${ZLIB_VERSION_STRING})
+        set (RESIDUE_ZLIB_LIBRARIES ${ZLIB_LIBRARIES})
+        set (RESIDUE_ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+    else()
+        message ("Residue: zlib not found which is required with static linking")
+    endif(ZLIB_FOUND)
 else()
-    message ("-- Residue: Dynamic linking is preferred")
+    message ("-- Residue: Dynamic linking")
     find_library(RESIDUE_LIBRARY_LOCAL
-        NAMES libresidue.dylib libresidue libresidue-full.a libresidue.a
+        NAMES libresidue.dylib libresidue.so libresidue residue
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 endif()
 
-set (RESIDUE_INCLUDE_DIR ${EASYLOGGINGPP_INCLUDE_DIR} ${RESIDUE_INCLUDE_DIR_LOCAL})
-set (RESIDUE_LIBRARY ${RESIDUE_LIBRARY_LOCAL})
+set (RESIDUE_INCLUDE_DIR
+    ${RESIDUE_ZLIB_INCLUDE_DIRS}
+    ${EASYLOGGINGPP_INCLUDE_DIR}
+    ${RESIDUE_INCLUDE_DIR_LOCAL}
+)
+set (RESIDUE_LIBRARY 
+    ${RESIDUE_LIBRARY_LOCAL}
+    ${RESIDUE_ZLIB_LIBRARIES}
+)
 
 message ("-- Residue: Include: " ${RESIDUE_INCLUDE_DIR} ", Binary: " ${RESIDUE_LIBRARY})
 
