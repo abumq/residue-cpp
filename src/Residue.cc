@@ -22,10 +22,10 @@
 #include <functional>
 #include <tuple>
 #include <boost/asio.hpp>
-#include "include/residue/Residue.h"
-#include "include/residue/Ripe.h"
-#include "include/residue/json.h"
-#include "include/residue/log.h"
+#include "include/Residue.h"
+#include "include/Ripe.h"
+#include "include/json.h"
+#include "include/log.h"
 
 INITIALIZE_EASYLOGGINGPP
 
