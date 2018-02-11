@@ -29,11 +29,10 @@ VERSION=1.1.0
 TYPE=linux
 
 ## Headers
-wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/Residue.h
-wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/easylogging.h
+wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
+tar -xf libresidue-$VERSION-headers.tar.gz
 mkdir /usr/local/include/residue/
-cp Residue.h /usr/local/include/residue/
-cp easylogging.h /usr/local/include/residue/easylogging++.h
+cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 
 ## Dynamic lib
 [[ $TYPE = "linux" ]] && EXTENSION="so" || EXTENSION="dylib"
