@@ -48,8 +48,8 @@ fi
 cmake -DCMAKE_BUILD_TYPE=Release -Dproduction=ON -Dprofiling=OFF -Dtest=OFF -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
 make
 
-if [ "$STATIC_BOOST_LIB" = "" ] || [ "$STATIC_CRYPTOPP_LIB" = "" ]; then
-    echo "Please specify STATIC_BOOST_LIB and STATIC_CRYPTOPP_LIB"
+if [ [ "$STATIC_CRYPTOPP_LIB" = "" ]; then
+    echo "Please specify STATIC_CRYPTOPP_LIB"
     exit;
 fi
 
@@ -59,10 +59,8 @@ mkdir $PACK_STATIC
 
 echo "Creating static full"
 cd $PACK_STATIC
-cp $STATIC_BOOST_LIB .
 cp $STATIC_CRYPTOPP_LIB .
 cp ../libresidue-static.a .
-ar -x libboost*.a
 ar -x libcrypto*.a
 ar -x libresidue-static.a
 rm -rf *.a
