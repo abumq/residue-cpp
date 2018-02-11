@@ -36,15 +36,16 @@ cp Residue.h /usr/local/include/residue/
 cp easylogging.h /usr/local/include/residue/easylogging++.h
 
 ## Dynamic lib
+[[ $TYPE = "linux" ]] && EXTENSION="so" || EXTENSION="dylib"
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-x86_64-$TYPE/libresidue.dylib /usr/local/lib/libresidue-$VERSION.dylib
-ln -s /usr/lib/libresidue-$VERSION.dylib /usr/local/lib/libresidue.dylib
+cp libresidue-$VERSION-x86_64-$TYPE/libresidue.$EXTENSION /usr/local/lib/libresidue-$VERSION.$EXTENSION
+ln -s /usr/lib/libresidue-$VERSION.$EXTENSION /usr/local/lib/libresidue.$EXTENSION
 
 ## Static lib
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue.dylib /usr/local/lib/
+cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.a /usr/local/lib/
 ```
 
 You should be ready to link your application against `libresidue`, both statically and dynamically.
