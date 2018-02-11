@@ -10,7 +10,7 @@ LogBox::LogBox(QWidget *parent) :
     ui->setupUi(this);
 
     ui->lblVersion->setText(QString::fromStdString(Residue::info()));
-    ui->lineEdit->setText("~/Dev/residue-cpp/samples/client.conf.json");
+    ui->lineEdit->setText("/Users/abumusamq/Dev/residue-cpp/samples/client.conf.json");
 
     updateStatus();
 }
@@ -53,6 +53,7 @@ void LogBox::on_pushButton_3_clicked()
             Residue::loadConfiguration(ui->lineEdit->text().toStdString());
         } catch (const std::exception& e) {
             ui->label->setText("Status: Config error: " + QString::fromStdString(e.what()));
+            return;
         }
 
         Residue::reconnect();

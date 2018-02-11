@@ -7,6 +7,6 @@
 #define ELPP_DEFAULT_LOGGER "default"
 #define ELPP_DEFAULT_PERFORMANCE_LOGGER "default"
 
-#include <Residue.h>
+#include <residue/Residue.h>
 
 #endif // LOG_H
