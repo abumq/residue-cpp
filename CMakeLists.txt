@@ -8,6 +8,7 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 option (special_edition "Special edition build" OFF)
+option (production "Production mode" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "1")
@@ -30,16 +31,17 @@ if (special_edition)
     add_definitions (-DRESIDUE_SPECIAL_EDITION)
 endif()
 
+if (production)
+    message ("==> PRODUCTION BUILD")
+    add_definitions (-DRESIDUE_PRODUCTION)
+endif()
+
 include (FindPackageHandleStandardArgs)
 
 #require_cpp11()
 check_apple()
 
 list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wno-unknown-warning-option -Wno-pessimizing-move ")
-
-message ("-- Check for Easylogging++")
-find_package (EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
@@ -69,7 +71,7 @@ set (THIRD_PARTY_REQUIRED_LIBS
 set(LIB_RESIDUE_SOURCE_FILES
     deps/ripe/Ripe.cc
     src/Residue.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    src/easylogging++.cc
 )
 
 
@@ -129,7 +131,8 @@ endif()
 
 ############# INCLUDES ###############
 
-install (FILES include/Residue.h DESTINATION "include")
+install (FILES include/Residue.h DESTINATION "include/residue/")
+install (FILES include/easylogging++.h DESTINATION "include/residue/")
 
 
 ############# SAMPLE CLIENT APP ###############
@@ -172,7 +175,7 @@ if (test)
 
     add_executable (residue-cpp-unit-tests
         test/main.cc
-        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+        src/easylogging++.cc
     )
 
     target_compile_definitions (residue-cpp-unit-tests PUBLIC

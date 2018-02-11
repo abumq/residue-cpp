@@ -2,7 +2,9 @@
 
 ## [1.1.0]
 ### Updates
-- Removed dependency on boost
+- Removed dependency on linked boost
+- Include easylogging++ with packages to avoid conflicts
+- Residue headers are now installed in `residue/` directory since it contains it's own version of Easylogging++
 
 ## [1.0.2]
 ### Updates

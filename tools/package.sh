@@ -45,7 +45,7 @@ if [ -d "$PACK_STATIC" ];then
 fi
 
 
-cmake -DCMAKE_BUILD_TYPE=Release -Dprofiling=OFF -Dtest=OFF -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
+cmake -DCMAKE_BUILD_TYPE=Release -Dproduction=ON -Dprofiling=OFF -Dtest=OFF -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
 make
 
 if [ "$STATIC_BOOST_LIB" = "" ] || [ "$STATIC_CRYPTOPP_LIB" = "" ]; then
