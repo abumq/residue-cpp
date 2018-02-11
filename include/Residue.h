@@ -25,7 +25,7 @@
 #include <thread>
 #include <tuple>
 #include <unordered_map>
-#include <easylogging++.h>
+#include "easylogging++.h"
 
 class ResidueDispatcher;
 
@@ -38,7 +38,7 @@ public:
     ///
     /// \brief Main constructor
     ///
-    ResidueException(const std::string& msg) : runtime_error(msg) {}
+    explicit ResidueException(const std::string& msg) : runtime_error(msg) {}
     virtual ~ResidueException() = default;
 };
 

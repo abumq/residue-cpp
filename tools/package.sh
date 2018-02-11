@@ -11,13 +11,18 @@ STRIP=strip
 TYPE=$1
 VERSION=$2
 
+SPECIAL_EDITION_VERSION=$3
+if [ "$SPECIAL_EDITION_VERSION" = "" ];then
+    SPECIAL_EDITION_VERSION="OFF"
+fi
+
 if [ "$SHASUM" = "" ];then
     export SHASUM="shasum"
 fi
 
 if [ "$TYPE" = "" ] || [ "$VERSION" = "" ];then
-	echo "Usage: $0 <type> version>"
-	echo "  example: $0 darwin 1.0.0"
+	echo "Usage: $0 <type> <version> <special_edition = OFF>"
+	echo "  example: $0 darwin 1.0.0 OFF"
 	exit;
 fi
 
@@ -27,7 +32,7 @@ if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
 fi
 
 PACK=libresidue-$VERSION-x86_64-$TYPE
-PACK_STATIC=libresidue-static-$VERSION-x86_64-$TYPE
+PACK_STATIC=libresidue-$VERSION-static-x86_64-$TYPE
 
 if [ -d "$PACK" ];then
 	echo "$PACK already exist. Remove $PACK first"
@@ -40,7 +45,7 @@ if [ -d "$PACK_STATIC" ];then
 fi
 
 
-cmake -DCMAKE_BUILD_TYPE=Release -Dprofiling=OFF -Dtest=OFF ..
+cmake -DCMAKE_BUILD_TYPE=Release -Dproduction=ON -Dprofiling=OFF -Dtest=OFF -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
 make
 
 if [ "$STATIC_BOOST_LIB" = "" ] || [ "$STATIC_CRYPTOPP_LIB" = "" ]; then
@@ -66,7 +71,7 @@ rm *.o
 cd ..
 mv $PACK_STATIC/libresidue-static-full.a .
 rm -rf $PACK_STATIC/*
-mv libresidue-static-full.a $PACK_STATIC/
+mv libresidue-static-full.a $PACK_STATIC/libresidue-static.a
 
 cp libresidue.so $PACK/libresidue.so
 cp libresidue.dylib $PACK/libresidue.dylib
