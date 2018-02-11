@@ -11,21 +11,62 @@ This library is based on single source file. It automatically includes `<residue
 Please refer to [samples directory](/samples/) to get started
 
 ## Installation
-This section shows you steps to install residue C++ client on your machine.
+This section shows you steps to install residue C++ client library on your machine.
 
-## Dependencies
+## Download Binary
+You can download binary from [releases](https://github.com/muflihun/residue-cpp/releases) page for your platform. They are standalone libraries with dependency on `libz` that usually comes with operating system distribution.
+
+ * Download tar archive for your platform
+ * Download `easylogging.h` and `Residue.h`
+ * Unzip tar archive and copy them to `/usr/local/lib/`
+ * Copy `easylogging.h` to `/usr/local/include/residue/` as `easylogging++.h`
+ * Copy `Residue.h` to `/usr/local/include/residue/`
+ 
+In a nut shell you will do:
+
+```
+VERSION=1.1.0
+TYPE=linux
+
+## Headers
+wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/Residue.h
+wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/easylogging.h
+mkdir /usr/local/include/residue/
+cp Residue.h /usr/local/include/residue/
+cp easylogging.h /usr/local/include/residue/easylogging++.h
+
+## Dynamic lib
+wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
+tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
+cp libresidue-$VERSION-x86_64-$TYPE/libresidue.dylib /usr/local/lib/libresidue-$VERSION.dylib
+ln -s /usr/lib/libresidue-$VERSION.dylib /usr/local/lib/libresidue.dylib
+
+## Static lib
+wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
+tar -xf libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
+cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue.dylib /usr/local/lib/
+```
+
+You should be ready to link your application against `libresidue`, both statically and dynamically.
+
+If you use cmake, you may also be interested in [Residue CMake module](https://github.com/muflihun/residue-cpp/blob/master/cmake/FindResidue.cmake)
+
+## Build
+If you do not wish to download binaries, you can build your own library using following steps.
+
+### Dependencies
   * C++11 compiler (or higher)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [zlib-devel](https://zlib.net/)
  
-# Get The Code
+### Get The Code
 You can either [download code from master branch](https://github.com/muflihun/residue-cpp/archive/master.zip) or clone it using `git`:
 
 ```
 git clone git@github.com:muflihun/residue-cpp.git
 ```
 
-# Build
+### Build
 Residue C++ library uses the CMake toolchains to create makefiles.
 
 In a nut shell, you will do:
@@ -37,7 +78,7 @@ cmake -Dtest=ON ..
 make
 ```
 
-## CMake Options
+### CMake Options
 You can change following options in CMake (using `-D<option>=ON`)
 
 |    Option    | Description                     |
@@ -47,24 +88,24 @@ You can change following options in CMake (using `-D<option>=ON`)
 | `profiling`      | Turn on profiling for debugging purposes           |
 | `special_edition`      | Build [special edition](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition)           |
 
-## Run Tests
+### Run Tests
 Please consider running unit test before you move on
 
 ```
 make test
 ```
 
-## Install
+### Install
 The compilation process creates `libresidue` (static and shared) in build directory. Please see [Static Library](#static-library) section below before installing. You can install it in system-wide directory using:
 
 ```
 make install # Please read Static Library section below
 ```
 
-If the default path (`/usr/local`) is not where you want things installed, then set the `CMAKE_INSTALL_PREFIX` option when running cmake. e.g,
+If the default path (`/usr/local/lib`) is not where you want things installed, then set the `CMAKE_INSTALL_PREFIX` option when running cmake. e.g,
 
 ```
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/lib
 ```
 
 ### Setup
