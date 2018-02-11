@@ -32,7 +32,7 @@ if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
 fi
 
 PACK=libresidue-$VERSION-x86_64-$TYPE
-PACK_STATIC=libresidue-static-$VERSION-x86_64-$TYPE
+PACK_STATIC=libresidue-$VERSION-static-x86_64-$TYPE
 
 if [ -d "$PACK" ];then
 	echo "$PACK already exist. Remove $PACK first"
@@ -71,7 +71,7 @@ rm *.o
 cd ..
 mv $PACK_STATIC/libresidue-static-full.a .
 rm -rf $PACK_STATIC/*
-mv libresidue-static-full.a $PACK_STATIC/
+mv libresidue-static-full.a $PACK_STATIC/libresidue-static.a
 
 cp libresidue.so $PACK/libresidue.so
 cp libresidue.dylib $PACK/libresidue.dylib
