@@ -150,10 +150,13 @@ sh ../tools/package.sh linux 1.1.0 # specify version carefully to match with wha
 ```
 
 This will create:
- * libresidue-1.1.0-x86_64-linux.tar.gz
- * libresidue-1.1.0-static-x86_64-linux.tar.gz
+ * `libresidue-1.1.0-x86_64-linux.tar.gz`
+ * `libresidue-1.1.0-static-x86_64-linux.tar.gz`
  
-Second one (`libresidue-1.1.0-static-x86_64-linux.tar.gz`) contains static library that is fully independent
+Second one (`libresidue-1.1.0-static-x86_64-linux.tar.gz`) contains static library that is fully independent.
+
+### Strip
+You can take advantage [`strip`](https://linux.die.net/man/1/strip) if you wish to link your application statically. This will reduce binary size significantly. 
 
 ## Build Matrix
 
