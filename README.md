@@ -3,12 +3,10 @@
 # Residue C++ Client
 Official C++ client library with feature-rich API to interact with residue seamlessly. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) to interact and take input from the user. Easylogging++ is highly efficient, well-tested library.
 
-It is developed separately because of different license
-
-[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/master.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue/docs/annotated.html) [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue-cpp/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+[![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/master.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Build Status](https://img.shields.io/travis/muflihun/residue-cpp/develop.svg)](https://travis-ci.org/muflihun/residue-cpp) [![Version](https://img.shields.io/github/release/muflihun/residue-cpp.svg)](https://github.com/muflihun/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue/docs/annotated.html) [![Apache-2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue-cpp/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 ## Getting Started
-This library is based on single source file. It automatically includes `<easylogging++.h>` header and expect it to be available on developer's system. Please refer to [documentation page](https://muflihun.github.io/residue/docs/class_residue.html) to check the API.
+This library is based on single source file. It automatically includes `<residue/easylogging++.h>` header and expect it to be available on developer's system. Please refer to [documentation page](https://muflihun.github.io/residue/docs/class_residue.html) to check the API.
 
 Please refer to [samples directory](/samples/) to get started
 
@@ -16,12 +14,11 @@ Please refer to [samples directory](/samples/) to get started
 This section shows you steps to install residue C++ client on your machine.
 
 ## Dependencies
-  * C++11 (or higher)
+  * C++11 compiler (or higher)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
-  * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
  
-# Get Code
+# Get The Code
 You can either [download code from master branch](https://github.com/muflihun/residue-cpp/archive/master.zip) or clone it using `git`:
 
 ```
@@ -29,20 +26,19 @@ git clone git@github.com:muflihun/residue-cpp.git
 ```
 
 # Build
-Residue uses the CMake toolchains to create makefiles.
-Steps to build Residue:
+Residue C++ library uses the CMake toolchains to create makefiles.
+
+In a nut shell, you will do:
 
 ```
 mkdir build
 cd build
-cmake -Dtest=OFF ..
-make
-sudo make install
 cmake -Dtest=ON ..
 make
 ```
 
-You can define following options in CMake (using `-D<option>=ON`)
+## CMake Options
+You can change following options in CMake (using `-D<option>=ON`)
 
 |    Option    | Description                     |
 | ------------ | ------------------------------- |
@@ -51,13 +47,15 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `profiling`      | Turn on profiling for debugging purposes           |
 | `special_edition`      | Build [special edition](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition)           |
 
+## Run Tests
 Please consider running unit test before you move on
 
 ```
 make test
 ```
 
-The compilation process creates executable `residue` in build directory. You can install it in system-wide directory using:
+## Install
+The compilation process creates `libresidue` (static and shared) in build directory. Please see [Static Library](#static-library) section below before installing. You can install it in system-wide directory using:
 
 ```
 make install # Please read Static Library section below
@@ -69,8 +67,8 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
-### If Build Fails...
-Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 16.04 64-bit)
+### Setup
+Make sure you have all the dependencies installed. You can use following script to install them and then go back to the [Build](#build) section (tested on Ubuntu 14.04 (Trusty) 64-bit)
 
 ```
 ### Essentials
@@ -137,8 +135,8 @@ Second one (`libresidue-1.1.0-static-x86_64-linux.tar.gz`) contains static libra
 Copyright 2017-present Muflihun Labs
 
 https://github.com/muflihun/
-https://muflihun.github.io
-https://muflihun.com
+https://muflihun.github.io/
+https://muflihun.com/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
