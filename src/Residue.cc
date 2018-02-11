@@ -26,7 +26,7 @@
 #include "ripe/Ripe.h"
 #include "json/json.h"
 #include "include/Residue.h"
-#include "include/log.h"
+#include "log.h"
 
 INITIALIZE_EASYLOGGINGPP
 
