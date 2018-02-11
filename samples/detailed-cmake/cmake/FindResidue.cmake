@@ -7,15 +7,11 @@
 #
 # (c) 2017-present Muflihun Labs
 #
-# https://github.com/muflihun/residue
+# https://github.com/muflihun/residue-cpp
 # https://muflihun.com
 #
 
 set(RESIDUE_PATHS ${Residue_ROOT} $ENV{RESIDUE_ROOT})
-
-message ("-- Residue: Searching Easylogging++")
-find_package(EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
 add_definitions(-DELPP_FEATURE_ALL)
 add_definitions(-DELPP_THREAD_SAFE)
