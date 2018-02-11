@@ -35,15 +35,7 @@ include (FindPackageHandleStandardArgs)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
-
-if (travis)
-    message ("-- Building on travis")
-    set (static_boost OFF)
-else()
-    set (static_boost ON)
-endif()
-set (static_boost OFF)
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
@@ -57,15 +49,7 @@ else()
     message ("--==> libz not found")
 endif(ZLIB_FOUND)
 
-message ("-- Check for Boost System (dynamic)")
-## We always use static linking for boost stuffs
-## Note this does not work when residue library is being build statically
-set (Boost_USE_STATIC_LIBS ${static_boost})
-unset(Boost_INCLUDE_DIR CACHE)
-unset(Boost_LIBRARY_DIRS CACHE)
-find_package (Boost REQUIRED COMPONENTS system)
-include_directories (${Boost_INCLUDE_DIR})
-message ("-- Boost binary: " ${Boost_LIBRARIES})
+include_directories(${CMAKE_SOURCE_DIR}/deps)
 
 # Check for cryptopp (static)
 set(CryptoPP_USE_STATIC_LIBS ON)
@@ -76,7 +60,6 @@ include_directories (${CRYPTOPP_INCLUDE_DIRS})
 thread_packages_check()
 
 set (THIRD_PARTY_REQUIRED_LIBS
-    ${Boost_LIBRARIES}
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
 )
@@ -84,7 +67,7 @@ set (THIRD_PARTY_REQUIRED_LIBS
 ############# RESIDUE (STATIC) CLIENT LIB ###############
 
 set(LIB_RESIDUE_SOURCE_FILES
-    include/Ripe.cc
+    deps/ripe/Ripe.cc
     src/Residue.cc
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.0]
+### Updates
+- Removed dependency on boost
+
 ## [1.0.2]
 ### Updates
 - License information update

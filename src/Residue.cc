@@ -21,10 +21,11 @@
 #include <chrono>
 #include <functional>
 #include <tuple>
-#include <boost/asio.hpp>
+#include <system_error>
+#include "asio.hpp"
+#include "ripe/Ripe.h"
+#include "json/json.h"
 #include "include/Residue.h"
-#include "include/Ripe.h"
-#include "include/json.h"
 #include "include/log.h"
 
 INITIALIZE_EASYLOGGINGPP
@@ -32,11 +33,11 @@ INITIALIZE_EASYLOGGINGPP
 const std::size_t Residue::DEFAULT_KEY_SIZE = 2048;
 const std::string Residue::LOCALHOST = "127.0.0.1";
 const int Residue::DEFAULT_PORT = 8777;
-const unsigned int Residue::TOUCH_THRESHOLD = 120; // should always be min(client_age)
+const unsigned int Residue::TOUCH_THRESHOLD = 60;
 const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
-using boost::asio::ip::tcp;
+using asio::ip::tcp;
 
 ///
 /// \brief Internal logging class. We do not use Easylogging++ macros here
@@ -109,7 +110,7 @@ volatile int Residue::s_internalLoggingLevel = reslog::none;
 
 ///
 /// \brief Residue client connector class.
-/// This uses Boost ASIO for internet and Ripe for encryption
+/// This uses ASIO for networking and Ripe for encryption
 ///
 class ResidueClient
 {
@@ -160,7 +161,7 @@ public:
 private:
     std::string m_host;
     std::string m_port;
-    boost::asio::io_service m_ioService;
+    asio::io_service m_ioService;
     tcp::socket m_socket;
     bool m_connected;
     std::string m_lastError;
@@ -192,7 +193,7 @@ void ResidueClient::connect()
     tcp::resolver::iterator endpoint = resolver.resolve(tcp::resolver::query(m_host, m_port));
     // Do not use async_connect as we want client application to wait
     try {
-        boost::asio::connect(m_socket, endpoint);
+        asio::connect(m_socket, endpoint);
         m_connected = true;
     } catch (const std::exception& e) {
         m_lastError = "Failed to connect: " + std::string(e.what());
@@ -215,7 +216,7 @@ void ResidueClient::send(std::string&& payload, bool expectResponse, const Respo
     reslog(reslog::crazy) << "Writing [" << m_port << "]..." << (expectResponse ? "" : " (async)");
     if (expectResponse) {
         try {
-            boost::asio::write(m_socket, boost::asio::buffer(payload, payload.length()));
+            asio::write(m_socket, asio::buffer(payload, payload.length()));
             reslog(reslog::crazy) << "Waiting for response...";
             read(resHandler, payload);
             reslog(reslog::crazy) << "Done";
@@ -232,25 +233,25 @@ void ResidueClient::send(std::string&& payload, bool expectResponse, const Respo
             }
         }
     } else {
-        boost::asio::async_write(m_socket, boost::asio::buffer(payload, payload.length()),
-                                 [&](const boost::system::error_code&, std::size_t) {
+        asio::async_write(m_socket, asio::buffer(payload, payload.length()),
+                                 [&](const std::error_code&, std::size_t) {
         });
     }
 }
 
 void ResidueClient::read(const ResponseHandler& resHandler, const std::string& payload)
 {
-    boost::system::error_code ec;
-    boost::asio::streambuf buf;
+    std::error_code ec;
+    asio::streambuf buf;
     try {
-        std::size_t numOfBytes = boost::asio::read_until(m_socket, buf, Ripe::PACKET_DELIMITER, ec);
+        std::size_t numOfBytes = asio::read_until(m_socket, buf, Ripe::PACKET_DELIMITER, ec);
         if (!ec) {
             std::istream is(&buf);
             std::string buffer((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
             buffer.erase(numOfBytes - Ripe::PACKET_DELIMITER_SIZE);
             resHandler(std::move(buffer), false, "");
         } else {
-            if ((ec == boost::asio::error::eof) || (ec == boost::asio::error::connection_reset)) {
+            if ((ec == asio::error::eof) || (ec == asio::error::connection_reset)) {
                 reslog(reslog::error) << "Failed to send, requeueing...";
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 m_connected = false;

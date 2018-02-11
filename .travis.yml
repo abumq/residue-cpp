@@ -8,7 +8,7 @@ matrix:
     before_install:
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
-    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install -y libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     - g++ -v
     
@@ -24,7 +24,7 @@ matrix:
     - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
-    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install -y libgtest-dev
     - sudo apt-get install --only-upgrade cmake
 
   - os: linux
@@ -39,7 +39,7 @@ matrix:
     - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
-    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install -y libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     
   - os: linux
@@ -54,7 +54,7 @@ matrix:
     - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
-    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install -y libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     
   - os: linux
@@ -69,13 +69,12 @@ matrix:
     - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
-    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install -y libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     
 #  - os: osx
 #    compiler: clang
 #    osx_image: xcode8
-#     - sudo port install boost
 #     - g++ -v
 #     - cmake -v
     
