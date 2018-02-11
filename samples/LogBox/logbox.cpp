@@ -1,6 +1,7 @@
 #include "logbox.h"
 #include "ui_logbox.h"
 #include <QMessageBox>
+#include <QFile>
 #include "log.h"
 
 LogBox::LogBox(QWidget *parent) :
