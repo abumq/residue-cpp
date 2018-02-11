@@ -17,8 +17,6 @@ This section shows you steps to install residue C++ client on your machine.
 
 ## Dependencies
   * C++11 (or higher)
-  * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
@@ -50,6 +48,8 @@ You can define following options in CMake (using `-D<option>=ON`)
 | ------------ | ------------------------------- |
 | `test`       | Compile unit tests              |
 | `build_sample_app`      | Builds detailed-cmake sample           |
+| `profiling`      | Turn on profiling for debugging purposes           |
+| `special_edition`      | Build [special edition](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition)           |
 
 Please consider running unit test before you move on
 
@@ -60,7 +60,7 @@ make test
 The compilation process creates executable `residue` in build directory. You can install it in system-wide directory using:
 
 ```
-make install
+make install # Please read Static Library section below
 ```
 
 If the default path (`/usr/local`) is not where you want things installed, then set the `CMAKE_INSTALL_PREFIX` option when running cmake. e.g,
@@ -78,10 +78,6 @@ sudo apt-get install -y cmake build-essential libz-dev
     # sudo yum install -y cmake zlib-devel # for rpm
     # sudo yum groupinstall 'Development Tools'
 
-## Boost System
-sudo apt-get install -y libboost-system-dev cmake
-    # or boost-devel and/or boost-static-devel for rpm
-
 ### Google Testing Library
 sudo apt-get install -y libboost-system-dev cmake
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
@@ -91,14 +87,6 @@ cmake -DBUILD_SHARED_LIBS=ON .
 make
 sudo cp -a include/gtest /usr/include
 sudo cp -a libgtest_main.so libgtest.so /usr/lib/
-
-### Easylogging++
-wget -O elpp-master.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
-unzip elpp-master.zip
-cd easyloggingpp-master
-cmake .
-make
-sudo make install
 
 ## Crypto++
 wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
@@ -112,24 +100,21 @@ sudo make install
 ```
 
 ### Static Library
-By default, residue builds shared library that you can link in order to connect to residue server seamlessly. You can choose to build static library instead using `build_static_lib` option in cmake
+By default, residue builds shared and static libraries. But static library only contains residue specific objects.
 
-For example,
-
-```
-cmake -Dbuild_static_lib=ON ..
-```
-
-This will create `libresidue.a` and you can create one single static library (with boost bindings) using
+You can use following command to produce correct static library that is independent of any other library.
 
 ```
-ar -x libresidue.a
-cp /usr/local/lib/libboost_system-mt.a . # Path has to match your system's path
-ar -x libboost_system-mt.a
-ar -qc libresidue_full.a *.o
+mkdir build
+cd build
+sh ../tools/package.sh linux 1.1.0 # specify version carefully to match with what's in CMakeLists.txt
 ```
 
-This will essentially join all the object files from both the libraries (no name overlaps).
+This will create:
+ * libresidue-1.1.0-x86_64-linux.tar.gz
+ * libresidue-1.1.0-static-x86_64-linux.tar.gz
+ 
+Second one (`libresidue-1.1.0-static-x86_64-linux.tar.gz`) contains static library that is fully independent
 
 ## Build Matrix
 
