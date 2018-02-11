@@ -8,7 +8,6 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (travis "Whether its travis build or not" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 option (special_edition "Special edition build" OFF)
-option (production "Production mode" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "1")
@@ -31,10 +30,7 @@ if (special_edition)
     add_definitions (-DRESIDUE_SPECIAL_EDITION)
 endif()
 
-if (production)
-    message ("==> PRODUCTION BUILD")
-    add_definitions (-DRESIDUE_PRODUCTION)
-endif()
+add_definitions (-DASIO_STANDALONE)
 
 include (FindPackageHandleStandardArgs)
 
