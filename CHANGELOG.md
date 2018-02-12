@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.1]
+### Updates
+- Separated translation units for development
+
 ## [1.1.0]
 ### Updates
 - Removed dependency on linked boost

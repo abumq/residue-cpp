@@ -5,17 +5,29 @@
 #
 # If ${Residue_USE_STATIC_LIBS} is ON then static libs are preferred over shared
 #
+# Specify ${RESIDUE_ROOT} if you wish to specify root path manually, e.g, -DRESIDUE_ROOT=/usr/local
+#
 # (c) 2017-present Muflihun Labs
 #
-# https://github.com/muflihun/residue
+# https://github.com/muflihun/residue-cpp
 # https://muflihun.com
 #
 
-set(RESIDUE_PATHS ${Residue_ROOT} $ENV{RESIDUE_ROOT})
+## Can't use not defined because of old cmake
+if (RESIDUE_ROOT)
+else()
+    if (ENV{RESIDUE_ROOT})
+    else()
+        set(RESIDUE_ROOT /usr/local)
+    endif()
+endif()
 
-message ("-- Residue: Searching Easylogging++")
-find_package(EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
+set(RESIDUE_PATHS
+    ${RESIDUE_ROOT}
+    $ENV{RESIDUE_ROOT}
+    "${RESIDUE_ROOT}/include/residue"
+    "${RESIDUE_ROOT}/lib"
+)
 
 add_definitions(-DELPP_FEATURE_ALL)
 add_definitions(-DELPP_THREAD_SAFE)
@@ -27,7 +39,6 @@ add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
 message ("-- Residue: Searching...")
 find_path(RESIDUE_INCLUDE_DIR_LOCAL
     Residue.h
-    PATH_SUFFIXES include
     PATHS ${RESIDUE_PATHS}
 )
 
@@ -38,13 +49,13 @@ if (Residue_USE_STATIC_LIBS)
     message ("-- Residue: Static linking")
     find_library(RESIDUE_LIBRARY_LOCAL
         NAMES libresidue-static-full.a libresidue-static.a libresidue.a
-        HINTS "${CMAKE_PREFIX_PATH}/lib"
+        HINTS "${RESIDUE_PATHS}/lib"
     )
 else()
     message ("-- Residue: Dynamic linking")
     find_library(RESIDUE_LIBRARY_LOCAL
         NAMES libresidue.dylib libresidue.so libresidue residue
-        HINTS "${CMAKE_PREFIX_PATH}/lib"
+        HINTS "${RESIDUE_PATHS}/lib"
     )
 endif()
 
@@ -66,7 +77,7 @@ set (RESIDUE_INCLUDE_DIR
     ${EASYLOGGINGPP_INCLUDE_DIR}
     ${RESIDUE_INCLUDE_DIR_LOCAL}
 )
-set (RESIDUE_LIBRARY 
+set (RESIDUE_LIBRARY
     ${RESIDUE_LIBRARY_LOCAL}
     ${RESIDUE_EXTRA_LIBRARIES}
 )

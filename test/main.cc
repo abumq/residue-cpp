@@ -16,7 +16,7 @@
 //
 
 #include "test.h"
-#include "../include/Residue.h"
+#include "../include/residue.h"
 
 INITIALIZE_EASYLOGGINGPP
 

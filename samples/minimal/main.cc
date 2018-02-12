@@ -1,4 +1,4 @@
-#include <Residue.h>
+#include <residue/residue.h>
 
 int main(int argc, char** argv) {
     Residue::setApplicationArgs(argc, argv);

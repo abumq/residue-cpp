@@ -10,8 +10,8 @@ option (BUILD_SHARED_LIBS "build shared libraries" ON)
 option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "1")
-set (RESIDUE_MINOR "1")
-set (RESIDUE_PATCH "0")
+set (RESIDUE_MINOR "2")
+set (RESIDUE_PATCH "1")
 
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue-C++")
@@ -37,7 +37,7 @@ include (FindPackageHandleStandardArgs)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wno-unused-local-typedef -Wno-undefined-var-template -Wno-unknown-warning-option -Wno-pessimizing-move -Wno-deprecated-declarations ")
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
@@ -66,7 +66,10 @@ set (THIRD_PARTY_REQUIRED_LIBS
 
 set(LIB_RESIDUE_SOURCE_FILES
     deps/ripe/Ripe.cc
-    src/Residue.cc
+    src/dispatcher.cc
+    src/network-client.cc
+    src/internal-logger.cc
+    src/residue.cc
     src/easylogging++.cc
 )
 
@@ -127,7 +130,7 @@ endif()
 
 ############# INCLUDES ###############
 
-install (FILES include/Residue.h DESTINATION "include/residue/")
+install (FILES include/residue.h DESTINATION "include/residue/")
 install (FILES include/easylogging++.h DESTINATION "include/residue/")
 
 
@@ -165,7 +168,7 @@ if (test)
 
     find_package (gtest REQUIRED)
 
-    include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    include_directories (${GTEST_INCLUDE_DIRS})
 
     enable_testing()
 
@@ -181,7 +184,7 @@ if (test)
     )
 
     # Standard linking to gtest stuff.
-    target_link_libraries (residue-cpp-unit-tests gtest gtest_main)
+    target_link_libraries (residue-cpp-unit-tests ${GTEST_LIBRARIES})
 
     target_link_libraries (residue-cpp-unit-tests residue-lib)
 

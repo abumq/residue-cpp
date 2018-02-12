@@ -33,6 +33,7 @@ fi
 
 PACK=libresidue-$VERSION-x86_64-$TYPE
 PACK_STATIC=libresidue-$VERSION-static-x86_64-$TYPE
+HEADERS=libresidue-$VERSION-headers
 
 if [ -d "$PACK" ];then
 	echo "$PACK already exist. Remove $PACK first"
@@ -48,7 +49,7 @@ fi
 cmake -DCMAKE_BUILD_TYPE=Release -Dproduction=ON -Dprofiling=OFF -Dtest=OFF -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
 make
 
-if [ [ "$STATIC_CRYPTOPP_LIB" = "" ]; then
+if [ "$STATIC_CRYPTOPP_LIB" = "" ]; then
     echo "Please specify STATIC_CRYPTOPP_LIB"
     exit;
 fi
@@ -56,6 +57,7 @@ fi
 echo "Creating $PACK.tar.gz a dn $PACK_STATIC..."
 mkdir $PACK
 mkdir $PACK_STATIC
+mkdir $HEADERS
 
 echo "Creating static full"
 cd $PACK_STATIC
@@ -74,14 +76,25 @@ mv libresidue-static-full.a $PACK_STATIC/libresidue-static.a
 cp libresidue.so $PACK/libresidue.so
 cp libresidue.dylib $PACK/libresidue.dylib
 
+cp ../include/easylogging++.h $HEADERS
+cp ../include/residue.h $HEADERS
+
 ls -lh $PACK
 ls -lh $PACK_STATIC
+ls -lh $HEADERS
 
 tar cfz $PACK.tar.gz $PACK
 tar cfz $PACK_STATIC.tar.gz $PACK_STATIC
+tar cfz $HEADERS.tar.gz $HEADERS
+
 rm -rf $PACK
 rm -rf $PACK_STATIC
+rm -rf $HEADERS
+
 $SHASUM $PACK.tar.gz
 $SHASUM $PACK_STATIC.tar.gz
+$SHASUM $HEADERS.tar.gz
+
 echo `pwd`/$PACK.tar.gz
 echo `pwd`/$PACK_STATIC.tar.gz
+echo `pwd`/$HEADERS.tar.gz
