@@ -77,7 +77,7 @@ cp libresidue.so $PACK/libresidue.so
 cp libresidue.dylib $PACK/libresidue.dylib
 
 cp ../include/easylogging++.h $HEADERS
-cp ../include/Residue.h $HEADERS
+cp ../include/residue.h $HEADERS
 
 ls -lh $PACK
 ls -lh $PACK_STATIC
