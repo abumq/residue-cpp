@@ -7,9 +7,9 @@
 #define ELPP_DEFAULT_PERFORMANCE_LOGGER "sample-app"
 
 #ifndef ROOT_SAMPLE_BUILD // In your application you would do #include <Residue.h>
-#      include <residue/Residue.h>
+#      include <residue/residue.h>
 #   else
-#      include "include/Residue.h"
+#      include "include/residue.h"
 #endif
 
 #endif // LOG_H
