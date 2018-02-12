@@ -1,5 +1,6 @@
 //
-//  Residue.h
+//  residue.cc
+//  Residue C++
 //
 //  Official C++ client library for Residue logging server
 //
@@ -21,11 +22,12 @@
 #include <chrono>
 #include <functional>
 #include <tuple>
-#include <system_error>
-#include "asio.hpp"
 #include "ripe/Ripe.h"
-#include "json/json.h"
-#include "include/Residue.h"
+#include "nlohmann-json/json.h"
+#include "include/residue.h"
+#include "internal-logger.h"
+#include "dispatcher.h"
+#include "network-client.h"
 #include "log.h"
 
 INITIALIZE_EASYLOGGINGPP
@@ -37,292 +39,24 @@ const unsigned int Residue::TOUCH_THRESHOLD = 60;
 const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
-using asio::ip::tcp;
 
-///
-/// \brief Internal logging class. We do not use Easylogging++ macros here
-/// for they will cause issue when dispatching
-///
-class reslog
-{
-public:
-    enum Level {
-        crazy,   // 0
-        debug,   // 1
-        info,    // 2
-        warning, // 3
-        error,   // 4
-        none     // 5
-    };
+#define RESIDUE_LOCK_LOG(id) InternalLogger(InternalLogger::crazy) << id << "_lock()";\
+    InternalLogger scoped_InternalLogger(InternalLogger::crazy); \
+    scoped_InternalLogger << id << "_unlock()";
 
-    reslog(Level level)
-        : m_level(level),
-          m_enabled(level >= Residue::s_internalLoggingLevel)
-    {
-    }
+volatile int Residue::s_internalLoggingLevel = InternalLogger::none;
 
-    template <typename T>
-    reslog& operator<<(const T& item)
-    {
-        if (m_enabled) {
-            m_stream << item;
-        }
-        return *this;
-    }
-
-    virtual ~reslog()
-    {
-        if (m_enabled) {
-            std::string levelStr;
-            switch (m_level) {
-            case crazy:
-                levelStr = "CRAZY";
-                break;
-            case debug:
-                levelStr = "DEBUG";
-                break;
-            case error:
-                levelStr = "ERROR";
-                break;
-            case warning:
-                levelStr = "WARNING";
-                break;
-            case info:
-                levelStr = "INFO";
-                break;
-            default:
-            case none:
-                break;
-            }
-
-            std::cout << "[" << levelStr << "]: " << m_stream.str() << std::endl;
-        }
-    }
-private:
-    std::stringstream m_stream;
-    Level m_level;
-    bool m_enabled;
-};
-
-#define RESIDUE_LOCK_LOG(id) reslog(reslog::crazy) << id << "_lock()"; reslog scoped_reslog(reslog::crazy); scoped_reslog << id << "_unlock()";
-
-volatile int Residue::s_internalLoggingLevel = reslog::none;
-
-///
-/// \brief Residue client connector class.
-/// This uses ASIO for networking and Ripe for encryption
-///
-class ResidueClient
-{
-public:
-    ///
-    /// Response handle from server. std::string = responseBody, bool = hasError, , std::string&& = errorText
-    ///
-    using ResponseHandler = std::function<void(std::string&&, bool, std::string&&)>;
-
-    ///
-    /// \brief ResidueClient constructor
-    /// \param host Residue server host
-    /// \param port Residue server connect_port (rvalue)
-    ///
-    ResidueClient(const std::string& host, std::string&& port) noexcept;
-
-    virtual ~ResidueClient() noexcept = default;
-
-    ///
-    /// \brief Sends payload to the server
-    /// \param payload Payload to be sent
-    /// \param expectResponse If true, it waits for response from the server. Use this
-    /// only when we know the application is going to be alive by the time async_wait
-    /// can finish. The only time we can be potentially sure about this situation is when
-    /// running this in a gui application
-    /// \param retryOnTimeout Retry by connect()ing and the sending again
-    /// \param resHandler When response received this callback is called
-    /// \see ResponseHandler
-    ///
-    void send(std::string&& payload, bool expectResponse = false,
-              const ResponseHandler& resHandler = [](std::string&&, bool, std::string&&) -> void {}, bool retryOnTimeout = true, bool ignoreQueue = false);
-
-    ///
-    /// \brief Whether connected to the server (using this host and port) or not
-    /// \return True if connected, otherwise false
-    ///
-    inline bool connected() const noexcept { return m_socket.is_open() && m_connected; }
-
-    ///
-    /// \brief Returns last error recorded
-    ///
-    inline const std::string& lastError() const noexcept { return m_lastError; }
-
-    ///
-    /// \brief Connects to the server using initial host and port
-    ///
-    void connect();
-private:
-    std::string m_host;
-    std::string m_port;
-    asio::io_service m_ioService;
-    tcp::socket m_socket;
-    bool m_connected;
-    std::string m_lastError;
-
-    ///
-    /// \brief Reads incomming bytes from the server
-    /// \param resHandler When response is read, this callback is called
-    /// \see ResponseHandler
-    ///
-    void read(const ResponseHandler& resHandler = [](std::string&&, bool, std::string&&) -> void {}, const std::string& payload = "");
-};
-
-static std::unique_ptr<ResidueClient> s_connectionClient;
-static std::unique_ptr<ResidueClient> s_tokenClient;
-static std::unique_ptr<ResidueClient> s_loggingClient;
-
-
-ResidueClient::ResidueClient(const std::string& host, std::string&& port) noexcept :
-    m_host(host),
-    m_port(std::move(port)),
-    m_socket(m_ioService),
-    m_connected(false)
-{
-}
-
-void ResidueClient::connect()
-{
-    tcp::resolver resolver(m_ioService);
-    tcp::resolver::iterator endpoint = resolver.resolve(tcp::resolver::query(m_host, m_port));
-    // Do not use async_connect as we want client application to wait
-    try {
-        asio::connect(m_socket, endpoint);
-        m_connected = true;
-    } catch (const std::exception& e) {
-        m_lastError = "Failed to connect: " + std::string(e.what());
-        reslog(reslog::error) << m_lastError;
-        throw ResidueException(e.what());
-    }
-}
-
-void ResidueClient::send(std::string&& payload, bool expectResponse, const ResponseHandler& resHandler, bool retryOnTimeout, bool ignoreQueue)
-{
-    reslog(reslog::crazy) << "Send: " << payload;
-    if (!m_socket.is_open()) {
-        reslog(reslog::error) << "Socket closed [" << m_port << "]";
-        return;
-    }
-    if (!m_connected) {
-        reslog(reslog::error) << "Client not connected [" << m_port << "]";
-        return;
-    }
-    reslog(reslog::crazy) << "Writing [" << m_port << "]..." << (expectResponse ? "" : " (async)");
-    if (expectResponse) {
-        try {
-            asio::write(m_socket, asio::buffer(payload, payload.length()));
-            reslog(reslog::crazy) << "Waiting for response...";
-            read(resHandler, payload);
-            reslog(reslog::crazy) << "Done";
-        } catch (const std::exception& e) {
-            m_lastError = "Failed to send: " + std::string(e.what());
-            reslog(reslog::error) << m_lastError;
-            if (retryOnTimeout && m_lastError.find("Operation timed out") != std::string::npos) {
-                m_socket.close();
-                m_connected = false;
-                connect();
-                send(std::move(payload), expectResponse, resHandler, false);
-            } else {
-                throw ResidueException(e.what());
-            }
-        }
-    } else {
-        asio::async_write(m_socket, asio::buffer(payload, payload.length()),
-                                 [&](const std::error_code&, std::size_t) {
-        });
-    }
-}
-
-void ResidueClient::read(const ResponseHandler& resHandler, const std::string& payload)
-{
-    std::error_code ec;
-    asio::streambuf buf;
-    try {
-        std::size_t numOfBytes = asio::read_until(m_socket, buf, Ripe::PACKET_DELIMITER, ec);
-        if (!ec) {
-            std::istream is(&buf);
-            std::string buffer((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
-            buffer.erase(numOfBytes - Ripe::PACKET_DELIMITER_SIZE);
-            resHandler(std::move(buffer), false, "");
-        } else {
-            if ((ec == asio::error::eof) || (ec == asio::error::connection_reset)) {
-                reslog(reslog::error) << "Failed to send, requeueing...";
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                m_connected = false;
-            } else {
-                reslog(reslog::error) << ec.message();
-                resHandler("", true, ec.message());
-            }
-        }
-    } catch (const std::exception& e) {
-        reslog(reslog::error) << e.what();
-        resHandler("", true, std::string(e.what()));
-    }
-}
-
-class ResidueDispatcher : public el::base::DefaultLogDispatchCallback // we override default log dispatcher rather than create new one
-{
-public:
-    ResidueDispatcher() : m_residue(nullptr), m_data(nullptr) {}
-
-    inline void setResidue(Residue* residue) { m_residue = residue; }
-protected:
-    void handle(const el::LogDispatchData* data) noexcept override;
-private:
-    Residue* m_residue;
-    const el::LogDispatchData* m_data;
-    std::string m_host;
-};
-
-void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
-{
-    m_data = data;
-
-    if (data->logMessage()->logger()->id() == RESIDUE_LOGGER_ID) {
-        el::base::DefaultLogDispatchCallback::handle(m_data);
-    } else {
-        std::time_t t = std::time(nullptr);
-        std::tm* nowTm;
-        if (m_residue->m_utc) {
-            nowTm = std::gmtime(&t);
-        } else {
-            nowTm = std::localtime(&t);
-        }
-        time_t now;
-        if (nowTm != nullptr) {
-            now = mktime(nowTm);
-            now += m_residue->m_timeOffset;
-            now *= 1000;
-        } else {
-            reslog(reslog::error) << "Unable to create time. Using second method to send local time instead.";
-            now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
-        }
-        m_residue->addToQueue(std::move(std::make_tuple(now,
-                                              el::Helpers::getThreadName(),
-                                              m_data->logMessage()->logger()->id(),
-                                              m_data->logMessage()->message(),
-                                              m_data->logMessage()->file(),
-                                              m_data->logMessage()->line(),
-                                              m_data->logMessage()->func(),
-                                              static_cast<unsigned int>(m_data->logMessage()->level()),
-                                              m_data->logMessage()->verboseLevel()
-                                              ))
-                              );
-    }
-}
+static std::unique_ptr<NetworkClient> s_connectionClient;
+static std::unique_ptr<NetworkClient> s_tokenClient;
+static std::unique_ptr<NetworkClient> s_loggingClient;
 
 void residueCrashHandler(int sig) noexcept
 {
-    reslog(reslog::error) << "Crashed!";
+    InternalLogger(InternalLogger::error) << "Crashed!";
     if (!Residue::instance().crashHandlerLoggerId().empty()) {
         CLOG(ERROR, Residue::instance().crashHandlerLoggerId().c_str()) << "Crashed!";
-        el::Helpers::logCrashReason(sig, true, el::Level::Fatal, Residue::instance().crashHandlerLoggerId().c_str());
+        el::Helpers::logCrashReason(sig, true, el::Level::Fatal,
+                                    Residue::instance().crashHandlerLoggerId().c_str());
     }
     Residue::disconnect();
     el::Helpers::crashAbort(sig);
@@ -356,7 +90,7 @@ Residue::Residue() noexcept :
     m_autoBulkParams(true),
     m_knownClient(false)
 {
-    reslog(reslog::debug) << "Initialized residue!";
+    InternalLogger(InternalLogger::debug) << "Initialized residue!";
 }
 
 Residue::~Residue() noexcept
@@ -381,19 +115,22 @@ void Residue::healthCheck() noexcept
 void Residue::connect_(const std::string& host, int port, AccessCodeMap* accessCodeMap)
 {
     if (m_connected) {
-        reslog(reslog::error) << "Already connected. Please disconnect first";
+        InternalLogger(InternalLogger::error) << "Already connected. Please disconnect first";
         return;
     }
-    reslog(reslog::info) << "Connecting...";
+    InternalLogger(InternalLogger::info) << "Connecting...";
 
-    m_disconnected = false; // This method is only called by user so we want to reset disconnected state
+    // This method is only called by user so we want to reset disconnected state
+    m_disconnected = false;
+
     m_host = host;
     m_port = port;
     m_accessCodeMap = accessCodeMap;
 
     el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
 
-    s_connectionClient = std::unique_ptr<ResidueClient>(new ResidueClient(m_host, std::to_string(m_port)));
+    s_connectionClient = std::unique_ptr<NetworkClient>(
+                new NetworkClient(m_host, std::to_string(m_port)));
 
     try {
         s_connectionClient->connect();
@@ -414,14 +151,14 @@ void Residue::connect_(const std::string& host, int port, AccessCodeMap* accessC
         m_rsaPrivateKey = rsaKey.privateKey;
         m_rsaPublicKey = rsaKey.publicKey;
     }
-    reslog(reslog::info) << "Estabilishing full connection...";
+    InternalLogger(InternalLogger::info) << "Estabilishing full connection...";
     reset();
 
 }
 
 void Residue::onConnect() noexcept
 {
-    reslog(reslog::info) << "Successfully connected";
+    InternalLogger(InternalLogger::info) << "Successfully connected";
 
     // Register callbacks (and unregister default callback)
     el::Helpers::uninstallLogDispatchCallback<el::base::DefaultLogDispatchCallback>("DefaultLogDispatchCallback");
@@ -444,14 +181,14 @@ void Residue::onConnect() noexcept
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(m_dispatchDelay));
             }
-            reslog(reslog::debug) << "Finishing residue...";
+            InternalLogger(InternalLogger::debug) << "Finishing residue...";
         });
     }
 }
 
 void Residue::reset()
 {
-    reslog(reslog::debug) << "Resetting connection...";
+    InternalLogger(InternalLogger::debug) << "Resetting connection...";
     m_connecting = true;
     m_connected = false;
     RESIDUE_LOCK_LOG("reset");
@@ -470,7 +207,7 @@ void Residue::reset()
         j["client_id"] = m_clientId;
     }
 
-    reslog(reslog::debug) << "Connecting...(1)";
+    InternalLogger(InternalLogger::debug) << "Connecting...(1)";
 
     std::string data = j.dump();
     if (!m_serverPublicKey.empty()) {
@@ -482,19 +219,20 @@ void Residue::reset()
                                  [&](std::string&& connectResponse, bool hasError, std::string&& errorText) -> void {
             m_connecting = false;
             if (hasError || connectResponse.empty()) {
-                reslog(reslog::error) << "Failed to connect!";
+                InternalLogger(InternalLogger::error) << "Failed to connect!";
                 addError("Failed to connect to the residue server. " + errorText);
                 throw ResidueException(m_errors.at(m_errors.size() - 1));
             } else {
-                reslog(reslog::debug) << "Connecting...(2)";
+                InternalLogger(InternalLogger::debug) << "Connecting...(2)";
                 std::string decryptedResponse;
                 if (connectResponse.at(0) == '{') {
                     decryptedResponse = connectResponse;
                 } else {
                     try {
-                        decryptedResponse = Ripe::decryptRSA(connectResponse, m_rsaPrivateKey, true, false, m_rsaPrivateKeySecret);
+                        decryptedResponse = Ripe::decryptRSA(connectResponse, m_rsaPrivateKey,
+                                                             true, false, m_rsaPrivateKeySecret);
                     } catch (const std::exception& e) {
-                        reslog(reslog::error) << "Failed to read response: " << e.what();
+                        InternalLogger(InternalLogger::error) << "Failed to read response: " << e.what();
                         addError("Client private key does not match with the corresponding public key on the server.");
                         throw ResidueException(m_errors.at(m_errors.size() - 1));
                     }
@@ -503,7 +241,7 @@ void Residue::reset()
                 int result = decryptedResponse.empty() ? -1 : 0;
                 if (result != -1) {
 
-                    reslog(reslog::debug) << "Connecting...(2) > Parsing...";
+                    InternalLogger(InternalLogger::debug) << "Connecting...(2) > Parsing...";
 
                     try {
                         j = json::parse(decryptedResponse);
@@ -519,7 +257,7 @@ void Residue::reset()
                             std::string clientId = j["client_id"].get<std::string>();
                             m_clientId = clientId;
                             m_connecting = true;
-                            reslog(reslog::debug) << "Connecting...(3)";
+                            InternalLogger(InternalLogger::debug) << "Connecting...(3)";
                             json j2;
                             type = 2; // 2 = ACKNOWLEDGE
                             j2["type"] = type;
@@ -528,11 +266,12 @@ void Residue::reset()
                             std::string jsonRequest = j2.dump();
                             std::string ackRequest = Ripe::prepareData(jsonRequest.c_str(), m_key, m_clientId.c_str());
                             try {
-                                s_connectionClient->send(ackRequest.c_str(), true, [&](std::string&& ackResponse, bool hasError, std::string&& errorText) -> void {
-                                    reslog(reslog::debug) << "Saving connection parameters...";
+                                s_connectionClient->send(ackRequest.c_str(), true, [&](std::string&& ackResponse,
+                                                         bool hasError, std::string&& errorText) -> void {
+                                    InternalLogger(InternalLogger::debug) << "Saving connection parameters...";
                                     m_connecting = false;
                                     if (hasError) {
-                                        reslog(reslog::error) << "Failed to connect. Network error";
+                                        InternalLogger(InternalLogger::error) << "Failed to connect. Network error";
                                         addError("Failed to connect to the residue server. Network error. " + errorText);
                                         throw ResidueException(m_errors.at(m_errors.size() - 1));
                                     } else {
@@ -544,11 +283,13 @@ void Residue::reset()
                                             }
                                             try {
                                                 j = json::parse(ackResponse);
-                                                reslog(reslog::error) << j["error_text"].get<std::string>();
+                                                InternalLogger(InternalLogger::error) << j["error_text"].get<std::string>();
                                                 addError(j["error_text"].get<std::string>());
                                                 throw ResidueException(m_errors.at(m_errors.size() - 1));
                                             } catch (const std::exception& e) {
-                                                reslog(reslog::error) << "Error occurred but could not parse response: " << ackResponse << " (" << e.what() << ")";
+                                                InternalLogger(InternalLogger::error)
+                                                        << "Error occurred but could not parse response: "
+                                                        << ackResponse << " (" << e.what() << ")";
                                             }
 
                                         } else {
@@ -566,11 +307,13 @@ void Residue::reset()
                                                 m_serverVersion = j["server_info"]["version"].get<std::string>();
 
                                                 // Token server
-                                                s_tokenClient = std::unique_ptr<ResidueClient>(new ResidueClient(m_host, std::to_string(m_tokenPort)));
+                                                s_tokenClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_tokenPort)));
                                                 try {
                                                     s_tokenClient->connect();
                                                     if (!s_tokenClient->connected()) {
-                                                        addError("Failed to connect. (Port: " + std::to_string(m_tokenPort) + ") " + s_tokenClient->lastError());
+                                                        addError("Failed to connect. (Port: " +
+                                                                 std::to_string(m_tokenPort) + ") " +
+                                                                 s_tokenClient->lastError());
                                                         throw ResidueException(m_errors.at(m_errors.size() - 1));
                                                     }
                                                 } catch (const ResidueException& e) {
@@ -579,7 +322,7 @@ void Residue::reset()
                                                 }
 
                                                 // Logging server
-                                                s_loggingClient = std::unique_ptr<ResidueClient>(new ResidueClient(m_host, std::to_string(m_loggingPort)));
+                                                s_loggingClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_loggingPort)));
                                                 try {
                                                     s_loggingClient->connect();
                                                     if (!s_loggingClient->connected()) {
@@ -608,7 +351,7 @@ void Residue::reset()
 
                                                 onConnect();
                                             } catch (const std::exception& e) {
-                                                reslog(reslog::error) << "Failed to connect (4): " << e.what();
+                                                InternalLogger(InternalLogger::error) << "Failed to connect (4): " << e.what();
                                                 throw ResidueException(e.what());
                                             }
                                         }
@@ -618,20 +361,22 @@ void Residue::reset()
                                 throw e;
                             }
                         } else {
-                           reslog(reslog::error) << "Failed to connect (2): " << j["error_text"].get<std::string>();
+                           InternalLogger(InternalLogger::error) << "Failed to connect (2): "
+                                                                 << j["error_text"].get<std::string>();
                            addError("Failed to connect. " + j["error_text"].get<std::string>());
                            throw ResidueException(m_errors.at(m_errors.size() - 1));
                         }
                     } catch (const std::exception& e) {
-                        reslog(reslog::error) << "Failed to connect (2) [parse error]: " << e.what();
+                        InternalLogger(InternalLogger::error) << "Failed to connect (2) [parse error]: " << e.what();
                         throw ResidueException(e.what());
                     }
 
                 } else {
-                    reslog(reslog::debug) << "Failed to read response!";
-                    reslog(reslog::error) << "Failed to connect (2)";
+                    InternalLogger(InternalLogger::debug) << "Failed to read response!";
+                    InternalLogger(InternalLogger::error) << "Failed to connect (2)";
                     if (m_knownClient) {
-                        reslog(reslog::error) << "RSA private key provided does not match the public key on the server.";
+                        InternalLogger(InternalLogger::error)
+                                << "RSA private key provided does not match the public key on the server.";
                         addError("RSA private key provided does not match the public key on the server.");
                         throw ResidueException(m_errors.at(m_errors.size() - 1));
                     }
@@ -656,7 +401,7 @@ void Residue::addToQueue(RequestTuple&& request) noexcept
 
 #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_queue, queue_dura);
-    reslog(reslog::debug) << queue_dura << "ms taken to add to queue";
+    InternalLogger(InternalLogger::debug) << queue_dura << "ms taken to add to queue";
     queue_ms += queue_dura;
 #endif
 }
@@ -678,18 +423,18 @@ void Residue::dispatch()
     while (!m_requests.empty()) {
 
         while (m_connecting) {
-            reslog(reslog::debug) << "Still connecting...";
+            InternalLogger(InternalLogger::debug) << "Still connecting...";
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
         try {
             if (!s_loggingClient->connected() || !s_tokenClient->connected()) {
-                reslog(reslog::info) << "Trying to connect...";
+                InternalLogger(InternalLogger::info) << "Trying to connect...";
                 m_connected = false;
                 connect();
             }
         } catch (const ResidueException& e) {
-            reslog(reslog::error) << "Failed to connect: " << e.what() << ". Retrying in 500ms";
+            InternalLogger(InternalLogger::error) << "Failed to connect: " << e.what() << ". Retrying in 500ms";
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             continue;
         }
@@ -744,7 +489,7 @@ void Residue::dispatch()
             try {
                 jsonData = Ripe::base64Encode(Ripe::compressString(jsonData));
             } catch (const std::exception& e) {
-                reslog(reslog::error) << "Failed to compress the data: " << e.what();
+                InternalLogger(InternalLogger::error) << "Failed to compress the data: " << e.what();
             }
         }
 
@@ -752,7 +497,9 @@ void Residue::dispatch()
         RESIDUE_PROFILE_END(t_prepare_data, prepare_data);
 
         RESIDUE_PROFILE_START(t_send);
-        s_loggingClient->send(std::move(data), true); // we keep it to true as we may end program before it's actually dispatched
+
+        // we keep it to true as we may end program before it's actually dispatched
+        s_loggingClient->send(std::move(data), true);
 
         RESIDUE_PROFILE_END(t_send, send_recv);
 
@@ -760,13 +507,17 @@ void Residue::dispatch()
         RESIDUE_PROFILE_END(t_while, while_loop);
         c_in_while++;
         RESIDUE_PROFILE_CHECKPOINT(t_dispatch, total_duration_dispatch, 4);
-        reslog(reslog::debug) << "While: " << while_loop << " ms For: " << for_loop << " ms Prepare: " << prepare_data << " ms send_recv " << send_recv << "ms \n";
+        InternalLogger(InternalLogger::debug) << "While: " << while_loop << " ms For: "
+                                              << for_loop << " ms Prepare: " << prepare_data
+                                              << " ms send_recv " << send_recv << "ms \n";
 #endif
     }
 
 #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_dispatch, total_duration_dispatch);
-    reslog(reslog::debug) << total_duration_dispatch << " ms taken for dispatching " << c << " items with " << c_in_while << " each loop\n";
+    InternalLogger(InternalLogger::debug) << total_duration_dispatch
+                                          << " ms taken for dispatching " << c << " items with "
+                                          << c_in_while << " each loop\n";
 
     dispatch_ms += total_duration_dispatch;
 #endif
@@ -836,7 +587,7 @@ bool Residue::shouldTouch() const noexcept
 
 void Residue::touch() noexcept
 {
-    reslog(reslog::debug) << "Touching...";
+    InternalLogger(InternalLogger::debug) << "Touching...";
     m_connecting = true;
     json j;
     int type = 3; // 3 = TOUCH
@@ -848,13 +599,14 @@ void Residue::touch() noexcept
     try {
         request = Ripe::prepareData(jsonRequest.c_str(), m_key, m_clientId.c_str());
     } catch (const std::exception& e) {
-        reslog(reslog::error) << "Failed to prepare request (TOUCH): " << e.what();
+        InternalLogger(InternalLogger::error) << "Failed to prepare request (TOUCH): " << e.what();
     }
 
-    s_connectionClient->send(std::move(request), true, [&](std::string&& response, bool hasError, std::string&& errorText) -> void {
+    s_connectionClient->send(std::move(request), true, [&](std::string&& response, bool hasError,
+                             std::string&& errorText) -> void {
         m_connecting = false;
         if (hasError) {
-            reslog(reslog::error) << "Failed to touch. Network error. " + errorText;
+            InternalLogger(InternalLogger::error) << "Failed to touch. Network error. " + errorText;
         } else {
             if (response.find("{") != std::string::npos) {
                 // Error
@@ -864,10 +616,11 @@ void Residue::touch() noexcept
                 }
                 try {
                     j = json::parse(response);
-                    reslog(reslog::error) << j["error_text"].get<std::string>();
+                    InternalLogger(InternalLogger::error) << j["error_text"].get<std::string>();
                     addError(j["error_text"].get<std::string>());
                 } catch (const std::exception& e) {
-                    reslog(reslog::error) << "Error occurred but could not parse response: " << response << " (" << e.what() << ")";
+                    InternalLogger(InternalLogger::error) << "Error occurred but could not parse response: "
+                                                          << response << " (" << e.what() << ")";
                 }
 
             } else {
@@ -880,7 +633,7 @@ void Residue::touch() noexcept
                     m_age = j["age"].get<int>();
                     m_dateCreated = j["date_created"].get<unsigned long>();
                 } catch (const std::exception& e) {
-                    reslog(reslog::error) << "Failed to read TOUCH response: " << e.what();
+                    InternalLogger(InternalLogger::error) << "Failed to read TOUCH response: " << e.what();
                 }
             }
         }
@@ -889,7 +642,7 @@ void Residue::touch() noexcept
 
 void Residue::disconnect_() noexcept
 {
-    reslog(reslog::debug) << "Disconnecting...";
+    InternalLogger(InternalLogger::debug) << "Disconnecting...";
     m_connected = false;
     el::Helpers::installLogDispatchCallback<el::base::DefaultLogDispatchCallback>("DefaultLogDispatchCallback");
     el::Helpers::uninstallLogDispatchCallback<ResidueDispatcher>("ResidueDispatcher");
@@ -965,7 +718,7 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
     if (accessCode == DEFAULT_ACCESS_CODE && !hasFlag(Flag::ALLOW_DEFAULT_ACCESS_CODE)) {
         throw ResidueException("Loggers without access code are not allowed by the server [Logger ID: " + loggerId + "]");
     }
-    reslog(reslog::debug) << "Obtaining token for [" << loggerId << "] using [" << accessCode << "]";
+    InternalLogger(InternalLogger::debug) << "Obtaining token for [" << loggerId << "] using [" << accessCode << "]";
     json j;
     j["_t"] = getTimestamp();
     j["logger_id"] = loggerId;
@@ -975,7 +728,7 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
     try {
         s_tokenClient->send(std::move(request), true, [&](std::string&& response, bool hasError, std::string&& errorText) -> void {
             if (hasError) {
-                reslog(reslog::error) << "Failed to obtain token. " << errorText;
+                InternalLogger(InternalLogger::error) << "Failed to obtain token. " << errorText;
             } else {
                 if (response.find("{") != std::string::npos) {
                     // Error
@@ -985,10 +738,11 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
                     }
                     try {
                         j = json::parse(response);
-                        reslog(reslog::error) << j["error_text"].get<std::string>();
+                        InternalLogger(InternalLogger::error) << j["error_text"].get<std::string>();
                         addError(j["error_text"].get<std::string>());
                     } catch (const std::exception& e) {
-                        reslog(reslog::error) << "Error occurred but could not parse response: " << response << " (" << e.what() << ")";
+                        InternalLogger(InternalLogger::error) << "Error occurred but could not parse response: "
+                                                              << response << " (" << e.what() << ")";
                     }
 
                 } else {
@@ -997,10 +751,11 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
                         std::string decryptedResponse = Ripe::decryptAES(response, m_key, iv, true);
                         j = json::parse(decryptedResponse);
                         if (j.count("error_text") > 0) {
-                            reslog(reslog::error) << j["error_text"].get<std::string>();
+                            InternalLogger(InternalLogger::error) << j["error_text"].get<std::string>();
                             addError(j["error_text"].get<std::string>());
                         } else {
-                            unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
+                            unsigned long now =
+                                    std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
                             Token t { j["token"].get<std::string>(), j["life"].get<unsigned int>(), now };
                             RESIDUE_LOCK_LOG("obtainToken");
                             std::lock_guard<std::recursive_mutex> lock(m_mutex);
@@ -1010,7 +765,7 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
                             m_tokens.insert(std::make_pair(loggerId, t));
                         }
                     } catch (const std::exception& e) {
-                        reslog(reslog::error) << "Failed to read token response: " << e.what();
+                        InternalLogger(InternalLogger::error) << "Failed to read token response: " << e.what();
                     }
                 }
             }
@@ -1070,7 +825,8 @@ void Residue::loadConfiguration(const std::string& jsonFilename)
         std::string publicKeyFile = j["server_public_key"].get<std::string>();
         std::ifstream fsPub(publicKeyFile.c_str(), std::ios::in);
         if (fsPub.is_open()) {
-            r->m_serverPublicKey = std::string(std::istreambuf_iterator<char>(fsPub), std::istreambuf_iterator<char>());
+            r->m_serverPublicKey = std::string(std::istreambuf_iterator<char>(fsPub),
+                                               std::istreambuf_iterator<char>());
             fsPub.close();
         } else {
             throw ResidueException("File [" + publicKeyFile + "] not readable");
@@ -1131,6 +887,8 @@ std::string Residue::version() noexcept
 std::string Residue::info() noexcept
 {
     std::stringstream ss;
-    ss << "Residue C++ client library v" << version() << " (based on Easylogging++ v" << el::VersionInfo::version() << ")";
+    ss << "Residue C++ client library v" << version()
+       << " (based on Easylogging++ v" << el::VersionInfo::version()
+       << ")";
     return ss.str();
 }

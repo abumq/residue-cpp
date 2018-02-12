@@ -16,11 +16,10 @@ This section shows you steps to install residue C++ client library on your machi
 ## Download Binary
 You can download binary from [releases](https://github.com/muflihun/residue-cpp/releases) page for your platform. They are standalone libraries with dependency on `libz` that usually comes with operating system distribution.
 
- * Download tar archive for your platform
- * Download `easylogging.h` and `Residue.h`
- * Unzip tar archive and copy them to `/usr/local/lib/`
- * Copy `easylogging.h` to `/usr/local/include/residue/` as `easylogging++.h`
- * Copy `Residue.h` to `/usr/local/include/residue/`
+ * Download binaries archive for your platform
+ * Download headers archive
+ * Unzip binary archives and copy them to `/usr/local/lib/`
+ * Unzip header archives and copy them to `/usr/local/include/residue/`
  
 In a nutshell you will do:
 
@@ -49,7 +48,7 @@ cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.a /usr/local/lib/
 
 You should be ready to link your application against `libresidue`, both statically and dynamically.
 
-If you use cmake, you may also be interested in [Residue CMake module](https://github.com/muflihun/residue-cpp/blob/master/cmake/FindResidue.cmake)
+If you use cmake, you may also be interested in [Residue CMake module](https://github.com/muflihun/residue-cpp/blob/master/FindResidue.cmake)
 
 ## Build
 If you do not wish to download binaries, you can build your own library using following steps.
@@ -69,7 +68,7 @@ git clone git@github.com:muflihun/residue-cpp.git
 ### Build
 Residue C++ library uses the CMake toolchains to create makefiles.
 
-In a nut shell, you will do:
+In a nutshell, you will do:
 
 ```
 mkdir build
