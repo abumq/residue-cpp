@@ -22,11 +22,11 @@ You can download binary from [releases](https://github.com/muflihun/residue-cpp/
  * Copy `easylogging.h` to `/usr/local/include/residue/` as `easylogging++.h`
  * Copy `Residue.h` to `/usr/local/include/residue/`
  
-In a nut shell you will do:
+In a nutshell you will do:
 
 ```
 VERSION=1.1.0
-TYPE=linux
+TYPE=linux  ## or "darwin" (for macOS) or "linux-se" (for Special edition)
 
 ## Headers
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
@@ -35,7 +35,7 @@ mkdir /usr/local/include/residue/
 cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 
 ## Dynamic lib
-[[ $TYPE = "linux" ]] && EXTENSION="so" || EXTENSION="dylib"
+[[ $TYPE = "darwin" ]] && EXTENSION="dylib" || EXTENSION="so"
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
 cp libresidue-$VERSION-x86_64-$TYPE/libresidue.$EXTENSION /usr/local/lib/libresidue-$VERSION.$EXTENSION
