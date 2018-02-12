@@ -48,7 +48,7 @@ cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.a /usr/local/lib/
 
 You should be ready to link your application against `libresidue`, both statically and dynamically.
 
-If you use cmake, you may also be interested in [Residue CMake module](https://github.com/muflihun/residue-cpp/blob/master/cmake/FindResidue.cmake)
+If you use cmake, you may also be interested in [Residue CMake module](https://github.com/muflihun/residue-cpp/blob/master/FindResidue.cmake)
 
 ## Build
 If you do not wish to download binaries, you can build your own library using following steps.
