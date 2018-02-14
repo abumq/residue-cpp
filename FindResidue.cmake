@@ -48,13 +48,13 @@ set (RESIDUE_EXTRA_INCLUDE_DIRS "")
 if (Residue_USE_STATIC_LIBS)
     message ("-- Residue: Static linking")
     find_library(RESIDUE_LIBRARY_LOCAL
-        NAMES libresidue-static-full.a libresidue-static.a libresidue.a
+        NAMES libresidue-static-full.a libresidue-static.a libresidue.a libresidue.lib residue.lib
         HINTS "${RESIDUE_PATHS}/lib"
     )
 else()
     message ("-- Residue: Dynamic linking")
     find_library(RESIDUE_LIBRARY_LOCAL
-        NAMES libresidue.dylib libresidue.so libresidue residue
+        NAMES libresidue.dylib libresidue.so libresidue residue libresidue.dll residue.dll
         HINTS "${RESIDUE_PATHS}/lib"
     )
 endif()
