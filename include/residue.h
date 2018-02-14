@@ -1,13 +1,14 @@
 //
-//  Residue.h
+//  residue.h
 //
 //  Official C++ client library for Residue logging server
 //
-//  Copyright (C) 2017 Muflihun Labs
+//  Copyright (C) 2017-present Muflihun Labs
+//  Copyright (C) 2017-present @abumusamq
 //
-//  https://muflihun.com
-//  https://muflihun.github.io/residue
-//  https://github.com/muflihun/residue-cpp
+//  https://muflihun.com/
+//  https://muflihun.github.io/residue/
+//  https://github.com/muflihun/residue-cpp/
 //
 //  See https://github.com/muflihun/residue-cpp/blob/master/LICENSE
 //  for licensing information
