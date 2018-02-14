@@ -71,13 +71,13 @@ rm *.o
 cd ..
 mv $PACK_STATIC/libresidue-static-full.a .
 rm -rf $PACK_STATIC/*
-mv libresidue-static-full.a $PACK_STATIC/libresidue-static.a
+mv libresidue-static-full.a $PACK_STATIC/libresidue-static.$VERSION.a
 
-cp libresidue.so $PACK/libresidue.so
-cp libresidue.dylib $PACK/libresidue.dylib
+cp libresidue.so $PACK/libresidue.$VERSION.so
+cp libresidue.dylib $PACK/libresidue.$VERSION.dylib
 
-cp ../include/easylogging++.h $HEADERS
-cp ../include/residue.h $HEADERS
+cp ../include/easylogging++.h $HEADERS/
+cp ../include/residue.h $HEADERS/
 
 ls -lh $PACK
 ls -lh $PACK_STATIC
