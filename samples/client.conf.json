@@ -1,5 +1,5 @@
 {
-    "url": "localhost:8777",
+    "url": "residue-server:8777",
     "access_codes": [
         {
             "logger_id": "sample-app",

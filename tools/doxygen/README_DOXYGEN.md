@@ -9,10 +9,11 @@ Residue is efficient real-time centralized logging software. This documentation 
 Following licence applies strictly to this library. For Residue server licence please refer to [LICENCE](https://github.com/muflihun/residue/blob/master/LICENCE) on github.
 
 ```
-Copyright 2017 Muflihun Labs
+Copyright 2017-present Muflihun Labs
+Copyright 2017-present @abumusamq
 
 https://github.com/muflihun/
-https://muflihun.com
+https://muflihun.com/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
