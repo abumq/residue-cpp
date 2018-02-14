@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     Residue::setApplicationArgs(argc, argv);
 
 #if 0 // Configure via config file
-    std::string clientConfigFile = "samples/client.conf.json";
+    std::string clientConfigFile = "/Users/abumusamq/Dev/residue-cpp/samples/client.conf.json";
     Residue::loadConfiguration(clientConfigFile);
 #else
 
@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
     if (argc > 1 && strcmp(argv[1], "--bulk") == 0) {
         std::cout << "Bulk requests!" << std::endl;
         try {
-            Residue::setBulkSize(5);
+            Residue::setBulkSize(50);
             Residue::enableBulkDispatch();
         } catch (const ResidueException& e) {
             std::cerr << "ERROR: " << e.what() << std::endl;
@@ -234,7 +234,7 @@ int main(int argc, char* argv[]) {
 #if 1
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
     for (unsigned long i = 1; i <= 1000000; ++i) {
-        LOG(INFO) << "Test";
+        LOG(INFO) << "Test " << i;
     }
     std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 
