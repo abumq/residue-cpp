@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.2]
+### Updates
+- Upgraded Easylogging++ from 9.95.4 to 9.96.0
+
 ## [1.2.1]
 ### Updates
 - Separated translation units for development

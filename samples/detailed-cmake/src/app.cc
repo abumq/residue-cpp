@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << Residue::info() << std::endl;
 
-#if 1 // minimal sample with unknown logger
+#if 0 // minimal sample with unknown logger
     try {
         Residue::connect("residue-server", Residue::DEFAULT_PORT);
     } catch (const ResidueException& e) {
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
     // in (you just need to make sure that accessCodes in still in scope when you
     // call Residue::connect()
 
-#if 0
+#if 1
     //
     // Optional: Providing "--bulk" option enables bulk dispatch for residue which means each log request
     // will be sent to the server in batch of bulk size. See following links for details
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]) {
 #endif
 
     // Below code is only for benchmark test
-#if 0
+#if 1
     std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
     for (unsigned long i = 1; i <= 1000000; ++i) {
         LOG(INFO) << "Test";
