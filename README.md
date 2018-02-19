@@ -176,6 +176,7 @@ You can take advantage [`strip`](https://linux.die.net/man/1/strip) if you wish 
 
 ```
 Copyright 2017-present Muflihun Labs
+Copyright 2017-present @abumusamq
 
 https://github.com/muflihun/
 https://muflihun.github.io/
