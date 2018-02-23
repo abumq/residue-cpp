@@ -74,7 +74,6 @@ Residue::Residue() noexcept :
     m_bulkDispatch(false),
     m_bulkSize(1),
     m_maxBulkSize(1),
-    m_plainRequest(false),
     m_keySize(DEFAULT_KEY_SIZE),
     m_age(0),
     m_dateCreated(0),
@@ -418,7 +417,6 @@ void Residue::dispatch()
 #endif
 
     RESIDUE_PROFILE_START(t_dispatch);
-    bool plain = m_plainRequest && hasFlag(Flag::ALLOW_PLAIN_LOG_REQUEST);
     while (!m_requests.empty()) {
 
         while (m_connecting) {
@@ -492,7 +490,7 @@ void Residue::dispatch()
             }
         }
 
-        std::string data = plain ? std::move(jsonData) + Ripe::PACKET_DELIMITER : Ripe::prepareData(jsonData.c_str(), m_key, m_clientId.c_str());
+        std::string data = Ripe::prepareData(jsonData.c_str(), m_key, m_clientId.c_str());
         RESIDUE_PROFILE_END(t_prepare_data, prepare_data);
 
         RESIDUE_PROFILE_START(t_send);
@@ -547,10 +545,6 @@ std::string Residue::requestToJson(RequestTuple&& request)
         token = getToken(loggerId);
 
         j["token"] = token;
-    }
-
-    if (m_plainRequest && hasFlag(Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-        j["client_id"] = m_clientId;
     }
 
     j["thread"] = threadId;
@@ -836,9 +830,6 @@ void Residue::loadConfiguration(const std::string& jsonFilename)
     }
     if (j.count("utc_time") > 0) {
         r->m_utc = j["utc_time"].get<bool>();
-    }
-    if (j.count("plain_request") > 0) {
-        r->m_plainRequest = j["plain_request"].get<bool>();
     }
     if (j.count("time_offset") > 0) {
         r->m_timeOffset = j["time_offset"].get<int>();
