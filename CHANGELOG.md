@@ -3,6 +3,7 @@
 ## [1.2.3] - 23-02-2018
 ### Updates
 - Removed plain log request to match server 1.5+
+- Updated Easylogging++ to 9.96.1
 
 ## [1.2.2]
 ### Updates
