@@ -62,7 +62,6 @@ public:
         ALLOW_UNKNOWN_LOGGERS = 1,
         REQUIRES_TOKEN = 2,
         ALLOW_DEFAULT_ACCESS_CODE = 4,
-        ALLOW_PLAIN_LOG_REQUEST = 8,
         ALLOW_BULK_LOG_REQUEST = 16,
         COMPRESSION = 256,
     };
@@ -504,23 +503,6 @@ public:
     }
 
     ///
-    /// \brief Send plain log request when possible (i.e, when server allows it)
-    ///
-    static inline void enablePlainRequest() noexcept
-    {
-        Residue::instance().m_plainRequest = true;
-    }
-
-    ///
-    /// \brief Disable plain log request
-    /// \see enablePlainRequest()
-    ///
-    static inline void disablePlainRequest() noexcept
-    {
-        Residue::instance().m_plainRequest = false;
-    }
-
-    ///
     /// \brief Sets current thread name
     ///
     static inline void setThreadName(const std::string& threadName) noexcept
@@ -564,7 +546,6 @@ public:
     ///     ],
     ///     "application_id": "com.muflihun.sampleapp",
     ///     "rsa_key_size": 2048,
-    ///     "plain_request": false,
     ///     "utc_time": false,
     ///     "time_offset": -3600,
     ///     "dispatch_delay": 1,
@@ -673,8 +654,6 @@ private:
     std::atomic<bool> m_bulkDispatch;
     unsigned int m_bulkSize;
     unsigned int m_maxBulkSize;
-
-    std::atomic<bool> m_plainRequest;
 
     std::string m_rsaPrivateKey;
     std::string m_rsaPrivateKeySecret;
