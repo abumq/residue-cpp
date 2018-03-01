@@ -57,12 +57,12 @@ int main(int argc, char* argv[]) {
     Residue::setApplicationArgs(argc, argv);
 
 #if 0 // Configure via config file
-    std::string clientConfigFile = "/Users/majid.khan/Projects/residue-cpp/samples/client.conf.json";
+    std::string clientConfigFile = "/Users/abumusamq/Dev/residue-cpp/samples/client.conf.json";
     Residue::loadConfiguration(clientConfigFile);
 #else
 
     // review the privateKeyFile location (try running this sample from root)
-    std::string keyBase = "/Users/majid.khan/Projects/residue/tools/netcat-client/";
+    std::string keyBase = "/Users/abumusamq/Dev/residue/tools/netcat-client/";
 
     // Manually set configurations via API
 #   if 1 // enable known client
