@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [2.0.0] - 01-03-2018
 ### Fixes
 - Compatibility for server 2.0.0
 - Updated Easylogging++ to 9.96.2
