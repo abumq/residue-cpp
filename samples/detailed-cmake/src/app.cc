@@ -27,6 +27,8 @@ int main(int argc, char* argv[]) {
 
     std::cout << Residue::info() << std::endl;
 
+//    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
+
 #if 0 // minimal sample with unknown logger
     try {
         Residue::connect("residue-server", Residue::DEFAULT_PORT);
@@ -100,21 +102,10 @@ int main(int argc, char* argv[]) {
 #   endif
 
     Residue::setThreadName("Main Thread");
-    // We need authentic access codes to access "sample-app" logger
-    // on the server. This will usually be provided by your host.
-    Residue::AccessCodeMap accessCodes = {
-        {
-            "sample-app", "a2dcb"
-        }
-    };
-    Residue::moveAccessCodeMap(std::move(accessCodes));
-    // This connection is done on localhost using default port
-    // in your application you will provide server ip address and port provided by
-    // your host to successfully connect, e.g, Residue::connect("123.456.12.12", 8777, &accessCodes)
 #endif
 
     try {
-        Residue::connect();
+        Residue::connect("residue-server", Residue::DEFAULT_PORT);
     } catch (const ResidueException& e) {
         std::cout << "EXCEPTION: " << e.what() << std::endl;
         return 1;
@@ -140,9 +131,7 @@ int main(int argc, char* argv[]) {
 
     // In perfect world, you should be connected to the server now.
     // If anywhere in the program you wish to disconnect and log locally
-    // simply use Residue::disconnect() and after that you can use
-    // Residue::connect() to use same accessCodes map without re-passing them
-    // in (you just need to make sure that accessCodes in still in scope when you
+    // simply use Residue::disconnect() and after that you can
     // call Residue::connect()
 
 #if 1
@@ -245,8 +234,6 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
-    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::debug);
-
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
     // log dispatcher and installs it's own dispatcher. If you want to know more about this technique
@@ -256,7 +243,6 @@ int main(int argc, char* argv[]) {
     LOG(ERROR) << "Test error";
     VLOG(1) << "Verbose log level-1";
 
-    // using default logger - note we did not provide any access code for it
     CLOG(INFO, "default") << "Test using default logger";
     CLOG(INFO, "sample-app-unknown-logger") << "Test using unknown logger";
 

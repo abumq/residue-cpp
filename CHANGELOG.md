@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.0.0] - 01-03-2018
+### Fixes
+- Compatibility for server 2.0.0
+- Updated Easylogging++ to 9.96.2
+
 ## [1.2.3] - 23-02-2018
 ### Updates
 - Removed plain log request to match server 1.5+

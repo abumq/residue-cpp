@@ -9,9 +9,9 @@ option (travis "Whether its travis build or not" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 option (special_edition "Special edition build" OFF)
 
-set (RESIDUE_MAJOR "1")
-set (RESIDUE_MINOR "2")
-set (RESIDUE_PATCH "2")
+set (RESIDUE_MAJOR "2")
+set (RESIDUE_MINOR "0")
+set (RESIDUE_PATCH "0")
 
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue-C++")

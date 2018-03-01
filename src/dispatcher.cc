@@ -41,16 +41,19 @@ void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
             InternalLogger(InternalLogger::error) << "Unable to create time. Using second method to send local time instead.";
             now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
         }
-        m_residue->addToQueue(std::move(std::make_tuple(now,
-                                              el::Helpers::getThreadName(),
-                                              m_data->logMessage()->logger()->id(),
-                                              m_data->logMessage()->message(),
-                                              m_data->logMessage()->file(),
-                                              m_data->logMessage()->line(),
-                                              m_data->logMessage()->func(),
-                                              static_cast<unsigned int>(m_data->logMessage()->level()),
-                                              m_data->logMessage()->verboseLevel()
-                                              ))
+        m_residue->addToQueue(std::move(Residue::RawRequest
+                                              {
+                                                    static_cast<unsigned long>(now),
+                                                    el::Helpers::getThreadName(),
+                                                    m_data->logMessage()->logger()->id(),
+                                                    m_data->logMessage()->message(),
+                                                    m_data->logMessage()->file(),
+                                                    m_data->logMessage()->line(),
+                                                    m_data->logMessage()->func(),
+                                                    static_cast<unsigned int>(m_data->logMessage()->level()),
+                                                    m_data->logMessage()->verboseLevel()
+                                              }
+                                        )
                               );
     }
 }

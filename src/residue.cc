@@ -20,7 +20,6 @@
 #include <memory>
 #include <chrono>
 #include <functional>
-#include <tuple>
 #include "ripe/Ripe.h"
 #include "nlohmann-json/json.h"
 #include "include/residue.h"
@@ -35,7 +34,6 @@ const std::size_t Residue::DEFAULT_KEY_SIZE = 2048;
 const std::string Residue::LOCALHOST = "127.0.0.1";
 const int Residue::DEFAULT_PORT = 8777;
 const unsigned int Residue::TOUCH_THRESHOLD = 60;
-const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
 
@@ -46,7 +44,6 @@ using json = nlohmann::json;
 volatile int Residue::s_internalLoggingLevel = InternalLogger::none;
 
 static std::unique_ptr<NetworkClient> s_connectionClient;
-static std::unique_ptr<NetworkClient> s_tokenClient;
 static std::unique_ptr<NetworkClient> s_loggingClient;
 
 void residueCrashHandler(int sig) noexcept
@@ -67,7 +64,6 @@ Residue::Residue() noexcept :
 #endif
     m_host(""),
     m_port(0),
-    m_accessCodeMap(nullptr),
     m_connected(false),
     m_connecting(false),
     m_disconnected(false),
@@ -78,7 +74,6 @@ Residue::Residue() noexcept :
     m_age(0),
     m_dateCreated(0),
     m_loggingPort(0),
-    m_tokenPort(0),
     m_serverFlags(0x0),
     m_utc(false),
     m_timeOffset(0),
@@ -110,7 +105,7 @@ void Residue::healthCheck() noexcept
     }
 }
 
-void Residue::connect_(const std::string& host, int port, AccessCodeMap* accessCodeMap)
+void Residue::connect_(const std::string& host, int port)
 {
     if (m_connected) {
         InternalLogger(InternalLogger::error) << "Already connected. Please disconnect first";
@@ -123,7 +118,6 @@ void Residue::connect_(const std::string& host, int port, AccessCodeMap* accessC
 
     m_host = host;
     m_port = port;
-    m_accessCodeMap = accessCodeMap;
 
     el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
 
@@ -193,7 +187,6 @@ void Residue::reset()
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
 
     m_errors.clear();
-    m_tokens.clear();
     int type = 1; // 1 = CONNECT
 
     json j;
@@ -293,31 +286,16 @@ void Residue::reset()
                                         } else {
                                             std::string iv;
                                             try {
+                                                InternalLogger(InternalLogger::error) << "Reading connection";
                                                 std::string decryptedAckResponse = Ripe::decryptAES(ackResponse, m_key, iv, true);
                                                 j = json::parse(decryptedAckResponse);
                                                 m_key = j["key"].get<std::string>();
                                                 m_age = j["age"].get<unsigned int>();
                                                 m_dateCreated = j["date_created"].get<unsigned long>();
                                                 m_loggingPort = j["logging_port"].get<int>();
-                                                m_tokenPort = j["token_port"].get<int>();
                                                 m_maxBulkSize = j["max_bulk_size"].get<unsigned int>();
                                                 m_serverFlags = j["flags"].get<unsigned int>();
                                                 m_serverVersion = j["server_info"]["version"].get<std::string>();
-
-                                                // Token server
-                                                s_tokenClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_tokenPort)));
-                                                try {
-                                                    s_tokenClient->connect();
-                                                    if (!s_tokenClient->connected()) {
-                                                        addError("Failed to connect. (Port: " +
-                                                                 std::to_string(m_tokenPort) + ") " +
-                                                                 s_tokenClient->lastError());
-                                                        throw ResidueException(m_errors.at(m_errors.size() - 1));
-                                                    }
-                                                } catch (const ResidueException& e) {
-                                                    addError("Failed to connect. (Port: " + std::to_string(m_tokenPort) + ") " + e.what());
-                                                    throw e;
-                                                }
 
                                                 // Logging server
                                                 s_loggingClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_loggingPort)));
@@ -386,7 +364,7 @@ void Residue::reset()
     }
 }
 
-void Residue::addToQueue(RequestTuple&& request) noexcept
+void Residue::addToQueue(RawRequest&& request) noexcept
 {
 #ifdef RESIDUE_PROFILING
     c_total++;
@@ -425,7 +403,7 @@ void Residue::dispatch()
         }
 
         try {
-            if (!s_loggingClient->connected() || !s_tokenClient->connected()) {
+            if (!s_loggingClient->connected()) {
                 InternalLogger(InternalLogger::info) << "Trying to connect...";
                 m_connected = false;
                 connect();
@@ -453,7 +431,7 @@ void Residue::dispatch()
         RESIDUE_PROFILE_START(t_for);
         for (std::size_t i = 0; i < totalRequests; ++i) {
 
-            RequestTuple request;
+            RawRequest request;
 
             {
                 RESIDUE_LOCK_LOG("dispatch");
@@ -520,50 +498,31 @@ void Residue::dispatch()
 #endif
 }
 
-std::string Residue::requestToJson(RequestTuple&& request)
+std::string Residue::requestToJson(RawRequest&& request)
 {
-    unsigned long date = std::get<0>(request);
-    std::string& threadId = std::get<1>(request);
-    std::string& loggerId = std::get<2>(request);
-    el::base::type::string_t& msg = std::get<3>(request);
-    std::string& file = std::get<4>(request);
-    el::base::type::LineNumber line = std::get<5>(request);
-    std::string& func = std::get<6>(request);
-    unsigned int level = std::get<7>(request);
-    el::base::type::VerboseLevel vlevel = std::get<8>(request);
-
     json j;
     if (!m_applicationId.empty()) {
         j["app"] = m_applicationId;
     }
 
-    if (hasFlag(Flag::REQUIRES_TOKEN)) {
-        std::string token = getToken(loggerId);
-        if (token.empty()) {
-            obtainToken(loggerId);
-        }
-        token = getToken(loggerId);
+    j["_t"] = getTimestamp();
+    j["thread"] = request.threadId;
+    j["datetime"] = request.date;
+    j["logger"] = request.loggerId;
+    j["msg"] = request.msg;
+    if (!request.file.empty()) {
+        j["file"] = request.file;
+    }
+    if (request.line > 0L) {
+        j["line"] = request.line;
+    }
+    if (!request.func.empty()) {
+        j["func"] = request.func;
+    }
+    j["level"] = request.level;
 
-        j["token"] = token;
-    }
-
-    j["thread"] = threadId;
-    j["datetime"] = date;
-    j["logger"] = loggerId;
-    j["msg"] = msg;
-    if (!file.empty()) {
-        j["file"] = file;
-    }
-    if (line > 0L) {
-        j["line"] = line;
-    }
-    if (!func.empty()) {
-        j["func"] = func;
-    }
-    j["level"] = level;
-
-    if (vlevel > 0) {
-        j["vlevel"] = vlevel;
+    if (request.vlevel > 0) {
+        j["vlevel"] = request.vlevel;
     }
     return j.dump();
 }
@@ -647,7 +606,6 @@ void Residue::disconnect() noexcept
         Residue::instance().m_connected = false;
         Residue::instance().m_disconnected = true;
         Residue::wait();
-        Residue::instance().m_tokens.clear();
         Residue::instance().m_running = false;
     }
 }
@@ -659,113 +617,6 @@ bool Residue::isClientValid() const noexcept
     }
     unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
     return now - m_dateCreated < m_age;
-}
-
-void Residue::obtainTokens()
-{
-    if (m_accessCodeMap != nullptr) {
-        for (auto& accessCodeMap : *m_accessCodeMap) {
-            std::string loggerId = accessCodeMap.first;
-            std::string accessCode = accessCodeMap.second;
-            obtainToken(loggerId, accessCode);
-        }
-    }
-}
-
-bool Residue::hasToken(const std::string& loggerId) const noexcept
-{
-    bool available = m_tokens.find(loggerId) != m_tokens.end();
-    if (available) {
-        // Check validity
-        Token t = m_tokens.at(loggerId);
-        if (t.life != 0U) {
-            unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-            if (now - t.dateCreated > t.life) {
-                available = false;
-            }
-        }
-    }
-    return available;
-}
-
-std::string Residue::getToken(const std::string& loggerId) const
-{
-    if (hasToken(loggerId)) {
-        return m_tokens.at(loggerId).token;
-    }
-    return std::string();
-}
-
-void Residue::obtainToken(const std::string& loggerId)
-{
-    std::string accessCode = DEFAULT_ACCESS_CODE;
-    if (m_accessCodeMap != nullptr
-            && m_accessCodeMap->find(loggerId) != m_accessCodeMap->end()) {
-        accessCode = m_accessCodeMap->at(loggerId);
-    }
-    obtainToken(loggerId, accessCode);
-}
-
-void Residue::obtainToken(const std::string& loggerId, const std::string& accessCode)
-{
-    if (accessCode == DEFAULT_ACCESS_CODE && !hasFlag(Flag::ALLOW_DEFAULT_ACCESS_CODE)) {
-        throw ResidueException("Loggers without access code are not allowed by the server [Logger ID: " + loggerId + "]");
-    }
-    InternalLogger(InternalLogger::debug) << "Obtaining token for [" << loggerId << "] using [" << accessCode << "]";
-    json j;
-    j["_t"] = getTimestamp();
-    j["logger_id"] = loggerId;
-    j["access_code"] = accessCode;
-    std::string jsonRequest = j.dump();
-    std::string request = Ripe::prepareData(jsonRequest.c_str(), m_key, m_clientId.c_str());
-    try {
-        s_tokenClient->send(std::move(request), true, [&](std::string&& response, bool hasError, std::string&& errorText) -> void {
-            if (hasError) {
-                InternalLogger(InternalLogger::error) << "Failed to obtain token. " << errorText;
-            } else {
-                if (response.find("{") != std::string::npos) {
-                    // Error
-                    if (response.at(0) != '{') {
-                        // remove head
-                        response.erase(0, response.find_first_of(":") + 1);
-                    }
-                    try {
-                        j = json::parse(response);
-                        InternalLogger(InternalLogger::error) << j["error_text"].get<std::string>();
-                        addError(j["error_text"].get<std::string>());
-                    } catch (const std::exception& e) {
-                        InternalLogger(InternalLogger::error) << "Error occurred but could not parse response: "
-                                                              << response << " (" << e.what() << ")";
-                    }
-
-                } else {
-                    std::string iv;
-                    try {
-                        std::string decryptedResponse = Ripe::decryptAES(response, m_key, iv, true);
-                        j = json::parse(decryptedResponse);
-                        if (j.count("error_text") > 0) {
-                            InternalLogger(InternalLogger::error) << j["error_text"].get<std::string>();
-                            addError(j["error_text"].get<std::string>());
-                        } else {
-                            unsigned long now =
-                                    std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-                            Token t { j["token"].get<std::string>(), j["life"].get<unsigned int>(), now };
-                            RESIDUE_LOCK_LOG("obtainToken");
-                            std::lock_guard<std::recursive_mutex> lock(m_mutex);
-                            if (m_tokens.find(loggerId) != m_tokens.end()) {
-                                m_tokens.erase(loggerId);
-                            }
-                            m_tokens.insert(std::make_pair(loggerId, t));
-                        }
-                    } catch (const std::exception& e) {
-                        InternalLogger(InternalLogger::error) << "Failed to read token response: " << e.what();
-                    }
-                }
-            }
-        });
-    } catch (const ResidueException& e) {
-        throw e;
-    }
 }
 
 void Residue::loadConfiguration(const std::string& jsonFilename)
@@ -842,19 +693,6 @@ void Residue::loadConfiguration(const std::string& jsonFilename)
     }
     if (j.count("main_thread_id") > 0) {
         setThreadName(j["main_thread_id"].get<std::string>());
-    }
-    if (j.count("access_codes") > 0) {
-        AccessCodeMap map;
-        for (auto& ac : j["access_codes"]) {
-            try {
-                std::string loggerId = ac["logger_id"].get<std::string>();
-                std::string code = ac["code"].get<std::string>();
-                map.insert(std::make_pair(loggerId, code));
-            } catch (const std::exception&) {
-                throw ResidueException("Invalid access_codes object. " + ac.dump());
-            }
-        }
-        r->moveAccessCodeMap(std::move(map));
     }
     if (j.count("internal_logging_level") > 0) {
         Residue::s_internalLoggingLevel = j["internal_logging_level"].get<int>();
