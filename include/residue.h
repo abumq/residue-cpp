@@ -60,8 +60,6 @@ public:
     enum Flag : unsigned int {
         NONE = 0,
         ALLOW_UNKNOWN_LOGGERS = 1,
-        REQUIRES_TOKEN = 2,
-        ALLOW_DEFAULT_ACCESS_CODE = 4,
         ALLOW_BULK_LOG_REQUEST = 16,
         COMPRESSION = 256,
     };
@@ -81,10 +79,6 @@ public:
     int c_total;
     int c_dispatched;
 #endif
-    ///
-    /// \brief Map of logger_id and corresponding access code to send log message to the server
-    ///
-    using AccessCodeMap = std::unordered_map<std::string, std::string>;
 
     ///
     /// \brief Default key size for RSA
@@ -107,11 +101,6 @@ public:
     /// we should send touch request or not
     ///
     static const unsigned int TOUCH_THRESHOLD;
-
-    ///
-    /// \brief Default access code value if allowed
-    ///
-    static const std::string DEFAULT_ACCESS_CODE;
 
     ///
     /// \brief See setInternalLoggingLevel(InternalLoggingLevel)
@@ -144,69 +133,46 @@ public:
     static std::string info() noexcept;
 
     ///
-    /// \brief Connect to residue on specified host
+    /// \brief Connect to residue on specified host and port
     /// \param host Host where residue server is running
     /// \param port Residue server port (Try Residue::DEFAULT_PORT)
-    /// \param accessCodeMap Map of logger_id and access_codes to access corresponding logger.
-    /// \throws exception When connection fails
-    ///
-    static inline void connect(const std::string& host, int port, AccessCodeMap* accessCodeMap)
-    {
-        Residue::instance().connect_(host, port, accessCodeMap);
-    }
-
-    ///
-    /// \brief Connect to residue on specified host and port using existing access code map
-    /// \param host Host where residue server is running
-    /// \param port Residue server port (Try Residue::DEFAULT_PORT)
-    /// \see moveAccessCodeMap(AccessCodeMap&&)
     /// \throws exception When connection fails
     ///
     static inline void connect(const std::string& host, int port)
     {
-        Residue::instance().connect_(host, port, Residue::instance().m_accessCodeMap);
+        Residue::instance().connect_(host, port);
     }
 
     ///
     /// \brief Connect to residue on localhost
-    /// \see connect(const std::string&, int, AccessCodeMap*)
+    /// \see connect(const std::string&, int)
     /// \throws exception When connection fails
     ///
-    static inline void connect(int port, AccessCodeMap* accessCodeMap)
+    static inline void connect(int port)
     {
-        Residue::instance().connect_(Residue::LOCALHOST, port, accessCodeMap);
+        Residue::instance().connect_(Residue::LOCALHOST, port);
     }
 
     ///
     /// \brief Connect to residue using default port
-    /// \see connect(const std::string&, int, AccessCodeMap*)
+    /// \see connect(const std::string&, int)
     /// \throws exception When connection fails
     ///
-    static inline void connect(const std::string& host, AccessCodeMap* accessCodeMap)
+    static inline void connect(const std::string& host)
     {
-        Residue::instance().connect_(host, Residue::DEFAULT_PORT, accessCodeMap);
+        Residue::instance().connect_(host, Residue::DEFAULT_PORT);
     }
 
     ///
-    /// \brief Connect to residue on localhost using default port
-    /// \see connect(const std::string&, int, AccessCodeMap*)
-    /// \throws exception When connection fails
-    ///
-    static inline void connect(AccessCodeMap* accessCodeMap)
-    {
-        Residue::instance().connect_(Residue::LOCALHOST, Residue::DEFAULT_PORT, accessCodeMap);
-    }
-
-    ///
-    /// \brief Connect to residue on localhost using default port and previously provided access code map.
+    /// \brief Connect to residue on localhost using default port.
     /// This is more useful when you have client ID so you won't have varying client IDs
-    /// \see connect(const std::string&, int, AccessCodeMap*)
+    /// \see connect(const std::string&, int)
     /// \see setParams(const std::string&, const std::string&)
     /// \throws exception When connection fails
     ///
     static inline void connect()
     {
-        Residue::instance().connect_(Residue::LOCALHOST, Residue::DEFAULT_PORT, Residue::instance().m_accessCodeMap);
+        Residue::instance().connect_(Residue::LOCALHOST, Residue::DEFAULT_PORT);
     }
 
     ///
@@ -215,21 +181,11 @@ public:
     /// \param port If set to -1, existing value (initially provided) will be used
     /// \param accessCodeMap If null provided, existing value (initially provided) will be used
     ///
-    static inline void reconnect(const std::string& host = "", int port = -1, AccessCodeMap* accessCodeMap = nullptr)
+    static inline void reconnect(const std::string& host = "", int port = -1)
     {
         Residue::disconnect();
         Residue::connect(host.empty() ? Residue::instance().m_host : host,
-                         port == -1 ? Residue::instance().m_port : port,
-                         accessCodeMap == nullptr ? Residue::instance().m_accessCodeMap : accessCodeMap);
-    }
-
-    ///
-    /// \brief Moves access code map in to Residue own memory (rather than keeping it in application scope)
-    ///
-    static inline void moveAccessCodeMap(AccessCodeMap&& accessCodeMap) noexcept
-    {
-        Residue::instance().m_accessCodeMapByVal = std::move(accessCodeMap);
-        Residue::instance().m_accessCodeMap = &Residue::instance().m_accessCodeMapByVal;
+                         port == -1 ? Residue::instance().m_port : port);
     }
 
     ///
@@ -538,12 +494,6 @@ public:
     /// <pre>
     /// {
     ///     "url": "localhost:8777",
-    ///     "access_codes": [
-    ///         {
-    ///             "logger_id": "sample-app",
-    ///             "code": "134193F1A993FA6A4FE"
-    ///         }
-    ///     ],
     ///     "application_id": "com.muflihun.sampleapp",
     ///     "rsa_key_size": 2048,
     ///     "utc_time": false,
@@ -588,34 +538,19 @@ public:
 private:
 
     // defs and structs
-
-    using RequestTuple = std::tuple<
-        unsigned long, // datetime
-        std::string, // thread_id / name
-        std::string, // logger_id
-        el::base::type::string_t, // msg
-        std::string, // file
-        el::base::type::LineNumber, // line
-        std::string, // func
-        unsigned int, // level
-        el::base::type::VerboseLevel // verbose level
-    >;
-
-    struct Token
-    {
-        std::string token;
-        unsigned int life;
-        unsigned long dateCreated;
+    struct RawRequest {
+        unsigned long date;
+        std::string threadId;
+        std::string loggerId;
+        el::base::type::string_t msg;
+        std::string file;
+        el::base::type::LineNumber line;
+        std::string func;
+        unsigned int level;
+        el::base::type::VerboseLevel vlevel;
     };
 
     Residue() noexcept;
-
-    // token
-    void obtainToken(const std::string& loggerId, const std::string& accessCode);
-    void obtainToken(const std::string& loggerId);
-    void obtainTokens();
-    bool hasToken(const std::string& loggerId) const noexcept;
-    std::string getToken(const std::string& loggerId) const;
 
     // client
     bool isClientValid() const noexcept;
@@ -624,15 +559,15 @@ private:
     void healthCheck() noexcept;
 
     // connect
-    void connect_(const std::string& host, int port, AccessCodeMap* accessCodeMap);
+    void connect_(const std::string& host, int port);
     void disconnect_() noexcept;
     void reset();
     void onConnect() noexcept;
 
     // request
-    void addToQueue(RequestTuple&&) noexcept;
+    void addToQueue(RawRequest&&) noexcept;
     void dispatch();
-    std::string requestToJson(RequestTuple&& request);
+    std::string requestToJson(RawRequest&& request);
 
     void addError(const std::string& errorText) noexcept;
 
@@ -642,10 +577,6 @@ private:
 
     std::string m_host;
     int m_port;
-
-    AccessCodeMap* m_accessCodeMap;
-    AccessCodeMap m_accessCodeMapByVal;
-    std::unordered_map<std::string, Token> m_tokens;
 
     std::atomic<bool> m_connected;
     std::atomic<bool> m_connecting;
@@ -666,13 +597,12 @@ private:
     unsigned int m_age;
     unsigned long m_dateCreated;
     int m_loggingPort;
-    int m_tokenPort;
     unsigned int m_serverFlags;
     std::atomic<bool> m_utc;
     std::atomic<int> m_timeOffset;
     std::atomic<unsigned int> m_dispatchDelay;
 
-    std::deque<RequestTuple> m_requests;
+    std::deque<RawRequest> m_requests;
 
     std::recursive_mutex m_mutex;
     std::thread* m_dispatcher;
