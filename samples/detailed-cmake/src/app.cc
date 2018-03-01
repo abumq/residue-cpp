@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << Residue::info() << std::endl;
 
-    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
+//    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
 
 #if 0 // minimal sample with unknown logger
     try {

@@ -24,9 +24,6 @@ void ResidueDispatcher::handle(const el::LogDispatchData* data) noexcept
 #ifdef ELPP_THREAD_SAFE
     InternalLogger(InternalLogger::crazy) << "safe!";
 #endif
-    el::LogDispatchCallback::handle(data);
-    el::base::threading::ScopedLock scopedLock(fileHandle(data));
-
     m_data = data;
 
     if (data->logMessage()->logger()->id() == RESIDUE_LOGGER_ID) {
