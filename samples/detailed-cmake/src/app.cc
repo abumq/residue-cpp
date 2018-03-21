@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << Residue::info() << std::endl;
 
-//    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
+    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
 
 #if 0 // minimal sample with unknown logger
     try {
@@ -220,12 +220,12 @@ int main(int argc, char* argv[]) {
 #endif
 
     // Below code is only for benchmark test
-#if 1
-    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+#if 0
+    auto start = std::chrono::high_resolution_clock::now();
     for (unsigned long i = 1; i <= 1000000; ++i) {
         LOG(INFO) << "Test " << i;
     }
-    std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
 
     auto result = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
@@ -277,10 +277,11 @@ int main(int argc, char* argv[]) {
             }
         };
 
-        threads.push_back(std::thread([&]() { create(1); }));
-        threads.push_back(std::thread([&]() { create(2); }));
-        threads.push_back(std::thread([&]() { create(3); }));
-        threads.push_back(std::thread([&]() { create(4); }));
+        for (int i = 1; i <= 5; ++i) {
+            threads.push_back(std::thread([&]() {
+                create(i);
+            }));
+        }
     }
 
     for (int i = 1; i <= 3; ++i) {
@@ -301,7 +302,7 @@ int main(int argc, char* argv[]) {
     for (auto& t : threads) {
         // We wait for all the threads to finish
         t.join();
-    };
+    }
 
 #endif
 

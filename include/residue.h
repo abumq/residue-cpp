@@ -179,7 +179,6 @@ public:
     /// \brief Reconnects residue server using new or initially provided parameters. (Disconnect then connect)
     /// \param host If left empty, existing value (initially provided) will be used
     /// \param port If set to -1, existing value (initially provided) will be used
-    /// \param accessCodeMap If null provided, existing value (initially provided) will be used
     ///
     static inline void reconnect(const std::string& host = "", int port = -1)
     {
