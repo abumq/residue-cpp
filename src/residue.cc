@@ -596,8 +596,8 @@ void Residue::disconnect_() noexcept
 {
     InternalLogger(InternalLogger::debug) << "Disconnecting...";
     m_connected = false;
-    el::Helpers::installLogDispatchCallback<el::base::DefaultLogDispatchCallback>("DefaultLogDispatchCallback");
     el::Helpers::uninstallLogDispatchCallback<ResidueDispatcher>("ResidueDispatcher");
+    //el::Helpers::installLogDispatchCallback<el::base::DefaultLogDispatchCallback>("DefaultLogDispatchCallback");
 }
 
 void Residue::disconnect() noexcept
@@ -607,6 +607,7 @@ void Residue::disconnect() noexcept
         Residue::instance().m_disconnected = true;
         Residue::wait();
         Residue::instance().m_running = false;
+        InternalLogger(InternalLogger::debug) << "Wait finished!";
     }
 }
 

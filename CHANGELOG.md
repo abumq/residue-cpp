@@ -1,5 +1,8 @@
 # Change Log
 
+## [2.0.1] - 21-03-2018
+- Fix disconnect
+
 ## [2.0.0] - 01-03-2018
 ### Fixes
 - Compatibility for server 2.0.0

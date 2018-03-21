@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
         std::cout << "Logger > ";
         std::getline(std::wcin, input);
         if (!input.empty()) {
-            LOG(INFO) << input;
+            CLOG(INFO, "sample-app") << input;
         }
     }
 
