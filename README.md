@@ -24,7 +24,7 @@ You can download binary from [releases](https://github.com/muflihun/residue-cpp/
 In a nutshell you will do:
 
 ```
-VERSION=1.1.0
+VERSION=2.1.0
 TYPE=linux  ## or "darwin" (for macOS) or "linux-se" (for Special edition)
 
 ## Headers
@@ -84,7 +84,6 @@ You can change following options in CMake (using `-D<option>=ON`)
 | ------------ | ------------------------------- |
 | `test`       | Compile unit tests              |
 | `build_sample_app`      | Builds detailed-cmake sample           |
-| `profiling`      | Turn on profiling for debugging purposes           |
 | `special_edition`      | Build [special edition](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition)           |
 
 ### Run Tests
