@@ -44,7 +44,8 @@ ln -s /usr/local/lib/libresidue$DEST_SUFFIX /usr/local/lib/libresidue.$EXTENSION
 ## Static lib
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.a /usr/local/lib/
+cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.$VERSION.a /usr/local/lib/
+ln -s /usr/local/lib/libresidue-static.$VERSION.a /usr/local/lib/libresidue-static.a
 ```
 
 You should be ready to link your application against `libresidue`, both statically and dynamically.
