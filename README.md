@@ -24,7 +24,7 @@ You can download binary from [releases](https://github.com/muflihun/residue-cpp/
 In a nutshell you will do:
 
 ```
-VERSION=1.1.0
+VERSION=2.1.0
 TYPE=linux  ## or "darwin" (for macOS) or "linux-se" (for Special edition)
 
 ## Headers
@@ -35,10 +35,11 @@ cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 
 ## Dynamic lib
 [[ $TYPE = "darwin" ]] && EXTENSION="dylib" || EXTENSION="so"
+[[ $TYPE = "darwin" ]] && DEST_SUFFIX=".$VERSION.$EXTENSION" || DEST_SUFFIX=".$EXTENSION.$VERSION"
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-x86_64-$TYPE/libresidue.$EXTENSION /usr/local/lib/libresidue-$VERSION.$EXTENSION
-ln -s /usr/lib/libresidue-$VERSION.$EXTENSION /usr/local/lib/libresidue.$EXTENSION
+cp libresidue-$VERSION-x86_64-$TYPE/libresidue* /usr/local/lib/libresidue$DEST_SUFFIX
+ln -s /usr/local/lib/libresidue$DEST_SUFFIX /usr/local/lib/libresidue.$EXTENSION
 
 ## Static lib
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
@@ -84,7 +85,6 @@ You can change following options in CMake (using `-D<option>=ON`)
 | ------------ | ------------------------------- |
 | `test`       | Compile unit tests              |
 | `build_sample_app`      | Builds detailed-cmake sample           |
-| `profiling`      | Turn on profiling for debugging purposes           |
 | `special_edition`      | Build [special edition](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition)           |
 
 ### Run Tests
