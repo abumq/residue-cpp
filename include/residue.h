@@ -530,6 +530,11 @@ public:
         Residue::instance().saveConnection_(outputFile);
     }
 
+    static inline std::string connection()
+    {
+        return Residue::instance().m_connection;
+    }
+
     ///
     /// \brief Loads connection from file instead of re-pulling it from server
     ///
