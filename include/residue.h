@@ -516,7 +516,10 @@ public:
     /// \param json JSON Configuration
     /// \see loadConfiguration(const std::string&)
     ///
-    static void loadConfigurationFromJson(const std::string& json);
+    static inline void loadConfigurationFromJson(const std::string& json)
+    {
+        Residue::instance().loadConfigurationFromJson_(json);
+    }
 
     ///
     /// \brief Saves connection parameter to the file
@@ -552,14 +555,7 @@ public:
     /// \see loadConnection(const std::string&)
     /// \see saveConnection(const std::string&)
     ///
-    static inline void loadConnectionFromJson(const std::string& connectionJson)
-    {
-        if (Residue::instance().m_host.empty()) {
-            throw ResidueException("Failed to connect (load connection). No host found.");
-        }
-        Residue::instance().connect_(Residue::instance().m_host, Residue::instance().m_port, false);
-        Residue::instance().loadConnectionFromJson_(connectionJson);
-    }
+    static void loadConnectionFromJson(const std::string& connectionJson);
 
     ///
     /// \brief Crash handler logger. Not for public use.
@@ -664,6 +660,8 @@ private:
     void loadConnectionFromJson_(const std::string& connectionJson);
     void saveConnection_(const std::string& outputFile);
     void loadConnection_(const std::string& connectionFile);
+
+    void loadConfigurationFromJson_(const std::string& json);
 
     // request
     void addToQueue(RawRequest&&) noexcept;

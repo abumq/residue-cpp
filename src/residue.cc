@@ -95,12 +95,14 @@ void Residue::healthCheck() noexcept
 {
     if (!isClientValid()) {
         try {
+            InternalLogger(InternalLogger::warning) << "health check - reset";
             reset();
         } catch (const std::exception& e) {
             // We ignore these errors as we have
             // log messages from the reset()
         }
     } else if (shouldTouch()) {
+        InternalLogger(InternalLogger::warning) << "health check - touch";
         touch();
     }
 }
@@ -166,10 +168,12 @@ void Residue::onConnect() noexcept
         m_running = true;
         delete m_dispatcher;
         m_dispatcher = nullptr; // just in case if next line fails due to insufficient memory
+        InternalLogger(InternalLogger::debug) << "Init dispatcher...";
         m_dispatcher = new std::thread([&]() {
             while (m_running) {
                 dispatch();
                 if ((!m_connected || m_disconnected) && m_requests.empty()) {
+                    InternalLogger(InternalLogger::debug) << "Force disconnect";
                     disconnect_();
                     break;
                 }
@@ -177,6 +181,8 @@ void Residue::onConnect() noexcept
             }
             InternalLogger(InternalLogger::debug) << "Finishing residue...";
         });
+    } else {
+        InternalLogger(InternalLogger::debug) << "Dispatcher already initialized...";
     }
 }
 
@@ -291,10 +297,6 @@ void Residue::reset()
                                                 InternalLogger(InternalLogger::error) << "Reading connection";
                                                 std::string decryptedAckResponse = Ripe::decryptAES(ackResponse, m_key, iv, true);
                                                 loadConnectionFromJson_(decryptedAckResponse);
-                                                m_connected = true;
-                                                m_connection = decryptedAckResponse;
-
-                                                onConnect();
                                             } catch (const std::exception& e) {
                                                 InternalLogger(InternalLogger::error) << "Failed to connect (4): " << e.what();
                                                 throw ResidueException(e.what());
@@ -341,6 +343,7 @@ void Residue::addToQueue(RawRequest&& request) noexcept
     RESIDUE_PROFILE_START(t_queue);
 #endif
     RESIDUE_LOCK_LOG("addToQueue");
+    InternalLogger(InternalLogger::info) << "Queue size: " << m_requests.size();
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
     m_requests.push_front(std::move(request));
 
@@ -600,7 +603,7 @@ void Residue::loadConfiguration(const std::string& jsonFilename)
     loadConfigurationFromJson(confJson);
 }
 
-void Residue::loadConfigurationFromJson(const std::string& confJson)
+void Residue::loadConfigurationFromJson_(const std::string& confJson)
 {
     Residue* r = &Residue::instance();
     json j;
@@ -705,6 +708,16 @@ void Residue::loadConnection_(const std::string& connectionFile)
     loadConnectionFromJson(conn);
 }
 
+void Residue::loadConnectionFromJson(const std::string& json)
+{
+    if (Residue::instance().m_host.empty()) {
+        throw ResidueException("Failed to connect (load connection). No host found.");
+    }
+    Residue::instance().connect_(Residue::instance().m_host, Residue::instance().m_port, false);
+    Residue::instance().loadConnectionFromJson_(json);
+    Residue::instance().healthCheck();
+}
+
 void Residue::loadConnectionFromJson_(const std::string& connectionJson)
 {
     try {
@@ -719,6 +732,7 @@ void Residue::loadConnectionFromJson_(const std::string& connectionJson)
         m_serverVersion = j["server_info"]["version"].get<std::string>();
 
         // Logging server
+        InternalLogger(InternalLogger::debug) << "Logging server socket init";
         s_loggingClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_loggingPort)));
         try {
             s_loggingClient->connect();
@@ -747,9 +761,7 @@ void Residue::loadConnectionFromJson_(const std::string& connectionJson)
 
         m_connected = true;
         m_connection = connectionJson;
-
         onConnect();
-        healthCheck();
     } catch (const std::exception& e) {
         InternalLogger(InternalLogger::error) << "Failed to connect (load connection): " << e.what();
         throw ResidueException(e.what());

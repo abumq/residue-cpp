@@ -1,6 +1,7 @@
 #include <residue/residue.h>
 
 int main(int argc, char** argv) {
+    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
     Residue::setApplicationArgs(argc, argv);
 
     if (el::Helpers::commandLineArgs()->hasParamWithValue("--conf")) {
