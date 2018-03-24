@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [2.1.0] - 25-03-2018
 ### API Updates
 - Added `loadConfigurationFromJson` to load from JSON parameter
 - Added `loadConnection` and `saveConnection`
