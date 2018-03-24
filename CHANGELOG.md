@@ -1,7 +1,11 @@
 # Change Log
 
 ## [Unreleased]
+### API Updates
 - Added `loadConfigurationFromJson` to load from JSON parameter
+- Added `loadConnection` and `saveConnection`
+
+### Updates
 - Updated internal networking library (asio) to 1.12.0
 
 ## [2.0.1] - 21-03-2018

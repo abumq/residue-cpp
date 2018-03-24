@@ -105,7 +105,7 @@ void Residue::healthCheck() noexcept
     }
 }
 
-void Residue::connect_(const std::string& host, int port)
+void Residue::connect_(const std::string& host, int port, bool estabilishFullConnection)
 {
     if (m_connected) {
         InternalLogger(InternalLogger::error) << "Already connected. Please disconnect first";
@@ -134,17 +134,19 @@ void Residue::connect_(const std::string& host, int port)
         throw e;
     }
 
-    if (!m_knownClient) {
-        // Generate new key pair
-#ifdef RESIDUE_PROFILING
-        TIMED_SCOPE(timed, "gen_rsa");
-#endif // ELPP_DEBUG_LOG
-        Ripe::KeyPair rsaKey = Ripe::generateRSAKeyPair(m_keySize);
-        m_rsaPrivateKey = rsaKey.privateKey;
-        m_rsaPublicKey = rsaKey.publicKey;
+    if (estabilishFullConnection) {
+        if (!m_knownClient) {
+            // Generate new key pair
+    #ifdef RESIDUE_PROFILING
+            TIMED_SCOPE(timed, "gen_rsa");
+    #endif // ELPP_DEBUG_LOG
+            Ripe::KeyPair rsaKey = Ripe::generateRSAKeyPair(m_keySize);
+            m_rsaPrivateKey = rsaKey.privateKey;
+            m_rsaPublicKey = rsaKey.publicKey;
+        }
+        InternalLogger(InternalLogger::info) << "Estabilishing full connection...";
+        reset();
     }
-    InternalLogger(InternalLogger::info) << "Estabilishing full connection...";
-    reset();
 
 }
 
@@ -288,42 +290,9 @@ void Residue::reset()
                                             try {
                                                 InternalLogger(InternalLogger::error) << "Reading connection";
                                                 std::string decryptedAckResponse = Ripe::decryptAES(ackResponse, m_key, iv, true);
-                                                j = json::parse(decryptedAckResponse);
-                                                m_key = j["key"].get<std::string>();
-                                                m_age = j["age"].get<unsigned int>();
-                                                m_dateCreated = j["date_created"].get<unsigned long>();
-                                                m_loggingPort = j["logging_port"].get<int>();
-                                                m_maxBulkSize = j["max_bulk_size"].get<unsigned int>();
-                                                m_serverFlags = j["flags"].get<unsigned int>();
-                                                m_serverVersion = j["server_info"]["version"].get<std::string>();
-
-                                                // Logging server
-                                                s_loggingClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_loggingPort)));
-                                                try {
-                                                    s_loggingClient->connect();
-                                                    if (!s_loggingClient->connected()) {
-                                                        addError("Failed to connect. (Port: " + std::to_string(m_loggingPort) + ") " + s_loggingClient->lastError());
-                                                        throw ResidueException(m_errors.at(m_errors.size() - 1));
-                                                    }
-                                                } catch (const ResidueException& e) {
-                                                    addError("Failed to connect. (Port: " + std::to_string(m_loggingPort) + ") " + e.what());
-                                                    throw e;
-                                                }
-
-                                                if (m_autoBulkParams && hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
-                                                    m_bulkDispatch = true;
-                                                    m_bulkSize = std::min(m_maxBulkSize, 40U);
-                                                }
-
-                                                if (hasFlag(Flag::ALLOW_BULK_LOG_REQUEST) && m_bulkDispatch && m_bulkSize > m_maxBulkSize) {
-                                                    // bulk dispatch is manually on
-                                                    RLOG(WARNING) << "Resetting bulk size to " << m_maxBulkSize;
-                                                    m_bulkSize = m_maxBulkSize;
-                                                } else if (!hasFlag(Flag::ALLOW_BULK_LOG_REQUEST) && m_bulkDispatch) {
-                                                    RLOG(WARNING) << "Bulk log requests not allowed by this server";
-                                                    m_bulkDispatch = false;
-                                                }
+                                                loadConnectionFromJson_(decryptedAckResponse);
                                                 m_connected = true;
+                                                m_connection = decryptedAckResponse;
 
                                                 onConnect();
                                             } catch (const std::exception& e) {
@@ -702,6 +671,88 @@ void Residue::loadConfigurationFromJson(const std::string& confJson)
     }
     if (j.count("internal_logging_level") > 0) {
         Residue::s_internalLoggingLevel = j["internal_logging_level"].get<int>();
+    }
+}
+
+void Residue::saveConnection_(const std::string& outputFile)
+{
+    if (!m_connected) {
+        throw ResidueException("Not connected yet");
+        return;
+    }
+    if (m_connection.empty()) {
+        return;
+    }
+    std::ofstream fs(outputFile.c_str(), std::ios::out);
+    if (!fs.is_open()) {
+        throw ResidueException("File [" + outputFile + "] is not writable");
+    }
+    fs.write(m_connection.c_str(), m_connection.size());
+    if (fs.fail()) {
+        throw ResidueException("File [" + outputFile + "] is not writable");
+    }
+    fs.close();
+}
+
+void Residue::loadConnection_(const std::string& connectionFile)
+{
+    std::ifstream fs(connectionFile.c_str(), std::ios::in);
+    if (!fs.is_open()) {
+        throw ResidueException("File [" + connectionFile + "] is not readable");
+    }
+    std::string conn = std::string(std::istreambuf_iterator<char>(fs), std::istreambuf_iterator<char>());
+    fs.close();
+    loadConnectionFromJson(conn);
+}
+
+void Residue::loadConnectionFromJson_(const std::string& connectionJson)
+{
+    try {
+        json j;
+        j = json::parse(connectionJson);
+        m_key = j["key"].get<std::string>();
+        m_age = j["age"].get<unsigned int>();
+        m_dateCreated = j["date_created"].get<unsigned long>();
+        m_loggingPort = j["logging_port"].get<int>();
+        m_maxBulkSize = j["max_bulk_size"].get<unsigned int>();
+        m_serverFlags = j["flags"].get<unsigned int>();
+        m_serverVersion = j["server_info"]["version"].get<std::string>();
+
+        // Logging server
+        s_loggingClient = std::unique_ptr<NetworkClient>(new NetworkClient(m_host, std::to_string(m_loggingPort)));
+        try {
+            s_loggingClient->connect();
+            if (!s_loggingClient->connected()) {
+                addError("Failed to connect. (Port: " + std::to_string(m_loggingPort) + ") " + s_loggingClient->lastError());
+                throw ResidueException(m_errors.at(m_errors.size() - 1));
+            }
+        } catch (const ResidueException& e) {
+            addError("Failed to connect. (Port: " + std::to_string(m_loggingPort) + ") " + e.what());
+            throw e;
+        }
+
+        if (m_autoBulkParams && hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
+            m_bulkDispatch = true;
+            m_bulkSize = std::min(m_maxBulkSize, 40U);
+        }
+
+        if (hasFlag(Flag::ALLOW_BULK_LOG_REQUEST) && m_bulkDispatch && m_bulkSize > m_maxBulkSize) {
+            // bulk dispatch is manually on
+            InternalLogger(InternalLogger::info) << "Resetting bulk size to " << m_maxBulkSize;
+            m_bulkSize = m_maxBulkSize;
+        } else if (!hasFlag(Flag::ALLOW_BULK_LOG_REQUEST) && m_bulkDispatch) {
+            InternalLogger(InternalLogger::info) << "Bulk log requests not allowed by this server";
+            m_bulkDispatch = false;
+        }
+
+        m_connected = true;
+        m_connection = connectionJson;
+
+        onConnect();
+        healthCheck();
+    } catch (const std::exception& e) {
+        InternalLogger(InternalLogger::error) << "Failed to connect (load connection): " << e.what();
+        throw ResidueException(e.what());
     }
 }
 
