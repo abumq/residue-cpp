@@ -256,6 +256,14 @@ public:
     }
 
     ///
+    /// \brief Sets residue home path for $RESIDUE_HOME
+    ///
+    static inline void setResidueHomePath(const std::string& path) noexcept
+    {
+        Residue::instance().m_homepath = path;
+    }
+
+    ///
     /// \brief enableBulkDispatch turns on bulk dispatch.
     /// \note MAKE SURE SERVER SUPPORTS BULK LOG REQUESTS
     /// \throws exception if server does not allow bulk requests. (can only determine when connected)
@@ -642,6 +650,8 @@ private:
     std::string m_applicationId;
     bool m_knownClient;
 
+    std::string m_homepath;
+
     std::string m_crashHandlerLoggerId;
 
     std::vector<std::string> m_errors;
@@ -674,6 +684,8 @@ private:
     std::string requestToJson(RawRequest&& request);
 
     void addError(const std::string& errorText) noexcept;
+
+    std::string& resolveResidueHomeEnvVar(std::string& str);
 };
 
 #endif /* Residue_h */

@@ -639,9 +639,10 @@ void Residue::loadConfigurationFromJson_(const std::string& confJson)
         if (j.count("client_key_secret") > 0) {
             std::string secretKey = j["client_key_secret"].get<std::string>();
             if (!secretKey.empty()) {
-                r->m_rsaPrivateKeySecret = secretKey;
+                r->m_rsaPrivateKeySecret = Ripe::hexToString(secretKey);
             }
         }
+        resolveResidueHomeEnvVar(privateKeyFile);
         std::ifstream fsPriv(privateKeyFile.c_str(), std::ios::in);
         if (fsPriv.is_open()) {
             setKnownClient(j["client_id"].get<std::string>(),
@@ -653,6 +654,7 @@ void Residue::loadConfigurationFromJson_(const std::string& confJson)
     }
     if (j.count("server_public_key") > 0) {
         std::string publicKeyFile = j["server_public_key"].get<std::string>();
+        resolveResidueHomeEnvVar(publicKeyFile);
         std::ifstream fsPub(publicKeyFile.c_str(), std::ios::in);
         if (fsPub.is_open()) {
             r->m_serverPublicKey = std::string(std::istreambuf_iterator<char>(fsPub),
@@ -774,6 +776,21 @@ void Residue::loadConnectionFromJson_(const std::string& connectionJson)
         InternalLogger(InternalLogger::error) << "Failed to connect (load connection): " << e.what();
         throw ResidueException(e.what());
     }
+}
+
+std::string& Residue::resolveResidueHomeEnvVar(std::string& str)
+{
+    auto pos = str.find_first_of("$RESIDUE_HOME");
+    if (pos != std::string::npos) {
+        std::string val = m_homepath.empty() ?
+                    el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME", "", "echo $RESIDUE_HOME") :
+                    m_homepath;
+        if (val.empty()) {
+            InternalLogger(InternalLogger::error) << "Environment variable RESIDUE_HOME not set";
+        }
+        str.replace(pos, std::string("$RESIDUE_HOME").size(), val);
+    }
+    return str;
 }
 
 void Residue::addError(const std::string& errorText) noexcept

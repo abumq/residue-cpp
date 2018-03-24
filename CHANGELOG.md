@@ -7,6 +7,8 @@
 
 ### Updates
 - Updated internal networking library (asio) to 1.12.0
+- Client private key secret must be hex encoded now
+- Configurations now support `RESIDUE_HOME` environment variable
 
 ## [2.0.1] - 21-03-2018
 - Fix disconnect

@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <vector>
+#include <thread>
 
 namespace Ui {
 class MainWindow;
@@ -26,8 +28,15 @@ private slots:
 
     void on_btnLoadConnection_clicked();
 
+    void on_btnLog_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
+    std::vector<std::thread> m_threads;
 };
 
 #endif // MAINWINDOW_H
