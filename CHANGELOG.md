@@ -1,5 +1,15 @@
 # Change Log
 
+## [2.1.0] - 25-03-2018
+### API Updates
+- Added `loadConfigurationFromJson` to load from JSON parameter
+- Added `loadConnection` and `saveConnection`
+
+### Updates
+- Updated internal networking library (asio) to 1.12.0
+- Client private key secret must be hex encoded now
+- Configurations now support `RESIDUE_HOME` environment variable
+
 ## [2.0.1] - 21-03-2018
 - Fix disconnect
 

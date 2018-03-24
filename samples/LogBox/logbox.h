@@ -31,7 +31,6 @@ private slots:
 
 private:
     Ui::LogBox *ui;
-    Residue::AccessCodeMap accessCodes;
 };
 
 #endif // LOGBOX_H

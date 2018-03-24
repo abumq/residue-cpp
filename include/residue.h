@@ -256,6 +256,14 @@ public:
     }
 
     ///
+    /// \brief Sets residue home path for $RESIDUE_HOME
+    ///
+    static inline void setResidueHomePath(const std::string& path) noexcept
+    {
+        Residue::instance().m_homepath = path;
+    }
+
+    ///
     /// \brief enableBulkDispatch turns on bulk dispatch.
     /// \note MAKE SURE SERVER SUPPORTS BULK LOG REQUESTS
     /// \throws exception if server does not allow bulk requests. (can only determine when connected)
@@ -507,8 +515,60 @@ public:
     /// }
     /// </pre>
     /// \param jsonFilename Path to configuration JSON file
+    /// \related loadConfigurationFromJson(const std::string&)
     ///
     static void loadConfiguration(const std::string& jsonFilename);
+
+    ///
+    /// \brief Loads configuration from JSON
+    /// \param json JSON Configuration
+    /// \see loadConfiguration(const std::string&)
+    ///
+    static inline void loadConfigurationFromJson(const std::string& json)
+    {
+        Residue::instance().loadConfigurationFromJson_(json);
+    }
+
+    ///
+    /// \brief Saves connection parameter to the file
+    /// \throws ResidueException if not connected or if file is not writable
+    ///
+    static inline void saveConnection(const std::string& outputFile)
+    {
+        Residue::instance().saveConnection_(outputFile);
+    }
+
+    static inline std::string connection()
+    {
+        return Residue::instance().m_connection;
+    }
+
+    ///
+    /// \brief Loads connection from file instead of re-pulling it from server
+    ///
+    /// You must load configurations before this
+    ///
+    /// This is useful if you know server has this connection and do not want
+    /// to renew your connection.
+    ///
+    /// This also automatically connects the required sockets
+    ///
+    /// \related loadConnectionFromJson(const std::string&)
+    /// \throws ResidueException if configuration not found or socket could not be connected
+    ///
+    static inline void loadConnection(const std::string& connectionFile)
+    {
+        Residue::instance().loadConnection_(connectionFile);
+    }
+
+    ///
+    /// \brief Loads configuration from JSON
+    /// \param connectionJson JSON connection
+    /// \throws ResidueException if configuration not found or socket could not be connected
+    /// \see loadConnection(const std::string&)
+    /// \see saveConnection(const std::string&)
+    ///
+    static void loadConnectionFromJson(const std::string& connectionJson);
 
     ///
     /// \brief Crash handler logger. Not for public use.
@@ -549,33 +609,12 @@ private:
         el::base::type::VerboseLevel vlevel;
     };
 
-    Residue() noexcept;
-
-    // client
-    bool isClientValid() const noexcept;
-    bool shouldTouch() const noexcept;
-    void touch() noexcept;
-    void healthCheck() noexcept;
-
-    // connect
-    void connect_(const std::string& host, int port);
-    void disconnect_() noexcept;
-    void reset();
-    void onConnect() noexcept;
-
-    // request
-    void addToQueue(RawRequest&&) noexcept;
-    void dispatch();
-    std::string requestToJson(RawRequest&& request);
-
-    void addError(const std::string& errorText) noexcept;
-
-    friend class ResidueDispatcher;
-
     // private members
 
     std::string m_host;
     int m_port;
+
+    std::string m_connection;
 
     std::atomic<bool> m_connected;
     std::atomic<bool> m_connecting;
@@ -611,10 +650,42 @@ private:
     std::string m_applicationId;
     bool m_knownClient;
 
+    std::string m_homepath;
+
     std::string m_crashHandlerLoggerId;
 
     std::vector<std::string> m_errors;
     std::mutex m_errorsMutex;
+
+    friend class ResidueDispatcher;
+
+    Residue() noexcept;
+
+    // client
+    bool isClientValid() const noexcept;
+    bool shouldTouch() const noexcept;
+    void touch() noexcept;
+    void healthCheck() noexcept;
+
+    // connect
+    void connect_(const std::string& host, int port, bool estabilishFullConnection = true);
+    void disconnect_() noexcept;
+    void reset();
+    void onConnect() noexcept;
+    void loadConnectionFromJson_(const std::string& connectionJson);
+    void saveConnection_(const std::string& outputFile);
+    void loadConnection_(const std::string& connectionFile);
+
+    void loadConfigurationFromJson_(const std::string& json);
+
+    // request
+    void addToQueue(RawRequest&&) noexcept;
+    void dispatch();
+    std::string requestToJson(RawRequest&& request);
+
+    void addError(const std::string& errorText) noexcept;
+
+    std::string& resolveResidueHomeEnvVar(std::string& str);
 };
 
 #endif /* Residue_h */

@@ -73,7 +73,7 @@ mv $PACK_STATIC/libresidue-static-full.a .
 rm -rf $PACK_STATIC/*
 mv libresidue-static-full.a $PACK_STATIC/libresidue-static.$VERSION.a
 
-cp libresidue.so $PACK/libresidue.$VERSION.so
+cp libresidue.so $PACK/libresidue.so.$VERSION
 cp libresidue.dylib $PACK/libresidue.$VERSION.dylib
 
 cp ../include/easylogging++.h $HEADERS/
