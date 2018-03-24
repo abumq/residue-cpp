@@ -511,6 +511,13 @@ public:
     static void loadConfiguration(const std::string& jsonFilename);
 
     ///
+    /// \brief Loads configuration from JSON
+    /// \param json JSON Configuration
+    /// \see loadConfiguration(const std::string&)
+    ///
+    static void loadConfigurationFromJson(const std::string& json);
+
+    ///
     /// \brief Crash handler logger. Not for public use.
     ///
     inline std::string crashHandlerLoggerId() const noexcept

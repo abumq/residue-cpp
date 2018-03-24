@@ -1,5 +1,8 @@
 # Change Log
 
+## [Unreleased]
+- Added `loadConfigurationFromJson` to load from JSON parameter
+
 ## [2.0.1] - 21-03-2018
 - Fix disconnect
 

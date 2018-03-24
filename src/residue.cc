@@ -628,6 +628,11 @@ void Residue::loadConfiguration(const std::string& jsonFilename)
     }
     std::string confJson = std::string(std::istreambuf_iterator<char>(fs), std::istreambuf_iterator<char>());
     fs.close();
+    loadConfigurationFromJson(confJson);
+}
+
+void Residue::loadConfigurationFromJson(const std::string& confJson)
+{
     Residue* r = &Residue::instance();
     json j;
     try {
