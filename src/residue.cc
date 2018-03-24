@@ -166,8 +166,15 @@ void Residue::onConnect() noexcept
     if (!m_running) {
         // we do not want to cancel existing thread so we use m_running as reference point
         m_running = true;
-        delete m_dispatcher;
-        m_dispatcher = nullptr; // just in case if next line fails due to insufficient memory
+        //constant connect and disconnect may cause memory leak as of
+        // v2.1.0+
+        // following delete causes failure in some situations
+        if (m_dispatcher != nullptr) {
+            InternalLogger(InternalLogger::debug) << "Delete dispatcher...";
+            delete m_dispatcher;
+            m_dispatcher = nullptr; // just in case if next line fails due to insufficient memory
+            InternalLogger(InternalLogger::debug) << "Dispatcher deleted!";
+        }
         InternalLogger(InternalLogger::debug) << "Init dispatcher...";
         m_dispatcher = new std::thread([&]() {
             while (m_running) {
@@ -175,6 +182,7 @@ void Residue::onConnect() noexcept
                 if ((!m_connected || m_disconnected) && m_requests.empty()) {
                     InternalLogger(InternalLogger::debug) << "Force disconnect";
                     disconnect_();
+                    m_running = false;
                     break;
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(m_dispatchDelay));
@@ -297,6 +305,7 @@ void Residue::reset()
                                                 InternalLogger(InternalLogger::error) << "Reading connection";
                                                 std::string decryptedAckResponse = Ripe::decryptAES(ackResponse, m_key, iv, true);
                                                 loadConnectionFromJson_(decryptedAckResponse);
+                                                onConnect();
                                             } catch (const std::exception& e) {
                                                 InternalLogger(InternalLogger::error) << "Failed to connect (4): " << e.what();
                                                 throw ResidueException(e.what());
@@ -343,7 +352,6 @@ void Residue::addToQueue(RawRequest&& request) noexcept
     RESIDUE_PROFILE_START(t_queue);
 #endif
     RESIDUE_LOCK_LOG("addToQueue");
-    InternalLogger(InternalLogger::info) << "Queue size: " << m_requests.size();
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
     m_requests.push_front(std::move(request));
 
@@ -716,6 +724,7 @@ void Residue::loadConnectionFromJson(const std::string& json)
     Residue::instance().connect_(Residue::instance().m_host, Residue::instance().m_port, false);
     Residue::instance().loadConnectionFromJson_(json);
     Residue::instance().healthCheck();
+    Residue::instance().onConnect();
 }
 
 void Residue::loadConnectionFromJson_(const std::string& connectionJson)
@@ -761,7 +770,6 @@ void Residue::loadConnectionFromJson_(const std::string& connectionJson)
 
         m_connected = true;
         m_connection = connectionJson;
-        onConnect();
     } catch (const std::exception& e) {
         InternalLogger(InternalLogger::error) << "Failed to connect (load connection): " << e.what();
         throw ResidueException(e.what());
