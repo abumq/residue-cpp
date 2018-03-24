@@ -34,6 +34,7 @@ void MainWindow::on_btnConnect_clicked()
     try {
         Residue::reconnect();
         ui->txtConnection->setText(QString::fromStdString(Residue::connection()));
+        log("Connected");
     } catch (ResidueException& e) {
         log(e.what());
     }
