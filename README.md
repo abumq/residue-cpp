@@ -38,8 +38,8 @@ cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 [[ $TYPE = "darwin" ]] && DEST_SUFFIX=".$VERSION.$EXTENSION" || DEST_SUFFIX=".$EXTENSION.$VERSION"
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-x86_64-$TYPE/libresidue* /usr/local/lib/libresidue$DEST_EXTENSION
-ln -s /usr/local/lib/libresidue$DEST_EXTENSION /usr/local/lib/libresidue.$EXTENSION
+cp libresidue-$VERSION-x86_64-$TYPE/libresidue* /usr/local/lib/libresidue$DEST_SUFFIX
+ln -s /usr/local/lib/libresidue$DEST_SUFFIX /usr/local/lib/libresidue.$EXTENSION
 
 ## Static lib
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
