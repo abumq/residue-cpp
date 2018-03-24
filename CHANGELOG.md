@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 - Added `loadConfigurationFromJson` to load from JSON parameter
+- Updated internal networking library (asio) to 1.12.0
 
 ## [2.0.1] - 21-03-2018
 - Fix disconnect
