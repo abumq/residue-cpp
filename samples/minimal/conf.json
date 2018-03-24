@@ -1,5 +1,5 @@
 {
-    "url": "localhost:8777",
+    "url": "residue-server:8777",
     "application_id": "com.muflihun.residue.sampleapp",
     "rsa_key_size": 2048,
     "utc_time": false,
