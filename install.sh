@@ -13,13 +13,13 @@ if [ "$LINUX_SPECIAL_EDITION" != "" ];then
 fi
 
 echo "-----------"
-echo " INSTALLING residue-$VERSION-x86_64-$TYPE"
+echo " INSTALLING libresidue-$VERSION-x86_64-$TYPE"
 echo "-----------"
 
 ## Headers
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
 tar -xf libresidue-$VERSION-headers.tar.gz
-mkdir /usr/local/include/residue/
+mkdir -p /usr/local/include/residue/
 cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 
 ## Dynamic lib
