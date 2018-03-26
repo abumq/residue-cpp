@@ -12,6 +12,10 @@ if [ "$LINUX_SPECIAL_EDITION" != "" ];then
     TYPE=linux-se
 fi
 
+echo "-----------"
+echo " INSTALLING residue-$VERSION-x86_64-$TYPE"
+echo "-----------"
+
 ## Headers
 wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
 tar -xf libresidue-$VERSION-headers.tar.gz
