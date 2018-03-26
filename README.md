@@ -21,31 +21,10 @@ You can download binary from [releases](https://github.com/muflihun/residue-cpp/
  * Unzip binary archives and copy them to `/usr/local/lib/`
  * Unzip header archives and copy them to `/usr/local/include/residue/`
  
-In a nutshell you will do:
+For ease, we have setup [`install.sh`](https://github.com/muflihun/residue-cpp/blob/master/install.sh) that you can use to install it locall
 
 ```
-VERSION=2.1.0
-TYPE=linux  ## or "darwin" (for macOS) or "linux-se" (for Special edition)
-
-## Headers
-wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
-tar -xf libresidue-$VERSION-headers.tar.gz
-mkdir /usr/local/include/residue/
-cp libresidue-$VERSION-headers/* /usr/local/include/residue/
-
-## Dynamic lib
-[[ $TYPE = "darwin" ]] && EXTENSION="dylib" || EXTENSION="so"
-[[ $TYPE = "darwin" ]] && DEST_SUFFIX=".$VERSION.$EXTENSION" || DEST_SUFFIX=".$EXTENSION.$VERSION"
-wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
-tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-x86_64-$TYPE/libresidue* /usr/local/lib/libresidue$DEST_SUFFIX
-ln -s /usr/local/lib/libresidue$DEST_SUFFIX /usr/local/lib/libresidue.$EXTENSION
-
-## Static lib
-wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
-tar -xf libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.$VERSION.a /usr/local/lib/
-ln -s /usr/local/lib/libresidue-static.$VERSION.a /usr/local/lib/libresidue-static.a
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/muflihun/residue-cpp/master/install.sh)"
 ```
 
 You should be ready to link your application against `libresidue`, both statically and dynamically.
