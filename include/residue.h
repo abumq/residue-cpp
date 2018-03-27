@@ -136,7 +136,7 @@ public:
     /// \brief Connect to residue on specified host and port
     /// \param host Host where residue server is running
     /// \param port Residue server port (Try Residue::DEFAULT_PORT)
-    /// \throws exception When connection fails
+    /// \throws ResidueException When connection fails
     ///
     static inline void connect(const std::string& host, int port)
     {
@@ -146,7 +146,7 @@ public:
     ///
     /// \brief Connect to residue on localhost
     /// \see connect(const std::string&, int)
-    /// \throws exception When connection fails
+    /// \throws ResidueException When connection fails
     ///
     static inline void connect(int port)
     {
@@ -156,7 +156,7 @@ public:
     ///
     /// \brief Connect to residue using default port
     /// \see connect(const std::string&, int)
-    /// \throws exception When connection fails
+    /// \throws ResidueException When connection fails
     ///
     static inline void connect(const std::string& host)
     {
@@ -168,7 +168,7 @@ public:
     /// This is more useful when you have client ID so you won't have varying client IDs
     /// \see connect(const std::string&, int)
     /// \see setParams(const std::string&, const std::string&)
-    /// \throws exception When connection fails
+    /// \throws ResidueException When connection fails
     ///
     static inline void connect()
     {
@@ -268,13 +268,7 @@ public:
     /// \note MAKE SURE SERVER SUPPORTS BULK LOG REQUESTS
     /// \throws exception if server does not allow bulk requests. (can only determine when connected)
     ///
-    static inline void enableBulkDispatch()
-    {
-        if (connected() && !hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
-            throw std::invalid_argument("Bulk log requests not allowed by this server");
-        }
-        Residue::instance().m_bulkDispatch = true;
-    }
+    static void enableBulkDispatch();
 
     ///
     /// \brief disableBulkDispatch turns off bulk dispatch.
@@ -336,13 +330,7 @@ public:
     /// Please contact your log server hosting to get this number. Failing to select correct number can fail.
     /// \throws ResidueException if connected and specified bulk size exceeds maximum allowed
     ///
-    static inline void setBulkSize(unsigned int bulkSize)
-    {
-        if (connected() && bulkSize > maxBulkSize()) {
-            throw ResidueException("Invalid bulk dispatch size. Maximum allowed: " + std::to_string(maxBulkSize()));
-        }
-        Residue::instance().m_bulkSize = bulkSize;
-    }
+    static void setBulkSize(unsigned int bulkSize);
 
     ///
     /// \brief Enables automatic setting of bulk parameters depending on
@@ -383,13 +371,7 @@ public:
     /// \see setKnownClient
     /// \throws ResidueException if size is not one of 2048, 4096 or 8192
     ///
-    static inline void setKeySize(std::size_t keySize)
-    {
-        if (keySize != 2048 && keySize != 2048 * 2 && keySize != 2048 * 4) {
-            throw ResidueException("Invalid key size. Please select 2048, 4096 or 8192");
-        }
-        Residue::instance().m_keySize = keySize;
-    }
+    static void setKeySize(std::size_t keySize);
 
     ///
     /// \see setApplicationArgs(int, const char*)
@@ -417,15 +399,7 @@ public:
     /// \see connect
     /// \throws ResidueException if you specified client ID but private key is null
     ///
-    static inline void setKnownClient(const std::string& clientId, const std::string& privateKeyPem)
-    {
-        Residue::instance().m_clientId = clientId;
-        Residue::instance().m_rsaPrivateKey = privateKeyPem;
-        if (!clientId.empty() && privateKeyPem.empty()) {
-            throw ResidueException("Please provide private key for known client.");
-        }
-        Residue::instance().m_knownClient = !clientId.empty() && !privateKeyPem.empty();
-    }
+    static void setKnownClient(const std::string& clientId, const std::string& privateKeyPem);
 
     ///
     /// \brief Sets server public key for encrypted connection.
