@@ -814,3 +814,37 @@ std::string Residue::info() noexcept
        << ")";
     return ss.str();
 }
+
+void Residue::setBulkSize(unsigned int bulkSize)
+{
+    if (connected() && bulkSize > maxBulkSize()) {
+        throw ResidueException("Invalid bulk dispatch size. Maximum allowed: " + std::to_string(maxBulkSize()));
+    }
+    Residue::instance().m_bulkSize = bulkSize;
+}
+
+void Residue::setKeySize(std::size_t keySize)
+{
+    if (keySize != 2048 && keySize != 2048 * 2 && keySize != 2048 * 4) {
+        throw ResidueException("Invalid key size. Please select 2048, 4096 or 8192");
+    }
+    Residue::instance().m_keySize = keySize;
+}
+
+void Residue::setKnownClient(const std::string& clientId, const std::string& privateKeyPem)
+{
+    Residue::instance().m_clientId = clientId;
+    Residue::instance().m_rsaPrivateKey = privateKeyPem;
+    if (!clientId.empty() && privateKeyPem.empty()) {
+        throw ResidueException("Please provide private key for known client.");
+    }
+    Residue::instance().m_knownClient = !clientId.empty() && !privateKeyPem.empty();
+}
+
+void Residue::enableBulkDispatch()
+{
+    if (connected() && !hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
+        throw ResidueException("Bulk log requests not allowed by this server");
+    }
+    Residue::instance().m_bulkDispatch = true;
+}

@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.1] - 27-03-2018
+### Updates
+- Moved exceptions out of include for native bindings
+
 ## [2.1.0] - 25-03-2018
 ### API Updates
 - Added `loadConfigurationFromJson` to load from JSON parameter
