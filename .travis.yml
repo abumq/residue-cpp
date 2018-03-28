@@ -19,36 +19,6 @@ matrix:
   - os: linux
     compiler: gcc
     env:
-      - COMPILER=g++-4.6
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-4.6, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    
-  - os: linux
-    compiler: gcc
-    env:
-      - COMPILER=g++-4.7
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-4.7, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    
-  - os: linux
-    compiler: gcc
-    env:
       - COMPILER=g++-4.8
     addons:
       apt:
