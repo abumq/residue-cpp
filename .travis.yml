@@ -20,6 +20,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-4.8
+      - SPECIAL_EDITION=ON
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -161,10 +162,11 @@ install:
  - cd "${TRAVIS_BUILD_DIR}"
  - mkdir build
  - cd build
- - cmake -Dtest=OFF -Dtravis=ON .. # -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
+ - export SPECIAL_EDITION="${SPECIAL_EDITION:-OFF}"
+ - cmake -Dtest=OFF -Dtravis=ON -Dspecial_edition=$SPECIAL_EDITION .. # -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
  - sudo make VERBOSE=1
  - sudo make install
- - cmake -Dtest=ON -Dtravis=ON .. # -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
+ - cmake -Dtest=ON -Dspecial_edition=$SPECIAL_EDITION -Dtravis=ON .. # -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
 
 script: "sudo make VERBOSE=1 && ./residue-cpp-unit-tests"
 branches:
