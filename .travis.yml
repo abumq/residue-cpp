@@ -1,106 +1,173 @@
-language: cpp
-dist: trusty
-sudo: required
-os:
-  - linux
-  - osx
+language:
+  - cpp
+
+sudo:
+  - required
+
+dist:
+  - trusty
 
 matrix:
   include:
-  - os: linux
-    compiler: clang
-    before_install:
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    - g++ -v
-    
-  - os: linux
-    compiler: gcc
-    env:
-      - COMPILER=g++-4.8
-      - SPECIAL_EDITION=ON
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-4.8, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    
-  - os: linux
-    compiler: gcc
-    env:
-      - COMPILER=g++-4.9
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-4.9, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
+    # LINUX
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=default
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=default
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=clang-libstdcxx
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=clang-libstdcxx
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=gcc
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=gcc
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=android-ndk-r11c-api-19-armeabi-v7a-neon
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=android-ndk-r11c-api-19-armeabi-v7a-neon
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=analyze
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=analyze
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=sanitize-address
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=sanitize-address
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=sanitize-leak
+    - os: linux
+      env: CONFIG=Debug TOOLCHAIN=sanitize-leak
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=gcc
+    - os: linux
+      compiler: clang
+      before_install:
+      - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+      - sudo apt-get -qq update
+      - sudo apt-get install -y libgtest-dev
+      - sudo apt-get install --only-upgrade cmake
+      - g++ -v
+      
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-4.8
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: [g++-4.8, valgrind]
+      before_install:
+      - CXX=$COMPILER
+      - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+      - sudo apt-get -qq update
+      - sudo apt-get install -y libgtest-dev
+      - sudo apt-get install --only-upgrade cmake
+      
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-4.9
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: [g++-4.9, valgrind]
+      before_install:
+      - CXX=$COMPILER
+      - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+      - sudo apt-get -qq update
+      - sudo apt-get install -y libgtest-dev
+      - sudo apt-get install --only-upgrade cmake
 
-  - os: linux
-    compiler: gcc
-    env:
-      - COMPILER=g++-5
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-5, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    
-  - os: linux
-    compiler: gcc
-    env:
-      - COMPILER=g++-6
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-6, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    
-  - os: linux
-    compiler: gcc
-    env:
-      - COMPILER=g++-7
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-7, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    
-  - os: osx
-    compiler: clang
-    osx_image: xcode8
-     - g++ -v
-     - cmake -v
-    
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-5
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: [g++-5, valgrind]
+      before_install:
+      - CXX=$COMPILER
+      - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+      - sudo apt-get -qq update
+      - sudo apt-get install -y libgtest-dev
+      - sudo apt-get install --only-upgrade cmake
+      
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-6
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: [g++-6, valgrind]
+      before_install:
+      - CXX=$COMPILER
+      - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+      - sudo apt-get -qq update
+      - sudo apt-get install -y libgtest-dev
+      - sudo apt-get install --only-upgrade cmake
+      
+    - os: linux
+      compiler: gcc
+      env:
+        - COMPILER=g++-7
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: [g++-7, valgrind]
+      before_install:
+      - CXX=$COMPILER
+      - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+      - sudo apt-get -qq update
+      - sudo apt-get install -y libgtest-dev
+      - sudo apt-get install --only-upgrade cmake
+
+    # END LINUX
+
+    # OSX
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=default
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=default
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=libcxx
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=libcxx
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=clang-libstdcxx
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=clang-libstdcxx
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=osx-10-11
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=osx-10-11
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=ios-nocodesign-9-3
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=ios-nocodesign-9-3
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=android-ndk-r11c-api-19-armeabi-v7a-neon
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=android-ndk-r11c-api-19-armeabi-v7a-neon
+    - os: osx
+      env: CONFIG=Release TOOLCHAIN=analyze
+    - os: osx
+      env: CONFIG=Debug TOOLCHAIN=analyze
+    # END OSX
+
 install:
- - cmake --version 
- - uname -a
+  - uname -a
+  - SPECIAL_EDITION=ON
 
 ## GTest
  - wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
