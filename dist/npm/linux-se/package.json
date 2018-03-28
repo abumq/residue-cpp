@@ -1,7 +1,7 @@
 {
-  "name": "libresidue-darwin",
+  "name": "libresidue-linux-se",
   "version": "2.1.2",
-  "description": "Residue C++ client library (Darwin)",
+  "description": "Residue C++ client library (Linux Special Edition)",
   "homepage": "https://github.com/muflihun/residue-cpp",
   "author": "Muflihun Labs <info@muflihun.com>",
   "license": "Apache-2.0",
@@ -12,6 +12,7 @@
   "keywords": [
     "residue",
     "realtime",
-    "darwin"
+    "linux",
+    "centos7"
   ]
 }
