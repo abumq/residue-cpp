@@ -31,8 +31,8 @@ if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
     exit;
 fi
 
-PACK=libresidue-$VERSION-$TYPE-x86_64
-PACK_STATIC=libresidue-$VERSION-static-$TYPE-x86_64
+PACK=libresidue-$VERSION-x86_64-$TYPE
+PACK_STATIC=libresidue-$VERSION-static-x86_64-$TYPE
 HEADERS=libresidue-$VERSION-headers
 
 if [ -d "$PACK" ];then
