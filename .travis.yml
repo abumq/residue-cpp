@@ -1,16 +1,25 @@
 language: cpp
 dist: trusty
 sudo: required
+os:
+  - linux
+  - osx
+
 matrix:
   include:
   - os: linux
     compiler: clang
-    before_install:
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
-    - g++ -v
+    env:
+      - COMPILER=g++
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-4.8
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-4.8, valgrind]
     
   - os: linux
     compiler: gcc
@@ -20,12 +29,6 @@ matrix:
       apt:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-4.9, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
 
   - os: linux
     compiler: gcc
@@ -35,12 +38,6 @@ matrix:
       apt:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-5, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
     
   - os: linux
     compiler: gcc
@@ -50,12 +47,6 @@ matrix:
       apt:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-6, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
     
   - os: linux
     compiler: gcc
@@ -65,12 +56,6 @@ matrix:
       apt:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-7, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev
-    - sudo apt-get install --only-upgrade cmake
     
 #  - os: osx
 #    compiler: clang
@@ -79,8 +64,14 @@ matrix:
 #     - cmake -v
     
 install:
- - cmake --version 
  - uname -a
+ - CXX=$COMPILER
+ - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+ - sudo apt-get -qq update
+ - sudo apt-get install --only-upgrade cmake
+ - $CXX --version
+ - cmake --version 
+ - export SPECIAL_EDITION=ON
 
 ## GTest
  - wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
@@ -101,7 +92,7 @@ install:
  - make
  - sudo make install
 
-## Crypto++ (We dont need this for residue, we need it for ripe)
+## Crypto++
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
  - tar xf cryptocpp.tar.gz
  - cd cryptopp-CRYPTOPP_5_6_5
@@ -111,41 +102,14 @@ install:
  - make
  - sudo make install
 
-## Ripe
- - RIPE_VERSION=4.0.0
- - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/v$RIPE_VERSION.zip
- - unzip ripe-code.zip
- - cd ripe-$RIPE_VERSION
- - cmake .
- - make
- - ls -l
- - sudo make install
-
-## Ripe Binaries
-# - wget -O ripe-bin.zip https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.zip
-# - unzip ripe-bin.zip
-# - tar xfz ripe-bin.tar.gz
-# - cd ripe-4.0.0-x86_64-linux
-# - ls -l
-# - sudo cp libripe* /usr/lib/
-# - sudo cp ripe* /usr/bin/
-# - wget https://github.com/muflihun/ripe/releases/download/v4.0.0/Ripe.h
-# - sudo cp Ripe.h /usr/include/
-
-## Set env variable for ripe
- - echo $LD_LIBRARY_PATH
- - export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
- - export RIPE="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH ripe"
- - $RIPE --version
-
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - mkdir build
  - cd build
- - cmake -Dtest=OFF -Dtravis=ON .. # -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
+ - cmake -Dtest=OFF -Dtravis=ON -Dspecial_edition=ON ..
  - sudo make VERBOSE=1
  - sudo make install
- - cmake -Dtest=ON -Dtravis=ON .. # -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
+ - cmake -Dtest=ON -Dspecial_edition=ON -Dtravis=ON ..
 
 script: "sudo make VERBOSE=1 && ./residue-cpp-unit-tests"
 branches:
