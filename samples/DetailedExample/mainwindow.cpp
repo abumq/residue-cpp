@@ -9,10 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::crazy);
 }
 
 MainWindow::~MainWindow()
 {
+    Residue::disconnect();
+    log("Clearing existing threads...");
+    for (auto& t : m_threads) {
+        t.join();
+    }
+    m_threads.clear();
     delete ui;
 }
 
