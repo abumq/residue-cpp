@@ -18,17 +18,20 @@ VERSION="$MAJOR.$MINOR.$PATCH"
 echo "Publish $VERSION on $TYPE to NPM. Continue (y/n)?"
 
 read confirm
+
+PKG=libresidue-$VERSION-x86_64-$TYPE
+
 if [ "$confirm" = "y" ]; then
-    if [ ! -f ../../build/libresidue-$VERSION-$TYPE-x86_64.tar.gz ];then
-        echo "Could not find libresidue-$VERSION-$TYPE-x86_64.tar.gz in build directory"
+    if [ ! -f ../../build/$PKG.tar.gz ];then
+        echo "Could not find $PKG.tar.gz in build directory"
         exit 1;
     fi
-    tar -xf ../../build/libresidue-$VERSION-$TYPE-x86_64.tar.gz -C $TYPE/
+    tar -xf ../../build/$PKG.tar.gz -C $TYPE/
     rm -rf $TYPE/libresidue.so.*
     rm -rf $TYPE/libresidue.*.dylib
-    mv $TYPE/libresidue-$VERSION-$TYPE-x86_64/libresidue* $TYPE/
+    mv $TYPE/$PKG/libresidue* $TYPE/
     cp ../../include/* $TYPE/
-    rm -rf $TYPE/libresidue-$VERSION-$TYPE-x86_64
+    rm -rf $TYPE/$PKG
     echo "---- CONTENTS ------"
     ls -l $TYPE/
     echo "---- package.json ------"
