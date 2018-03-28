@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.2] - 28-03-2018
+### Fixes
+- Fix `RESIDUE_HOME` if not available
+
 ## [2.1.1] - 27-03-2018
 ### Updates
 - Moved exceptions out of include for native bindings
