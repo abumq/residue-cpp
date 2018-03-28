@@ -15,10 +15,11 @@ echo "Publish $VERSION to NPM. Continue (y/n)?"
 read confirm
 
 if [ "$confirm" = "y" ]; then
-    rm -rf headers/*.h
-    cp ../../include/* headers/
+    rm -rf headers/residue
+    cp -r ../../include headers/residue
     echo "---- CONTENTS ------"
     ls -l headers/
+    ls -l headers/residue
     echo "---- package.json ------"
     grep name headers/package.json
     grep version headers/package.json
@@ -30,6 +31,6 @@ if [ "$confirm" = "y" ]; then
         cd headers/
         npm publish
         cd ../
-        rm -rf headers/*.h
+        rm -rf headers/residue
     fi
 fi
