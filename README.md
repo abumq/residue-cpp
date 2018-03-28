@@ -31,6 +31,17 @@ You should be ready to link your application against `libresidue`, both statical
 
 If you use cmake, you may also be interested in [Residue CMake module](https://github.com/muflihun/residue-cpp/blob/master/FindResidue.cmake)
 
+### Undefined Reference
+
+You may need to define `-D_GLIBCXX_USE_CXX11_ABI=0` if you're using using gcc 5.1+ with pre-compiled binary. If you don't do it, you will get undefined references e.g,
+
+```
+/tmp/ccIYrKup.o: In function `Residue::connect(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int)':
+main.cc:(.text._ZN7Residue7connectERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEi[_ZN7Residue7connectERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEi]+0x27): undefined reference to `Residue::connect_(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int, bool)'
+```
+
+[Learn more](https://gcc.gnu.org/onlinedocs/gcc-5.2.0/libstdc++/manual/manual/using_dual_abi.html)
+
 ## Build
 If you do not wish to download binaries, you can build your own library using following steps.
 
