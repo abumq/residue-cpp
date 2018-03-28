@@ -8,8 +8,10 @@ if [ "$LINUX_SPECIAL_EDITION" != "" ];then
     TYPE=linux-se
 fi
 
+PKG=libresidue-$VERSION-x86_64-$TYPE
+
 echo "-----------"
-echo " INSTALLING libresidue-$VERSION-x86_64-$TYPE"
+echo " INSTALLING $PKG"
 echo "-----------"
 
 ## Headers
@@ -21,9 +23,9 @@ cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 ## Dynamic lib
 [[ $TYPE = "darwin" ]] && EXTENSION="dylib" || EXTENSION="so"
 [[ $TYPE = "darwin" ]] && DEST_SUFFIX=".$VERSION.$EXTENSION" || DEST_SUFFIX=".$EXTENSION.$VERSION"
-wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-x86_64-$TYPE.tar.gz
-tar -xf libresidue-$VERSION-x86_64-$TYPE.tar.gz
-cp libresidue-$VERSION-x86_64-$TYPE/libresidue* /usr/local/lib/libresidue$DEST_SUFFIX
+wget https://github.com/muflihun/residue-cpp/releases/download/v$VERSION/$PKG.tar.gz
+tar -xf $PKG.tar.gz
+cp $PKG/libresidue* /usr/local/lib/libresidue$DEST_SUFFIX
 rm /usr/local/lib/libresidue.$EXTENSION
 ln -s /usr/local/lib/libresidue$DEST_SUFFIX /usr/local/lib/libresidue.$EXTENSION
 
