@@ -1,6 +1,6 @@
 {
   "name": "libresidue-darwin",
-  "version": "2.1.2",
+  "version": "2.1.2-1",
   "description": "Residue C++ client library (Darwin)",
   "homepage": "https://github.com/muflihun/residue-cpp",
   "author": "Muflihun Labs <info@muflihun.com>",
