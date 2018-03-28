@@ -1,0 +1,17 @@
+{
+  "name": "libresidue-linux",
+  "version": "2.1.2",
+  "description": "Residue C++ client library (Linux)",
+  "homepage": "https://github.com/muflihun/residue-cpp",
+  "author": "Muflihun Labs <info@muflihun.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/muflihun/residue-cpp.git"
+  },
+  "keywords": [
+    "residue",
+    "realtime",
+    "linux"
+  ]
+}
