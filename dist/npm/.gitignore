@@ -1,3 +1,1 @@
-darwin/residue.h
-linux/easylogging++.h
-libresidue*
+headers/*.h

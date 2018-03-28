@@ -1,7 +1,7 @@
 {
-  "name": "libresidue-darwin",
-  "version": "2.1.2-1",
-  "description": "Residue C++ client library (Darwin)",
+  "name": "libresidue",
+  "version": "2.1.2",
+  "description": "Residue C++ client library (headers only). For binaries please go to https://github.com/muflihun/residue-cpp/releases",
   "homepage": "https://github.com/muflihun/residue-cpp",
   "author": "Muflihun Labs <info@muflihun.com>",
   "license": "Apache-2.0",
@@ -12,6 +12,8 @@
   "keywords": [
     "residue",
     "realtime",
-    "darwin"
+    "darwin",
+    "linux",
+    "remote-logging"
   ]
 }
