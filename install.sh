@@ -10,7 +10,7 @@ fi
 
 if [ "$VERSION" = "" ];then
     echo "Could not determine latest version."
-    if [ "$RESIDUE_VERSION" != ""];then
+    if [ "$RESIDUE_VERSION" != "" ];then
         echo "Setting to $RESIDUE_VERSION form RESIDUE_VERSION env variable"
     else
         echo "Please enter manual e.g, 2.1.2"
