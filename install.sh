@@ -8,6 +8,17 @@ if [ "$LINUX_SPECIAL_EDITION" != "" ];then
     TYPE=linux-se
 fi
 
+if [ "$VERSION" = "" ];then
+    echo "Could not determine latest version."
+    if [ "$RESIDUE_VERSION" != ""];then
+        echo "Setting to $RESIDUE_VERSION form RESIDUE_VERSION env variable"
+    else
+        echo "Please enter manual e.g, 2.1.2"
+        read RESIDUE_VERSION
+    fi
+    VERSION=$RESIDUE_VERSION
+fi
+
 PKG=libresidue-$VERSION-x86_64-$TYPE
 
 echo "-----------"
