@@ -1,6 +1,10 @@
 #!/bin/sh
 
-VERSION=`curl https://api.github.com/repos/muflihun/residue-cpp/releases | grep tag_name | head -n1 | grep -o "[0-9]\.[0-9]\.[0-9]"`
+VERSION=$1
+
+if [ "$VERSION" = "" ];then
+    VERSION=`curl https://api.github.com/repos/muflihun/residue-cpp/releases | grep tag_name | head -n1 | grep -o "[0-9]\.[0-9]\.[0-9]"`
+fi
 
 TYPE=`uname | tr '[:upper:]' '[:lower:]'`
 
