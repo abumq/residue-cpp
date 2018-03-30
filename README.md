@@ -10,9 +10,6 @@ This library is based on single source file. It automatically includes `<residue
 
 Please refer to [samples directory](/samples/) to get started
 
-## Installation
-This section shows you steps to install residue C++ client library on your machine.
-
 ## Download Binary
 You can download binary from [releases](https://github.com/muflihun/residue-cpp/releases) page for your platform. They are standalone libraries with dependency on `libz` that usually comes with operating system distribution.
 
@@ -42,7 +39,7 @@ main.cc:(.text._ZN7Residue7connectERKNSt7__cxx1112basic_stringIcSt11char_traitsI
 
 [Learn more](https://gcc.gnu.org/onlinedocs/gcc-5.2.0/libstdc++/manual/manual/using_dual_abi.html)
 
-## Build
+## Build From Source
 If you do not wish to download binaries, you can build your own library using following steps.
 
 ### Dependencies
