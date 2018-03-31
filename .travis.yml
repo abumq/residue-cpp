@@ -99,7 +99,7 @@ install:
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
  - unzip pem_pack.zip
  - cmake .
- - make
+ - make -j4
  - sudo make install
 
 ## Build
