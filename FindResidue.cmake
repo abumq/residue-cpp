@@ -87,3 +87,4 @@ message ("-- Residue: Include: " ${RESIDUE_INCLUDE_DIR} ", Binary: " ${RESIDUE_L
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(Residue REQUIRED_VARS RESIDUE_INCLUDE_DIR RESIDUE_LIBRARY)
+
