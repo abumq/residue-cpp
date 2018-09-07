@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.3] - 07-09-2018
+### Updated
+- Updated Easylogging++ to 9.96.5
+
 ## [2.1.2] - 28-03-2018
 ### Fixes
 - Fix `RESIDUE_HOME` if not available

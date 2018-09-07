@@ -1,6 +1,6 @@
 {
   "name": "libresidue",
-  "version": "2.1.2-2",
+  "version": "2.1.3",
   "description": "Residue C++ client library (headers only). For binaries please go to https://github.com/muflihun/residue-cpp/releases",
   "main": "include_dirs.js",
   "homepage": "https://github.com/muflihun/residue-cpp",

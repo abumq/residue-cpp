@@ -5,7 +5,8 @@
 ```
 The MIT License (MIT)
 
-Copyright (c) 2017 muflihun.com
+Copyright (c) 2012-2018 Muflihun Labs
+Copyright (c) 2012-2018 @abumusamq
 
 https://github.com/muflihun/
 https://muflihun.github.io
@@ -32,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ## [C++11 Json Library](https://github.com/nlohmann/json)
 #### License
 ```
-MIT License 
+MIT License
 
 Copyright (c) 2013-2017 Niels Lohmann
 
@@ -117,4 +118,3 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
-
