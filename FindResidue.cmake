@@ -8,6 +8,7 @@
 # Specify ${RESIDUE_ROOT} if you wish to specify root path manually, e.g, -DRESIDUE_ROOT=/usr/local
 #
 # (c) 2017-present Muflihun Labs
+# (c) 2017-present @abumusamq
 #
 # https://github.com/muflihun/residue-cpp
 # https://muflihun.com
@@ -87,4 +88,3 @@ message ("-- Residue: Include: " ${RESIDUE_INCLUDE_DIR} ", Binary: " ${RESIDUE_L
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(Residue REQUIRED_VARS RESIDUE_INCLUDE_DIR RESIDUE_LIBRARY)
-

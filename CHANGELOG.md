@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 ### Updated
-- Updated Easylogging++ to 9.96.4
+- Updated Easylogging++ to 9.96.5
 
 ## [2.1.2] - 28-03-2018
 ### Fixes

@@ -17,7 +17,7 @@ if [ "$VERSION" = "" ];then
     if [ "$RESIDUE_VERSION" != "" ];then
         echo "Setting to $RESIDUE_VERSION form RESIDUE_VERSION env variable"
     else
-        echo "Please enter manual e.g, 2.1.2"
+        echo "Please enter manual e.g, 2.1.3"
         read RESIDUE_VERSION
     fi
     VERSION=$RESIDUE_VERSION
@@ -50,4 +50,3 @@ tar -xf libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
 cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.$VERSION.a /usr/local/lib/
 rm /usr/local/lib/libresidue-static.a
 ln -s /usr/local/lib/libresidue-static.$VERSION.a /usr/local/lib/libresidue-static.a
-
