@@ -7,10 +7,11 @@
 #
 # Specify ${RESIDUE_ROOT} if you wish to specify root path manually, e.g, -DRESIDUE_ROOT=/usr/local
 #
-# (c) 2017-present Muflihun Labs
+# (c) 2017-present Zuhd Web Services
 # (c) 2017-present @abumusamq
 #
-# https://github.com/muflihun/residue-cpp
+# https://github.com/zuhd-org/residue-cpp
+# https://zuhd.org
 # https://muflihun.com
 #
 

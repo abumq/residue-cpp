@@ -11,7 +11,7 @@ option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "2")
 set (RESIDUE_MINOR "1")
-set (RESIDUE_PATCH "3")
+set (RESIDUE_PATCH "4")
 
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue-C++")
@@ -190,4 +190,3 @@ if (test)
 
     add_test (NAME residueCppUnitTests COMMAND residue-cpp-unit-tests)
 endif() ## test
-
