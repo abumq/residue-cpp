@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.4] - 24-11-2018
+- Updated license
+- Updated Easylogging++ to 9.96.7
+
 ## [2.1.3] - 07-09-2018
 ### Updated
 - Updated Easylogging++ to 9.96.5

@@ -1,14 +1,14 @@
 {
   "name": "libresidue",
-  "version": "2.1.3",
-  "description": "Residue C++ client library (headers only). For binaries please go to https://github.com/muflihun/residue-cpp/releases",
+  "version": "2.1.4",
+  "description": "Residue C++ client library (headers only). For binaries please go to https://github.com/zuhd-org/residue-cpp/releases",
   "main": "include_dirs.js",
-  "homepage": "https://github.com/muflihun/residue-cpp",
-  "author": "Muflihun Labs <info@muflihun.com>",
+  "homepage": "https://github.com/zuhd-org/residue-cpp",
+  "author": "Zuhd Web Services <opensource@zuhd.org>",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/muflihun/residue-cpp.git"
+    "url": "http://github.com/zuhd-org/residue-cpp.git"
   },
   "keywords": [
     "residue",
