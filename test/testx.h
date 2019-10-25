@@ -4,12 +4,12 @@
 //  TestX 1.0.4
 //  Single C++11 header for creating typesafe test data
 //
-//  Copyright (c) 2017-present Zuhd Web Services
+//  Copyright (c) 2017-present Amrayn Web Services
 //
 //  This library is released under the MIT Licence.
 //
-//  https://github.com/zuhd-org/testx/
-//  https://zuhd.org
+//  https://github.com/amrayn/testx/
+//  https://amrayn.com
 //  https://muflihun.com/
 //
 #ifndef MUFLIHUN_TEST_X_H

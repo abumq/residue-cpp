@@ -91,7 +91,7 @@ void LogBox::on_pushButton_2_clicked()
 void LogBox::on_pushButton_5_clicked()
 {
     // THIS WILL ONLY WORK WHEN YOU HAVE DEFINED ELPP_QT_LOGGING
-    // See LogBox.pro file and https://github.com/muflihun/easyloggingpp#qt-logging
+    // See LogBox.pro file and https://github.com/amrayn/easyloggingpp#qt-logging
     LOG(INFO) << QString("This is QString");
 }
 

@@ -7,9 +7,9 @@
 #
 # Specify ${RESIDUE_ROOT} if you wish to specify root path manually, e.g, -DRESIDUE_ROOT=/usr/local
 #
-# (c) 2017-present Muflihun Labs
+# (c) 2017-present Amrayn Web Services
 #
-# https://github.com/muflihun/residue-cpp
+# https://github.com/amrayn/residue-cpp
 # https://muflihun.com
 #
 

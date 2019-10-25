@@ -1,34 +1,34 @@
 ﷽
 
 # Residue C++ Client
-Official C++ client library with feature-rich API to interact with residue seamlessly. It uses [Easylogging++](https://github.com/zuhd-org/easyloggingpp) to interact and take input from the user. Easylogging++ is highly efficient, well-tested library.
+Official C++ client library with feature-rich API to interact with residue seamlessly. It uses [Easylogging++](https://github.com/amrayn/easyloggingpp) to interact and take input from the user. Easylogging++ is highly efficient, well-tested library.
 
-[![Build Status](https://img.shields.io/travis/zuhd-org/residue-cpp/master.svg)](https://travis-ci.org/zuhd-org/residue-cpp) [![Build Status](https://img.shields.io/travis/zuhd-org/residue-cpp/develop.svg)](https://travis-ci.org/zuhd-org/residue-cpp) [![Version](https://img.shields.io/github/release/zuhd-org/residue-cpp.svg)](https://github.com/zuhd-org/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue/docs/annotated.html) [![Apache-2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/zuhd-org/residue-cpp/blob/master/LICENCE)
+[![Build Status](https://img.shields.io/travis/amrayn/residue-cpp/master.svg)](https://travis-ci.org/amrayn/residue-cpp) [![Build Status](https://img.shields.io/travis/amrayn/residue-cpp/develop.svg)](https://travis-ci.org/amrayn/residue-cpp) [![Version](https://img.shields.io/github/release/amrayn/residue-cpp.svg)](https://github.com/amrayn/residue-cpp/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://amrayn.github.io/residue/docs/annotated.html) [![Apache-2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/amrayn/residue-cpp/blob/master/LICENCE)
 
-[![Donate](https://muflihun.github.io/donate.png?v2)](https://www.paypal.me/zuhd/25)
+[![Donate](https://amrayn.github.io/donate.png?v2)](https://amrayn.com/donate)
 
 ## Getting Started
-This library is based on single source file. It automatically includes `<residue/easylogging++.h>` header and expect it to be available on developer's system. Please refer to [documentation page](https://muflihun.github.io/residue/docs/class_residue.html) to check the API.
+This library is based on single source file. It automatically includes `<residue/easylogging++.h>` header and expect it to be available on developer's system. Please refer to [documentation page](https://amrayn.github.io/residue/docs/class_residue.html) to check the API.
 
 Please refer to [samples directory](/samples/) to get started
 
 ## Download Binary
-You can download binary from [releases](https://github.com/zuhd-org/residue-cpp/releases) page for your platform. They are standalone libraries with dependency on `libz` that usually comes with operating system distribution.
+You can download binary from [releases](https://github.com/amrayn/residue-cpp/releases) page for your platform. They are standalone libraries with dependency on `libz` that usually comes with operating system distribution.
 
  * Download binaries archive for your platform
  * Download headers archive
  * Unzip binary archives and copy them to `/usr/local/lib/`
  * Unzip header archives and copy them to `/usr/local/include/residue/`
 
-For ease, we have setup [`install.sh`](https://github.com/zuhd-org/residue-cpp/blob/master/install.sh) that you can use to install it locall
+For ease, we have setup [`install.sh`](https://github.com/amrayn/residue-cpp/blob/master/install.sh) that you can use to install it locall
 
 ```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/zuhd-org/residue-cpp/master/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/amrayn/residue-cpp/master/install.sh)"
 ```
 
 You should be ready to link your application against `libresidue`, both statically and dynamically.
 
-If you use cmake, you may also be interested in [Residue CMake module](https://github.com/zuhd-org/residue-cpp/blob/master/FindResidue.cmake)
+If you use cmake, you may also be interested in [Residue CMake module](https://github.com/amrayn/residue-cpp/blob/master/FindResidue.cmake)
 
 ### Undefined Reference
 
@@ -46,14 +46,14 @@ If you do not wish to download binaries, you can build your own library using fo
 
 ### Dependencies
   * C++11 compiler (or higher)
-  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://muflihun.github.io/downloads/pem_pack.zip)
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://amrayn.github.io/downloads/pem_pack.zip)
   * [zlib-devel](https://zlib.net/)
 
 ### Get The Code
-You can either [download code from master branch](https://github.com/zuhd-org/residue-cpp/archive/master.zip) or clone it using `git`:
+You can either [download code from master branch](https://github.com/amrayn/residue-cpp/archive/master.zip) or clone it using `git`:
 
 ```
-git clone git@github.com:zuhd-org/residue-cpp.git
+git clone git@github.com:amrayn/residue-cpp.git
 ```
 
 ### Build
@@ -75,7 +75,7 @@ You can change following options in CMake (using `-D<option>=ON`)
 | ------------ | ------------------------------- |
 | `test`       | Compile unit tests              |
 | `build_sample_app`      | Builds detailed-cmake sample           |
-| `special_edition`      | Build [special edition](https://github.com/zuhd-org/residue/blob/master/docs/INSTALL.md#special-edition)           |
+| `special_edition`      | Build [special edition](https://github.com/amrayn/residue/blob/master/docs/INSTALL.md#special-edition)           |
 
 ### Run Tests
 Please consider running unit test before you move on
@@ -117,10 +117,10 @@ sudo cp -a include/gtest /usr/include
 sudo cp -a libgtest_main.so libgtest.so /usr/lib/
 
 ## Crypto++
-wget https://muflihun.github.io/downloads/cryptocpp.tar.gz
+wget https://amrayn.github.io/downloads/cryptocpp.tar.gz
 tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
-wget https://muflihun.github.io/downloads/pem_pack.zip
+wget https://amrayn.github.io/downloads/pem_pack.zip
 unzip pem_pack.zip
 cmake .
 make
@@ -151,26 +151,26 @@ You can take advantage [`strip`](https://linux.die.net/man/1/strip) if you wish 
 
 | Branch | Platform | Build Status |
 | -------- |:------------:|:------------:|
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/develop/1)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/develop/2)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/develop/3)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com`/repos/zuhd-org/residue-cpp/`branches/develop/4)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/develop/5)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/master/1)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/master/2)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/master/3)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/master/4)](https://travis-ci.org/zuhd-org/residue-cpp) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue-cpp/branches/master/5)](https://travis-ci.org/zuhd-org/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/develop/1)](https://travis-ci.org/amrayn/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/develop/2)](https://travis-ci.org/amrayn/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/develop/3)](https://travis-ci.org/amrayn/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com`/repos/amrayn/residue-cpp/`branches/develop/4)](https://travis-ci.org/amrayn/residue-cpp) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/develop/5)](https://travis-ci.org/amrayn/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/master/1)](https://travis-ci.org/amrayn/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/master/2)](https://travis-ci.org/amrayn/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/master/3)](https://travis-ci.org/amrayn/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/master/4)](https://travis-ci.org/amrayn/residue-cpp) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue-cpp/branches/master/5)](https://travis-ci.org/amrayn/residue-cpp) |
 
 ## License
 
 ```
-Copyright 2017-present Zuhd Web Services
+Copyright 2017-present Amrayn Web Services
 Copyright 2017-present @abumusamq
 
-https://github.com/zuhd-org/
+https://github.com/amrayn/
 https://muflihun.com/
-https://zuhd.org
+https://amrayn.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

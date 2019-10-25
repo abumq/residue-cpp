@@ -1,15 +1,15 @@
 # Credits
 
-## [Easylogging++](https://muflihun.github.io/easyloggingpp/)
+## [Easylogging++](https://amrayn.github.io/easyloggingpp/)
 #### License
 ```
 The MIT License (MIT)
 
-Copyright (c) 2012-2018 Zuhd Web Services
+Copyright (c) 2012-2018 Amrayn Web Services
 Copyright (c) 2012-2018 @abumusamq
 
-https://github.com/zuhd-org/
-https://zuhd.org
+https://github.com/amrayn/
+https://amrayn.com
 https://muflihun.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of

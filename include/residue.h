@@ -3,14 +3,14 @@
 //
 //  Official C++ client library for Residue logging server
 //
-//  Copyright (C) 2017-present Zuhd Web Services
+//  Copyright (C) 2017-present Amrayn Web Services
 //  Copyright (C) 2017-present @abumusamq
 //
 //  https://muflihun.com/
-//  https://zuhd.org
-//  https://github.com/zuhd-org/residue-cpp/
+//  https://amrayn.com
+//  https://github.com/amrayn/residue-cpp/
 //
-//  See https://github.com/muflihun/residue-cpp/blob/master/LICENSE
+//  See https://github.com/amrayn/residue-cpp/blob/master/LICENSE
 //  for licensing information
 //
 
@@ -384,7 +384,7 @@ public:
     ///
     /// \brief Wrapper for START_EASYLOGGINGPP.
     /// \details This is recommended for all the applications using Residue in order to send verbose logs to the server.
-    /// \see https://github.com/muflihun/easyloggingpp#setting-application-arguments
+    /// \see https://github.com/amrayn/easyloggingpp#setting-application-arguments
     ///
     static inline void setApplicationArgs(int argc, const char** argv)
     {
