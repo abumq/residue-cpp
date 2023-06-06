@@ -1,16 +1,11 @@
 # Credits
 
-## [Easylogging++](https://amrayn.github.io/easyloggingpp/)
+## [Easylogging++](https://github.com/abumq/easyloggingpp/)
 #### License
 ```
 The MIT License (MIT)
 
-Copyright (c) 2012-2018 Amrayn Web Services
-Copyright (c) 2012-2018 @abumusamq
-
-https://github.com/amrayn/
-https://amrayn.com
-https://muflihun.com
+Copyright (c) 2012-present @abumq (Majid Q.)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

@@ -4,14 +4,9 @@
 //
 //  Official C++ client library for Residue logging server
 //
-//  Copyright (C) 2017-present Amrayn Web Services
-//  Copyright (C) 2017-present @abumusamq
+//  Copyright (C) 2017-present @abumq (Majid Q.)
 //
-//  https://muflihun.com/
-//  https://amrayn.com
-//  https://github.com/amrayn/residue-cpp/
-//
-//  See https://github.com/amrayn/residue-cpp/blob/master/LICENSE
+//  See https://github.com/abumq/residue-cpp/blob/master/LICENSE
 //  for licensing information
 //
 
