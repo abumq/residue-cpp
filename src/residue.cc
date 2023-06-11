@@ -381,7 +381,7 @@ void Residue::dispatch()
             if (!s_loggingClient->connected()) {
                 InternalLogger(InternalLogger::info) << "Trying to connect...";
                 m_connected = false;
-                connect();
+                reconnect();
             }
         } catch (const ResidueException& e) {
             InternalLogger(InternalLogger::error) << "Failed to connect: " << e.what() << ". Retrying in 500ms";
