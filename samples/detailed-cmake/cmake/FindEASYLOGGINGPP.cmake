@@ -6,10 +6,9 @@
 # If ${EASYLOGGINGPP_USE_STATIC_LIBS} is ON then static libs are searched.
 # In these cases ${EASYLOGGINGPP_LIBRARY} is also defined
 #
-# (c) 2017 Amrayn Web Services
+# (c) 2017 @abumq (Majid Q.)
 #
-# https://github.com/amrayn/easyloggingpp
-# https://muflihun.com
+# https://github.com/abumq/easyloggingpp
 #
 
 message ("-- Easylogging++: Searching...")

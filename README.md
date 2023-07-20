@@ -116,10 +116,10 @@ cp -a libgtest_main.* libgtest.* /usr/local/lib/
 cd ..
 
 ## Crypto++
-wget https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/cryptocpp.tar.gz
+wget https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/cryptocpp.tar.gz
 tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
-wget https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/pem_pack.zip
+wget https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/pem_pack.zip
 unzip pem_pack.zip
 ### IF ON MACOS ALSO DO
 ### export CC=`which clang`

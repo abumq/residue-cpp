@@ -3,17 +3,15 @@
 ![banner]
     
 # Introduction
-Residue is efficient real-time centralized logging software. This documentation is specifically for residue client library API for C++ application which will allow you to connect to the residue server seamlessly. It uses [Easylogging++](https://github.com/amrayn/easyloggingpp) for logging interface and features and [Ripe](https://github.com/amrayn/ripe) for secure connections. To find more about the server and how to get started with hosting your own server please see [Residue's official github repository](https://github.com/amrayn/residue)
+Residue is efficient real-time centralized logging software. This documentation is specifically for residue client library API for C++ application which will allow you to connect to the residue server seamlessly. It uses [Easylogging++](https://github.com/abumq/easyloggingpp) for logging interface and features and [Ripe](https://github.com/abumq/ripe) for secure connections. To find more about the server and how to get started with hosting your own server please see [Residue's official github repository](https://github.com/abumq/residue)
 
 # Licence
-Following licence applies strictly to this library. For Residue server licence please refer to [LICENCE](https://github.com/amrayn/residue/blob/master/LICENCE) on github.
+Following licence applies strictly to this library. For Residue server licence please refer to [LICENCE](https://github.com/abumq/residue/blob/master/LICENCE) on github.
 
 ```
-Copyright 2017-present Amrayn Web Services
-Copyright 2017-present @abumusamq
+Copyright 2017-present @abumq
 
-https://github.com/amrayn/
-https://muflihun.com/
+https://github.com/abumq
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,4 +26,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-  [banner]: https://raw.githubusercontent.com/amrayn/residue/master/docs/Residue.png
+  [banner]: https://raw.githubusercontent.com/abumq/residue/master/docs/Residue.png

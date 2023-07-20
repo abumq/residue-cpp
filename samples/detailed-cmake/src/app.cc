@@ -3,7 +3,7 @@
  *
  * Revision: 1.0
  *
- * https://github.com/amrayn/residue/tree/master/lib
+ * https://github.com/abumq/residue/tree/master/lib
  */
 
 #include <unistd.h>
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 
     // Residue::enablePlainRequest();
     // THIS IS OPTIONAL IF YOU WANT TO READ VERBOSE LOG LEVEL (i.e, -v)
-    // SEE https://github.com/amrayn/easyloggingpp#verbose-logging
+    // SEE https://github.com/abumq/easyloggingpp#verbose-logging
     Residue::setApplicationArgs(argc, argv);
 
 #if 0 // Configure via config file
@@ -71,8 +71,8 @@ int main(int argc, char* argv[]) {
     // RSA public key to the server then you can let server known about this and you may get
     // other benefits (depending on your host providing)
     //
-    //   - https://github.com/amrayn/residue/blob/master/docs/CONFIGURATION.md#allow_unknown_clients
-    //   - https://github.com/amrayn/residue/blob/master/docs/CONFIGURATION.md#known_clients
+    //   - https://github.com/abumq/residue/blob/master/docs/CONFIGURATION.md#allow_unknown_clients
+    //   - https://github.com/abumq/residue/blob/master/docs/CONFIGURATION.md#known_clients
     //
     std::string privateKeyFile = keyBase + "client-256-private.pem";
     std::fstream fs(privateKeyFile, std::ios::in);
@@ -138,9 +138,9 @@ int main(int argc, char* argv[]) {
     //
     // Optional: Providing "--bulk" option enables bulk dispatch for residue which means each log request
     // will be sent to the server in batch of bulk size. See following links for details
-    //   - https://github.com/amrayn/residue/blob/master/docs/CONFIGURATION.md#allow_bulk_log_request
-    //   - https://amrayn.github.io/residue/class_residue.html#a3bc1c73a82d964ec40600cb72f99645f
-    //   - https://amrayn.github.io/residue/class_residue.html#a4c6d59a5076991c70a0e71b0abd9935d
+    //   - https://github.com/abumq/residue/blob/master/docs/CONFIGURATION.md#allow_bulk_log_request
+    //   - https://abumq.github.io/residue/class_residue.html#a3bc1c73a82d964ec40600cb72f99645f
+    //   - https://abumq.github.io/residue/class_residue.html#a4c6d59a5076991c70a0e71b0abd9935d
     //
     // If you wish to see the speed difference between bulk and single requests you can run following two commands.
     // These commands will run this sample 10 times and give you average time it took to finish.
@@ -237,7 +237,7 @@ int main(int argc, char* argv[]) {
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
     // log dispatcher and installs it's own dispatcher. If you want to know more about this technique
-    // see https://github.com/amrayn/easyloggingpp#log-dispatch-callback
+    // see https://github.com/abumq/easyloggingpp#log-dispatch-callback
     LOG(INFO) << "Test info";
     LOG(DEBUG) << "Test debug";
     LOG(ERROR) << "Test error";
@@ -257,14 +257,14 @@ int main(int argc, char* argv[]) {
 
     LOG(INFO) << "Test5";
 
-    // You can even log STL data structures. See https://github.com/amrayn/easyloggingpp#stl-logging for details
+    // You can even log STL data structures. See https://github.com/abumq/easyloggingpp#stl-logging for details
     std::vector<std::string> list { "first", "second", "third" };
     LOG(INFO) << list;
 
     std::vector<std::thread> threads;
     {
         // You can even run peformance tracking and on dispatching this is going to send it to residue
-        // For more information about performance tracking please see https://github.com/amrayn/easyloggingpp#performance-tracking
+        // For more information about performance tracking please see https://github.com/abumq/easyloggingpp#performance-tracking
         TIMED_SCOPE(t, "Create Threads");
         auto create = [](int i) {
             LOG(INFO) << "Starting thread " << i;

@@ -3,7 +3,7 @@
 VERSION=$1
 
 if [ "$VERSION" = "" ];then
-    VERSION=`curl https://api.github.com/repos/amrayn/residue-cpp/releases | grep tag_name | head -n1 | grep -o "[0-9]\.[0-9]\.[0-9]"`
+    VERSION=`curl https://api.github.com/repos/abumq/residue-cpp/releases | grep tag_name | head -n1 | grep -o "[0-9]\.[0-9]\.[0-9]"`
 fi
 
 TYPE=`uname | tr '[:upper:]' '[:lower:]'`
@@ -30,7 +30,7 @@ echo " INSTALLING $PKG"
 echo "-----------"
 
 ## Headers
-wget https://github.com/amrayn/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
+wget https://github.com/abumq/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-headers.tar.gz
 tar -xf libresidue-$VERSION-headers.tar.gz
 mkdir -p /usr/local/include/residue/
 cp libresidue-$VERSION-headers/* /usr/local/include/residue/
@@ -38,14 +38,14 @@ cp libresidue-$VERSION-headers/* /usr/local/include/residue/
 ## Dynamic lib
 [[ $TYPE = "darwin" ]] && EXTENSION="dylib" || EXTENSION="so"
 [[ $TYPE = "darwin" ]] && DEST_SUFFIX=".$VERSION.$EXTENSION" || DEST_SUFFIX=".$EXTENSION.$VERSION"
-wget https://github.com/amrayn/residue-cpp/releases/download/v$VERSION/$PKG.tar.gz
+wget https://github.com/abumq/residue-cpp/releases/download/v$VERSION/$PKG.tar.gz
 tar -xf $PKG.tar.gz
 cp $PKG/libresidue* /usr/local/lib/libresidue$DEST_SUFFIX
 rm /usr/local/lib/libresidue.$EXTENSION
 ln -s /usr/local/lib/libresidue$DEST_SUFFIX /usr/local/lib/libresidue.$EXTENSION
 
 ## Static lib
-wget https://github.com/amrayn/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
+wget https://github.com/abumq/residue-cpp/releases/download/v$VERSION/libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
 tar -xf libresidue-$VERSION-static-x86_64-$TYPE.tar.gz
 cp libresidue-$VERSION-static-x86_64-$TYPE/libresidue-static.$VERSION.a /usr/local/lib/
 rm /usr/local/lib/libresidue-static.a

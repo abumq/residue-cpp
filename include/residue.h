@@ -379,7 +379,7 @@ public:
     ///
     /// \brief Wrapper for START_EASYLOGGINGPP.
     /// \details This is recommended for all the applications using Residue in order to send verbose logs to the server.
-    /// \see https://github.com/amrayn/easyloggingpp#setting-application-arguments
+    /// \see https://github.com/abumq/easyloggingpp#setting-application-arguments
     ///
     static inline void setApplicationArgs(int argc, const char** argv)
     {
