@@ -34,10 +34,9 @@ add_definitions (-DASIO_STANDALONE)
 
 include (FindPackageHandleStandardArgs)
 
-#require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wno-unused-variable -Wno-unused-local-typedef -Wno-undefined-var-template -Wno-unknown-warning-option -Wno-pessimizing-move -Wno-deprecated-declarations ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++14 -O3 -Wall -Wno-unused-variable -Wno-unused-local-typedef -Wno-undefined-var-template -Wno-unknown-warning-option -Wno-pessimizing-move -Wno-deprecated-declarations ")
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
